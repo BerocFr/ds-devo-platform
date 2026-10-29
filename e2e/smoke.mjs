@@ -154,23 +154,51 @@ await step('preview: walk the main path and an error branch', async () => {
   await page.keyboard.press('Escape');
 });
 
-await step('generator: build a contact journey from the catalog', async () => {
+await step('describe a journey in French: draft, create, pages view', async () => {
   await page.goto(BASE + '#/journeys');
-  await page.getByRole('button', { name: 'Generate from a use case' }).click();
-  await page.getByRole('radio', { name: /Contact request/ }).check();
-  await page.getByRole('textbox', { name: 'Journey name' }).fill('Contact an expert');
-  await shot('12-generator');
-  await page.getByRole('button', { name: 'Generate journey' }).click();
-  await screenNode('Service page').waitFor();
+  await page.getByRole('button', { name: 'Describe a journey' }).first().click();
+  await page.getByRole('textbox', { name: 'What should the journey do?' }).fill('Un candidat cherche un poste de data engineer au Portugal et postule avec son CV');
+  await page.getByRole('button', { name: 'Draft the journey' }).click();
+  await page.getByText('Drafted by rules').waitFor();
+  await page.getByText('Find a matching job and apply').first().waitFor();
+  await shot('12-describe');
+  await page.getByRole('button', { name: 'Create journey' }).click();
+  await screenNode('Job board').waitFor();
   await page.waitForTimeout(400);
   await shot('13-generated');
+  await page.getByRole('group', { name: 'View' }).getByRole('button', { name: 'Pages' }).click();
+  await page.locator('.pv-page').first().waitFor();
+  await page.waitForTimeout(500);
+  await shot('13b-pages-view');
+  await axe('pages view');
+  await page.getByRole('group', { name: 'View' }).getByRole('button', { name: 'Canvas' }).click();
+});
+
+await step('library: patterns render as full sections', async () => {
+  await page.goto(BASE + '#/components/pat-jobs');
+  await page.getByRole('heading', { name: 'Job board' }).waitFor();
+  await page.getByText('Built from').waitFor();
+  await page.waitForTimeout(300);
+  await shot('16-pattern');
+  await page.goto(BASE + '#/components/pat-contact');
+  await page.waitForTimeout(300);
+  await shot('17-pattern-contact');
+});
+
+await step('overview prompt bar opens a drafted journey', async () => {
+  await page.goto(BASE + '#/overview');
+  await page.getByRole('textbox', { name: 'Describe a journey and get its pages' }).fill('A visitor downloads our AWS cloud whitepaper and reads it online');
+  await page.getByRole('button', { name: 'Draft the journey' }).click();
+  await page.getByText('Drafted by rules').waitFor();
+  await shot('18-overview-ask');
+  await page.keyboard.press('Escape');
 });
 
 await step('persistence: reload keeps the generated journey', async () => {
   await page.waitForTimeout(900);
   await page.goto(BASE + '#/journeys');
   await page.reload();
-  await page.getByRole('link', { name: 'Contact an expert' }).waitFor();
+  await page.getByRole('link', { name: /Find a job and apply/ }).first().waitFor();
 });
 
 await step('accessibility: no serious or critical axe violation', async () => {

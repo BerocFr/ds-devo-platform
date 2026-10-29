@@ -1,8 +1,9 @@
 import { Check, ChevronDown, ArrowRight, Info, AlertCircle } from 'lucide-react';
-import { useMemo, useState, type CSSProperties, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import type { ComponentDef, ComponentInstance, DesignToken } from '../domain/types';
 import { tokensToCssVars } from '../domain/tokens';
 import './ds.css';
+import { Art, renderSiteKind } from './Sections';
 
 export type RenderMode = 'thumb' | 'preview' | 'interactive';
 
@@ -28,9 +29,10 @@ export function DsScope({ tokens, children, className = '', style }: { tokens: D
 }
 
 const WIDE_KINDS = new Set(['siteHeader', 'siteFooter', 'hero', 'ctaBand']);
+const isWideKind = (k: string) => WIDE_KINDS.has(k) || /^p[A-Z]/.test(k);
 
 export function isWideScreen(instances: ComponentInstance[], components: ComponentDef[]) {
-  return instances.some((i) => WIDE_KINDS.has(components.find((c) => c.id === i.componentId)?.kind ?? ''));
+  return instances.some((i) => isWideKind(components.find((c) => c.id === i.componentId)?.kind ?? ''));
 }
 
 export function ScreenRender({
@@ -55,7 +57,7 @@ export function ScreenRender({
         return (
           <div
             key={inst.id}
-            className={WIDE_KINDS.has(def.kind) ? 'ds-full' : undefined}
+            className={isWideKind(def.kind) ? 'ds-full' : undefined}
             style={highlightId === inst.id ? { outline: '2px dashed #2556e0', outlineOffset: 3, borderRadius: 4 } : undefined}
           >
             <InstanceRender def={def} inst={inst} ctx={{ mode, onAction }} />
@@ -221,6 +223,9 @@ export function InstanceRender({ def, inst, ctx }: { def: ComponentDef; inst: Co
               <span key={it}>{it}</span>
             ))}
           </nav>
+          <span className="ds-menu-btn" aria-hidden>
+            Menu
+          </span>
           <button type="button" tabIndex={tabIndex} className="ds-btn primary sm" onClick={interactive ? act : undefined}>
             {String(p.cta ?? '')}
           </button>
@@ -228,39 +233,54 @@ export function InstanceRender({ def, inst, ctx }: { def: ComponentDef; inst: Co
       );
     case 'siteFooter':
       return (
-        <footer className="ds-footer">
-          {list(p.groups).map((gname) => (
-            <div key={gname}>
-              <strong>{gname}</strong>
-              <span>Links</span>
+        <footer className="ds-sec tone-ink ds-footer2">
+          <div className="ds-footer-grid">
+            <div className="ds-stack tight">
+              <span className="ds-header-brand">Devoteam</span>
+              <span className="ds-muted">Tech-native consulting</span>
             </div>
-          ))}
-          <div>
-            <strong>Accessibility</strong>
-            <span>Statement</span>
+            {list(p.groups).map((gname) => (
+              <nav key={gname} aria-label={gname} className="ds-stack tight">
+                <strong>{gname}</strong>
+                <span className="ds-muted">Overview</span>
+                <span className="ds-muted">Contact</span>
+              </nav>
+            ))}
+          </div>
+          <div className="ds-row space ds-footer-legal">
+            <span>Accessibility statement</span>
+            <span>Legal notice</span>
+            <span>Cookie preferences</span>
           </div>
         </footer>
       );
     case 'hero':
       return (
-        <section className={`ds-hero ${inst.variantId}`}>
-          <div className="ds-field" style={{ gap: 12, alignItems: inst.variantId === 'centered' ? 'center' : 'flex-start' }}>
-            <h2 className="ds-hero-title">{String(p.title ?? '')}</h2>
-            <p>{String(p.body ?? '')}</p>
-            <button type="button" tabIndex={tabIndex} className="ds-btn primary" onClick={interactive ? act : undefined}>
-              {String(p.cta ?? '')}
-            </button>
+        <section className={`ds-sec tone-mint ds-hero-sec ${inst.variantId}`}>
+          <div className="ds-stack" style={inst.variantId === 'centered' ? { alignItems: 'center', textAlign: 'center' } : undefined}>
+            <span className="ds-kicker">Devoteam</span>
+            <h2 className="ds-display">{String(p.title ?? '')}</h2>
+            <p className="ds-lead">{String(p.body ?? '')}</p>
+            <div className="ds-row">
+              <button type="button" tabIndex={tabIndex} className="ds-btn primary" onClick={interactive ? act : undefined}>
+                {String(p.cta ?? '')}
+                <ArrowRight size={16} aria-hidden />
+              </button>
+            </div>
           </div>
-          {inst.variantId === 'split' ? <div className="ds-hero-art" aria-hidden /> : null}
+          {inst.variantId === 'split' ? <Art seed={2} /> : null}
         </section>
       );
     case 'ctaBand':
       return (
-        <section className={`ds-ctaband ${inst.variantId === 'subtle' ? 'subtle' : ''}`}>
-          <span className="ds-ctaband-title">{String(p.title ?? '')}</span>
-          <button type="button" tabIndex={tabIndex} className={`ds-btn ${inst.variantId === 'subtle' ? 'primary' : 'secondary'}`} onClick={interactive ? act : undefined}>
-            {String(p.cta ?? '')}
-          </button>
+        <section className={`ds-sec ${inst.variantId === 'subtle' ? 'tone-subtle' : 'tone-ink'}`}>
+          <div className="ds-row space">
+            <h2 className="ds-h big">{String(p.title ?? '')}</h2>
+            <button type="button" tabIndex={tabIndex} className="ds-btn primary" onClick={interactive ? act : undefined}>
+              {String(p.cta ?? '')}
+              <ArrowRight size={16} aria-hidden />
+            </button>
+          </div>
         </section>
       );
     case 'tabs':
@@ -330,7 +350,7 @@ export function InstanceRender({ def, inst, ctx }: { def: ComponentDef; inst: Co
         </div>
       );
     default:
-      return null;
+      return renderSiteKind(def, inst, ctx);
   }
 }
 
@@ -435,6 +455,26 @@ function TagsRender({ items, filter, tabIndex }: { items: string[]; filter: bool
           </span>
         ),
       )}
+    </div>
+  );
+}
+
+/** Renders children at a fixed design width and scales them to the available width, like a real page viewed smaller. */
+export function ScaledPage({ width = 1200, children }: { width?: number; children: ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(0.5);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const update = () => setScale(Math.min(1, el.clientWidth / width));
+    update();
+    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(update) : null;
+    ro?.observe(el);
+    return () => ro?.disconnect();
+  }, [width]);
+  return (
+    <div ref={ref} style={{ width: '100%', overflow: 'hidden' }}>
+      <div style={{ width, zoom: scale } as CSSProperties}>{children}</div>
     </div>
   );
 }

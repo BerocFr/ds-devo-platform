@@ -40,7 +40,7 @@ export interface DesignPrinciple {
   description: string;
 }
 
-export type ComponentCategory = 'Actions' | 'Forms' | 'Feedback' | 'Navigation' | 'Content' | 'Layout';
+export type ComponentCategory = 'Actions' | 'Forms' | 'Feedback' | 'Navigation' | 'Content' | 'Layout' | 'Patterns';
 
 export type PropKind = 'text' | 'boolean' | 'select' | 'number';
 
@@ -80,6 +80,8 @@ export interface ComponentDef {
   /** Interaction behaviours the component can trigger in a journey. */
   interactions: InteractionKind[];
   provenance?: ComponentProvenance;
+  /** Patterns only: the library components the section is built from. */
+  composedOf?: string[];
   /** Accessibility rules carried by the component (from the bench arbitration and WCAG 2.2 AA). */
   a11y?: string[];
 }
@@ -112,11 +114,49 @@ export type ComponentKind =
   | 'stat'
   | 'testimonial'
   | 'select'
-  | 'textarea';
+  | 'textarea'
+  // atoms added from the devoteam.com analysis (bench-01 and bench-02)
+  | 'localeSwitcher'
+  | 'personCard'
+  | 'articleCard'
+  | 'logoWall'
+  | 'pagination'
+  | 'searchField'
+  | 'videoEmbed'
+  | 'consentBanner'
+  | 'eventCard'
+  | 'jobCard'
+  | 'fileUpload'
+  | 'officeCard'
+  | 'shareLinks'
+  | 'toc'
+  | 'documentList'
+  // patterns: page sections composed of library components
+  | 'pExpertiseGrid'
+  | 'pStatsBand'
+  | 'pLogoBand'
+  | 'pCaseGrid'
+  | 'pExpertTeam'
+  | 'pQuoteBand'
+  | 'pFaq'
+  | 'pContact'
+  | 'pEventList'
+  | 'pJobBoard'
+  | 'pApplication'
+  | 'pNewsletter'
+  | 'pArticleGrid'
+  | 'pOfficeDirectory'
+  | 'pDocumentLibrary'
+  | 'pLongRead'
+  | 'pGatedDownload'
+  | 'pOfferings'
+  | 'pAssessment'
+  | 'pEventDetail'
+  | 'pJobDetail';
 
 /** Where a catalog entry comes from. Bench entries trace back to the DS-Devo benchmark arbitration. */
 export interface ComponentProvenance {
-  source: 'core' | 'bench-01';
+  source: 'core' | 'bench-01' | 'bench-02' | 'site';
   /** Founder decision or backlog row in DS-Devo, for example "S-017, D-B13". */
   ref?: string;
   /** What the benchmark contributed, paraphrased. */

@@ -1,0 +1,133 @@
+.describe {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.describe-input {
+  min-height: 96px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+.describe-examples {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.describe-examples .badge {
+  cursor: pointer;
+  height: auto;
+  padding: 4px 10px;
+  white-space: normal;
+  text-align: left;
+}
+.describe-examples .badge:hover {
+  border-color: var(--c-accent);
+  color: var(--c-accent);
+}
+.describe-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--c-ink-2);
+  padding: 10px 12px;
+  border-radius: var(--r-2);
+  background: var(--c-accent-soft);
+}
+.spinner {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--c-accent);
+  border-right-color: transparent;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.describe-result {
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-3);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--c-sunken);
+}
+.describe-uc {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 13px;
+}
+.describe-pages {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.describe-pages li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 8px 10px;
+  border-radius: var(--r-2);
+  background: var(--c-panel);
+  border: 1px solid var(--c-line);
+  font-size: 13px;
+}
+.describe-pages li.k-decision {
+  background: var(--c-decision-soft);
+  border-color: transparent;
+}
+.describe-pages li.k-start,
+.describe-pages li.k-outcome {
+  background: transparent;
+  border-style: dashed;
+}
+.describe-kind {
+  width: 62px;
+  flex: none;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--c-ink-3);
+  padding-top: 2px;
+}
+.describe-sections {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px;
+}
+.chip {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  border: 1px solid var(--c-line-strong);
+  background: var(--c-panel);
+  color: var(--c-ink-2);
+}
+.chip.pattern {
+  background: var(--c-accent-soft);
+  border-color: transparent;
+  color: var(--c-accent);
+  font-weight: 600;
+}
+.describe-notes {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 12px;
+  color: var(--c-ink-2);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation: none;
+  }
+}

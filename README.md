@@ -13,7 +13,7 @@ The sample workspace is **Devoteam**. Brand values come from [`BerocFr/DS-Devo`]
 ```bash
 npm ci
 npm run dev          # http://localhost:5173
-npm test             # 34 unit tests (domain, store, app shell)
+npm test             # 54 unit tests (domain, planners, store, app shell)
 npm run build        # type check + production build
 npm run e2e          # builds must exist; headless Chromium walk-through + axe (WCAG 2.2 AA)
 npm run build:single # one self-contained HTML file in dist-single/
@@ -28,11 +28,26 @@ Node 22.12 or later.
 | Overview | The brand-to-experience chain with real status per stage, recent journeys with their validation result, design system health, library summary, insights not yet addressed, activity, quick actions. |
 | Design System | Brand identity and principles (editable), primitive palette with color pickers, semantic colors as references, WCAG contrast checks, type scale, spacing, radius, elevation, motion with a demo, a filterable table of every token with inline validated editing, add and delete (deletion is refused while something depends on the token), a dependency view primitive → semantic → components, and a live preview of real components that updates with every edit. |
 | Components | Searchable, filterable library (category, status, core or benchmark). Live preview with variant, size, state and property controls. Usage do and don't, accessibility rules, provenance, tokens consumed with resolved values, and every screen that uses the component. Create, edit, duplicate, deprecate, restore, delete (refused when used). |
-| Journeys | List by folder with status and validation result. New blank journey, duplicate, delete, and **Generate from a use case**. |
+| Journeys | List by folder with status and validation result. New blank journey, duplicate, delete, and **Describe a journey** (natural language) or pick a pattern. |
 | Journey Builder | Three panels. Left: use case, insights, needs and pain points (link them to the selected step), the component library (drag onto a screen), journey blocks (drag onto the canvas). Center: canvas with start, screen, decision and outcome nodes; screens show a live miniature built from the library; connections with labels, conditions, main and alternative paths; zoom, pan, minimap. Right: properties of the step, its component instances (variant, size, state, props, interaction and which connection it triggers, with advanced settings behind a toggle), linked insights and design decisions, checks; connection editor. Toolbar: name, status, save state, undo and redo, zoom, validate, preview, settings. Keyboard: Delete, Ctrl or Cmd + Z, Ctrl or Cmd + Shift + Z, Escape, Ctrl or Cmd + S. |
 | Preview | Walks the journey with the real components: buttons follow the connection they trigger, decisions let you simulate each branch, outcomes end the run. Mobile and desktop widths, back, restart, path so far, and "Why this step" with the decisions and insights behind the screen. |
 | Use Cases & Insights | Use cases with objective, audience, context and metric; insights by kind and evidence, with the journey steps that address them (or a warning when none does). Generate or start a journey from a use case. |
 | Settings | Workspace name, interface theme (system, light, dark), export and import the workspace as JSON, reset the demo. |
+
+## Describe a journey in plain language
+
+Type what the journey should do, in English or French ("Un candidat cherche un poste de data engineer au Portugal et postule avec son CV"). The platform drafts it as structured pages built from the library and its patterns, shows the draft page by page (sections, linked insights, validation result) and creates it on the canvas.
+
+- **Claude engine** (in the hosted version): the request, the whole library, the use cases and the insights go to Claude, which answers with a journey plan in JSON. `src/domain/claudePlanner.ts` keeps only components, variants, props, insights and links that exist, maps triggers to the components that fire them, adds a missing start or outcome, and lays the result out. Uses the viewer's own Claude account after consent; falls back to the rules engine on any failure.
+- **Rules engine** (`src/domain/nlPlanner.ts`, everywhere): scores the 12 journey types on English and French cues, extracts subject, partner, country, role and event, reuses the matching use case or creates one, and picks the insights that concern the steps.
+
+The **Pages** view of the builder shows the journey as a sequence of desktop pages, each with its section outline, linked insights and exits.
+
+## Patterns
+
+21 section patterns (expertise grid, key figures band, case study index, expert team, contact section, event listing and detail, job board, job offer, application form, newsletter band, insights grid, office directory, document library, long read with contents, gated download, offering blocks, self-assessment, FAQ, partner band, testimonial band) are page sections composed of library components. Each declares `composedOf`, so the library shows what it is built from and validation warns when one of its parts is deprecated or missing.
+
+They came from an analysis of devoteam.com (12 use cases, 19 insights, 38 component needs) and two benchmarks: bench-01 (Awwwards agencies, Webflow templates, content and motion systems) and bench-02 (event card, job card and filters, file upload, office card, share links, contents, document list; GOV.UK, Carbon, Polaris, USWDS, NHS, Fluent).
 
 ## Journey generation from the catalog
 

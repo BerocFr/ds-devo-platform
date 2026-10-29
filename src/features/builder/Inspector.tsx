@@ -394,7 +394,7 @@ function ComponentsEditor({ journey, node, openId, onSelect }: { journey: Journe
         <div className="hstack">
           <select id="add-comp" className="select" value={adding} onChange={(e) => setAdding(e.target.value)}>
             <option value="">Choose from the library</option>
-            {['Actions', 'Forms', 'Feedback', 'Navigation', 'Content', 'Layout'].map((cat) => (
+            {['Patterns', 'Actions', 'Forms', 'Feedback', 'Navigation', 'Content', 'Layout'].map((cat) => (
               <optgroup key={cat} label={cat}>
                 {components
                   .filter((c) => c.category === cat && c.status !== 'deprecated')

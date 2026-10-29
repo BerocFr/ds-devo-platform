@@ -8,6 +8,8 @@ import type {
   UseCase,
 } from '../domain/types';
 import { benchComponents } from './benchCatalog';
+import { siteAtoms, sitePatterns } from './siteCatalog';
+import { siteInsights, siteUseCases } from './siteUseCases';
 
 // Seed workspace: Devoteam. Brand values mirror BerocFr/DS-Devo brand/README.md
 // (source: Engrym "Devoteam DS" 6c66409e v2). Values the brand does not define are
@@ -454,9 +456,9 @@ export function createSeed(): PlatformData {
     },
     tokens: seedTokens,
     principles: seedPrinciples,
-    components: [...seedComponents.map((c) => ({ ...c, provenance: c.provenance ?? { source: 'core' as const } })), ...benchComponents],
-    useCases: seedUseCases,
-    insights: seedInsights,
+    components: [...seedComponents.map((c) => ({ ...c, provenance: c.provenance ?? { source: 'core' as const } })), ...benchComponents, ...siteAtoms, ...sitePatterns],
+    useCases: [...seedUseCases, ...siteUseCases],
+    insights: [...seedInsights, ...siteInsights],
     journeys: [seedJourney, recoverJourney],
     activity: [
       { id: 'a-1', at: '2026-10-29T08:40:00.000Z', text: 'Journey "Quick account creation" sent for review', target: { kind: 'journey', id: 'jr-signup' } },

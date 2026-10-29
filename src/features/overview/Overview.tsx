@@ -5,12 +5,14 @@ import { contrastRatio, resolveToken } from '../../domain/tokens';
 import { validateJourney } from '../../domain/validation';
 import { usePlatform } from '../../store/store';
 import { relativeTime } from '../../ui/kit';
-import { GenerateJourneyDialog } from '../journeys/GenerateJourneyDialog';
+import { DescribeJourneyDialog } from '../journeys/DescribeJourneyDialog';
 import './overview.css';
 
 export function Overview() {
   const { workspace, tokens, components, useCases, insights, journeys, activity } = usePlatform((s) => s.data);
   const [gen, setGen] = useState(false);
+  const [ask, setAsk] = useState('');
+  const [askText, setAskText] = useState('');
   const reports = useMemo(() => new Map(journeys.map((j) => [j.id, validateJourney(j, components, tokens)])), [journeys, components, tokens]);
   const todo = tokens.filter((t) => t.provenance === 'todo-brand');
   const btnContrast = contrastRatio(resolveToken('color.surface.default', tokens) ?? '#fff', resolveToken('color.action.primary', tokens) ?? '#000') ?? 0;
@@ -38,10 +40,30 @@ export function Overview() {
           <Plus size={15} /> New component
         </a>
         <button type="button" className="btn primary" onClick={() => setGen(true)}>
-          <Sparkles size={15} /> Generate a journey
+          <Sparkles size={15} /> Describe a journey
         </button>
       </header>
       <div className="page-body">
+        <form
+          className="ask-bar"
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (!ask.trim()) return;
+            setAskText(ask);
+            setGen(true);
+          }}
+        >
+          <label htmlFor="ask" className="ask-label">
+            Describe a journey and get its pages
+          </label>
+          <div className="ask-row">
+            <Sparkles size={18} aria-hidden />
+            <input id="ask" className="ask-input" value={ask} onChange={(e) => setAsk(e.target.value)} placeholder="A job seeker finds a data engineer role in Lisbon and applies with a CV" />
+            <button type="submit" className="btn primary" disabled={!ask.trim()}>
+              Draft the journey
+            </button>
+          </div>
+        </form>
         <section aria-labelledby="chain-h" className="chain-wrap">
           <h2 id="chain-h" className="section-title">
             From brand to experience
@@ -95,7 +117,7 @@ export function Overview() {
                 <div className="empty">
                   <strong>No journey yet.</strong>
                   <button type="button" className="btn primary sm" onClick={() => setGen(true)}>
-                    Generate a journey
+                    Describe a journey
                   </button>
                 </div>
               </div>
@@ -136,7 +158,7 @@ export function Overview() {
             <div className="panel-body">
               <table className="table">
                 <tbody>
-                  {(['Actions', 'Forms', 'Feedback', 'Navigation', 'Content', 'Layout'] as const).map((cat) => {
+                  {(['Patterns', 'Actions', 'Forms', 'Feedback', 'Navigation', 'Content', 'Layout'] as const).map((cat) => {
                     const n = components.filter((c) => c.category === cat);
                     return (
                       <tr key={cat}>
@@ -205,7 +227,7 @@ export function Overview() {
           </section>
         </div>
       </div>
-      {gen ? <GenerateJourneyDialog onClose={() => setGen(false)} /> : null}
+      {gen ? <DescribeJourneyDialog initialText={askText} onClose={() => { setGen(false); setAskText(''); }} /> : null}
     </>
   );
 }

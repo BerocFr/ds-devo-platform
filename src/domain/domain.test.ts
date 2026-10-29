@@ -116,10 +116,11 @@ describe('generator', () => {
 
   it('uses only library components and skips deprecated ones', () => {
     const comps = data.components.map((c) => (c.id === 'cmp-site-header' ? { ...c, status: 'deprecated' as const } : c));
-    const r = generateJourney({ name: 'G', patternId: 'contact', useCase: null, insights: [], includeErrorPaths: true }, comps, makeId);
+    const r = generateJourney({ name: 'G', patternId: 'expert-contact', useCase: null, insights: [], includeErrorPaths: true }, comps, makeId);
     const ids = new Set(comps.map((c) => c.id));
     expect(r.journey.nodes.flatMap((x) => x.components).every((i) => ids.has(i.componentId))).toBe(true);
-    expect(r.skipped).toEqual([{ componentId: 'cmp-site-header', reason: 'deprecated in the library' }]);
+    expect(r.skipped.length).toBeGreaterThan(0);
+    expect(r.skipped.every((x) => x.componentId === 'cmp-site-header' && x.reason === 'deprecated in the library')).toBe(true);
   });
 
   it('traces design decisions only to selected insights', () => {

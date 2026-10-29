@@ -1,10 +1,25 @@
 import {
   AlignLeft, BadgeCheck, Bell, ChevronsRight, CircleAlert, Footprints, Hash, Heading, Inbox, LayoutGrid, LayoutPanelTop, Link2, ListCollapse, ListOrdered,
-  Megaphone, Minus, MousePointerClick, PanelBottom, PanelTop, Quote, RectangleEllipsis, Rows3, SquareCheck, Tag, TextCursorInput, BarChart3, ChevronDownSquare, Type,
+  Megaphone, Globe, UserRound, Newspaper, Shapes, ChevronsLeftRight, Search, Video, Cookie, CalendarDays, BriefcaseBusiness, Upload, Building2, Share2, ListTree, Files, LayoutTemplate, Minus, MousePointerClick, PanelBottom, PanelTop, Quote, RectangleEllipsis, Rows3, SquareCheck, Tag, TextCursorInput, BarChart3, ChevronDownSquare, Type,
 } from 'lucide-react';
 import type { ComponentKind } from '../../domain/types';
 
-const MAP: Record<ComponentKind, typeof Type> = {
+const MAP: Partial<Record<ComponentKind, typeof Type>> = {
+  localeSwitcher: Globe,
+  personCard: UserRound,
+  articleCard: Newspaper,
+  logoWall: Shapes,
+  pagination: ChevronsLeftRight,
+  searchField: Search,
+  videoEmbed: Video,
+  consentBanner: Cookie,
+  eventCard: CalendarDays,
+  jobCard: BriefcaseBusiness,
+  fileUpload: Upload,
+  officeCard: Building2,
+  shareLinks: Share2,
+  toc: ListTree,
+  documentList: Files,
   button: MousePointerClick,
   textInput: TextCursorInput,
   formField: RectangleEllipsis,
@@ -36,6 +51,6 @@ const MAP: Record<ComponentKind, typeof Type> = {
 };
 
 export function ComponentGlyph({ kind, size = 14 }: { kind: ComponentKind; size?: number }) {
-  const I = MAP[kind] ?? LayoutGrid;
+  const I = MAP[kind] ?? (/^p[A-Z]/.test(kind) ? LayoutTemplate : LayoutGrid);
   return <I size={size} aria-hidden />;
 }

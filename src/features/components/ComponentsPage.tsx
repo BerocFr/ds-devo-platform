@@ -9,14 +9,14 @@ import { Dialog, SelectField, Tabs, TextField } from '../../ui/kit';
 import { ComponentGlyph } from './glyphs';
 import './components.css';
 
-const CATS: ComponentCategory[] = ['Actions', 'Forms', 'Feedback', 'Navigation', 'Content', 'Layout'];
+const CATS: ComponentCategory[] = ['Patterns', 'Actions', 'Forms', 'Feedback', 'Navigation', 'Content', 'Layout'];
 
 export function ComponentsPage({ selectedId }: { selectedId?: string }) {
   const components = usePlatform((s) => s.data.components);
   const [q, setQ] = useState('');
   const [cat, setCat] = useState<ComponentCategory | 'All'>('All');
   const [status, setStatus] = useState<ComponentStatus | 'all'>('all');
-  const [source, setSource] = useState<'all' | 'core' | 'bench-01'>('all');
+  const [source, setSource] = useState<'all' | 'core' | 'bench-01' | 'bench-02' | 'site'>('all');
   const [creating, setCreating] = useState(false);
   const filtered = useMemo(
     () =>
@@ -36,7 +36,7 @@ export function ComponentsPage({ selectedId }: { selectedId?: string }) {
       <header className="page-head">
         <h1>Components</h1>
         <span className="muted">
-          {components.length} in the library, {components.filter((c) => c.provenance?.source === 'bench-01').length} from the benchmark
+          {components.filter((c) => c.category !== 'Patterns').length} components and {components.filter((c) => c.category === 'Patterns').length} patterns, {components.filter((c) => c.provenance?.source === 'bench-01' || c.provenance?.source === 'bench-02').length} from the benchmarks
         </span>
         <span className="grow" />
         <button type="button" className="btn primary" onClick={() => setCreating(true)}>
@@ -68,7 +68,9 @@ export function ComponentsPage({ selectedId }: { selectedId?: string }) {
                 <select className="select" aria-label="Source" value={source} onChange={(e) => setSource(e.target.value as typeof source)}>
                   <option value="all">Any source</option>
                   <option value="core">Core</option>
-                  <option value="bench-01">Benchmark</option>
+                  <option value="bench-01">Benchmark 01</option>
+                  <option value="bench-02">Benchmark 02</option>
+                  <option value="site">Site patterns</option>
                 </select>
               </div>
               <span className="muted" style={{ fontSize: 12 }} aria-live="polite">
@@ -112,7 +114,7 @@ export function ComponentsPage({ selectedId }: { selectedId?: string }) {
 
 function ComponentDetail({ def }: { def: ComponentDef }) {
   const st = usePlatform();
-  const { tokens, journeys } = usePlatform((s) => s.data);
+  const { tokens, journeys, components } = usePlatform((s) => s.data);
   const [variant, setVariant] = useState(def.variants[0]?.id ?? '');
   const [size, setSize] = useState(def.sizes[Math.min(1, def.sizes.length - 1)] ?? '');
   const [state, setState] = useState('default');
@@ -126,7 +128,7 @@ function ComponentDetail({ def }: { def: ComponentDef }) {
 
   const inst: ComponentInstance = { id: `pv-${def.id}`, componentId: def.id, variantId: variant, size, state, props, ...(def.interactions.some((k) => k !== 'none') ? { interaction: { kind: 'navigate' } } : {}) };
   const usage = journeys.flatMap((j) => j.nodes.filter((n) => n.components.some((c) => c.componentId === def.id)).map((n) => ({ j, n, count: n.components.filter((c) => c.componentId === def.id).length })));
-  const wide = ['siteHeader', 'siteFooter', 'hero', 'ctaBand'].includes(def.kind);
+  const wide = ['siteHeader', 'siteFooter', 'hero', 'ctaBand'].includes(def.kind) || def.category === 'Patterns';
 
   return (
     <section className="lib-detail" aria-labelledby="cd-title">
@@ -140,7 +142,7 @@ function ComponentDetail({ def }: { def: ComponentDef }) {
         </div>
         <span className={`badge ${def.status === 'stable' ? 'success' : def.status === 'beta' ? 'info' : 'danger'}`}>{def.status}</span>
         <span className="badge">{def.category}</span>
-        {def.provenance?.source === 'bench-01' ? <span className="badge accent">From benchmark</span> : <span className="badge">Core</span>}
+        {def.provenance?.source === 'bench-01' || def.provenance?.source === 'bench-02' ? <span className="badge accent">From benchmark</span> : def.provenance?.source === 'site' ? <span className="badge accent">Pattern from site analysis</span> : <span className="badge">Core</span>}
       </div>
       <div className="hstack" style={{ padding: '0 24px 12px' }}>
         <button type="button" className="btn sm" onClick={() => setEditing(true)}>
@@ -212,7 +214,9 @@ function ComponentDetail({ def }: { def: ComponentDef }) {
         </div>
         <DsScope tokens={tokens} className={`stage ${wide ? 'wide' : ''}`}>
           <div className="stage-inner">
-            <InstanceRender def={def} inst={inst} ctx={{ mode: 'preview' }} />
+            <div className={`ds-screen ${wide ? 'wide' : ''}`} style={{ padding: 0 }}>
+              <InstanceRender def={def} inst={inst} ctx={{ mode: 'preview' }} />
+            </div>
           </div>
         </DsScope>
       </div>
@@ -253,6 +257,25 @@ function ComponentDetail({ def }: { def: ComponentDef }) {
                 ))}
               </ul>
             </div>
+            {def.composedOf?.length ? (
+              <div>
+                <div className="section-title">Built from</div>
+                <div className="hstack wrap" style={{ gap: 4 }}>
+                  {def.composedOf.map((cid) => {
+                    const c = components.find((x) => x.id === cid);
+                    return c ? (
+                      <a key={cid} className={`badge ${c.status === 'deprecated' ? 'danger' : ''}`} href={`#/components/${cid}`} style={{ textDecoration: 'none' }}>
+                        {c.name}
+                      </a>
+                    ) : (
+                      <span key={cid} className="badge danger">
+                        Missing: {cid}
+                      </span>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : null}
             {def.a11y?.length ? (
               <div>
                 <div className="section-title">Accessibility</div>
@@ -265,9 +288,9 @@ function ComponentDetail({ def }: { def: ComponentDef }) {
             ) : null}
             <div>
               <div className="section-title">Provenance</div>
-              {def.provenance?.source === 'bench-01' ? (
+              {def.provenance && def.provenance.source !== 'core' ? (
                 <p style={{ fontSize: 13 }}>
-                  Added from benchmark 01 (DS-Devo {def.provenance.ref}). {def.provenance.note}
+                  {def.provenance.source === 'site' ? 'Section pattern from the devoteam.com analysis.' : `Added from ${def.provenance.source === 'bench-01' ? 'benchmark 01' : 'benchmark 02'}${def.provenance.ref ? ` (DS-Devo ${def.provenance.ref})` : ''}.`} {def.provenance.note}
                 </p>
               ) : (
                 <p style={{ fontSize: 13 }}>Core component of the workspace design system.</p>

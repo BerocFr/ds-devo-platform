@@ -77,7 +77,7 @@ export interface PlatformState {
   // journeys
   createJourney: (name: string, useCaseId: string | null, folder?: string) => string;
   duplicateJourney: (id: string) => string | null;
-  importJourney: (journey: Journey, note: string) => void;
+  importJourney: (journey: Journey, note: string, newUseCase?: UseCase) => void;
   deleteJourney: (id: string) => void;
   updateJourneyMeta: (id: string, patch: Partial<Pick<Journey, 'name' | 'status' | 'folder' | 'useCaseId'>>) => void;
 
@@ -298,7 +298,8 @@ export const usePlatform = create<PlatformState>((set, get) => {
       commit((d) => log({ ...d, journeys: [copy, ...d.journeys] }, `Journey "${src.name}" duplicated`, { kind: 'journey', id: nid }));
       return nid;
     },
-    importJourney: (journey, note) => commit((d) => log({ ...d, journeys: [journey, ...d.journeys] }, note, { kind: 'journey', id: journey.id })),
+    importJourney: (journey, note, newUseCase) =>
+      commit((d) => log({ ...d, useCases: newUseCase && !d.useCases.some((u) => u.id === newUseCase.id) ? [...d.useCases, newUseCase] : d.useCases, journeys: [journey, ...d.journeys] }, note, { kind: 'journey', id: journey.id })),
     deleteJourney: (id) =>
       commit((d) => {
         const j = d.journeys.find((x) => x.id === id);

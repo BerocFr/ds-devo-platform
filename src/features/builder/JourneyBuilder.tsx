@@ -22,6 +22,7 @@ import { Inspector } from './Inspector';
 import { LeftPanel } from './LeftPanel';
 import { BLOCK_MIME, edgeTypes, nodeTypes, type JFlowEdge, type JFlowNode } from './nodes';
 import { PreviewOverlay } from './PreviewOverlay';
+import { PagesView } from './PagesView';
 import { JourneySettingsDialog } from './JourneySettingsDialog';
 import './builder.css';
 
@@ -45,6 +46,7 @@ function BuilderInner({ journeyId, focusNodeId }: { journeyId: string; focusNode
   const [preview, setPreview] = useState<{ startNodeId?: string } | null>(null);
   const [settings, setSettings] = useState(false);
   const [rightTab, setRightTab] = useState<'journey' | 'checks'>('journey');
+  const [view, setView] = useState<'canvas' | 'pages'>('canvas');
   const wrapRef = useRef<HTMLDivElement>(null);
 
   const issuesByNode = useMemo(() => {
@@ -235,6 +237,15 @@ function BuilderInner({ journeyId, focusNodeId }: { journeyId: string; focusNode
           {st.saveStatus === 'saved' ? `Saved ${relativeTime(st.lastSavedAt ?? journey.updatedAt)}` : st.saveStatus === 'saving' ? 'Saving' : 'Unsaved changes'}
         </span>
         <span className="grow" />
+        <div className="seg view-switch" role="group" aria-label="View">
+          <button type="button" aria-pressed={view === 'canvas'} onClick={() => setView('canvas')}>
+            Canvas
+          </button>
+          <button type="button" aria-pressed={view === 'pages'} onClick={() => setView('pages')}>
+            Pages
+          </button>
+        </div>
+        <span className="sep" />
         <button type="button" className="btn ghost icon" aria-label="Undo" title="Undo (Ctrl+Z)" disabled={!st.canUndo(journeyId)} onClick={() => st.undo(journeyId)}>
           <Undo2 size={16} />
         </button>
@@ -242,16 +253,16 @@ function BuilderInner({ journeyId, focusNodeId }: { journeyId: string; focusNode
           <Redo2 size={16} />
         </button>
         <span className="sep" />
-        <button type="button" className="btn ghost icon" aria-label="Zoom out" onClick={() => rf.zoomOut({ duration: 150 })}>
+        <button type="button" className="btn ghost icon" aria-label="Zoom out" disabled={view === 'pages'} onClick={() => rf.zoomOut({ duration: 150 })}>
           <Minus size={16} />
         </button>
         <span className="zoom-val" aria-live="off">
           {Math.round(zoom * 100)}%
         </span>
-        <button type="button" className="btn ghost icon" aria-label="Zoom in" onClick={() => rf.zoomIn({ duration: 150 })}>
+        <button type="button" className="btn ghost icon" aria-label="Zoom in" disabled={view === 'pages'} onClick={() => rf.zoomIn({ duration: 150 })}>
           <Plus size={16} />
         </button>
-        <button type="button" className="btn ghost icon" aria-label="Fit journey to view" title="Fit to view" onClick={() => rf.fitView({ padding: 0.15, duration: 250 })}>
+        <button type="button" className="btn ghost icon" aria-label="Fit journey to view" disabled={view === 'pages'} title="Fit to view" onClick={() => rf.fitView({ padding: 0.15, duration: 250 })}>
           <Maximize size={15} />
         </button>
         <span className="sep" />
@@ -278,6 +289,9 @@ function BuilderInner({ journeyId, focusNodeId }: { journeyId: string; focusNode
           st.toast('Select a screen first, or drag the component onto one', 'error');
         }} onFocusNode={focusNode} />
 
+        {view === 'pages' ? (
+          <PagesView journey={journey} selection={sel} onSelect={setSel} onPreviewFrom={(id) => setPreview({ startNodeId: id })} />
+        ) : (
         <div className="canvas" ref={wrapRef} aria-label="Journey canvas">
           <ReactFlow<JFlowNode, JFlowEdge>
             nodes={nodes}
@@ -331,6 +345,7 @@ function BuilderInner({ journeyId, focusNodeId }: { journeyId: string; focusNode
             <div className="canvas-hint">Drag a Screen block from the left panel, then connect steps by dragging from the dot on the right of a step to the next one.</div>
           ) : null}
         </div>
+        )}
 
         <Inspector
           journey={journey}

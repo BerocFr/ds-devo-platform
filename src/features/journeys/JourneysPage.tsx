@@ -5,7 +5,7 @@ import { validateJourney } from '../../domain/validation';
 import type { Journey } from '../../domain/types';
 import { usePlatform } from '../../store/store';
 import { Dialog, SelectField, TextField, relativeTime } from '../../ui/kit';
-import { GenerateJourneyDialog } from './GenerateJourneyDialog';
+import { DescribeJourneyDialog } from './DescribeJourneyDialog';
 import { plural } from '../overview/Overview';
 
 export function JourneysPage() {
@@ -29,7 +29,7 @@ export function JourneysPage() {
           <Plus size={15} /> New blank journey
         </button>
         <button type="button" className="btn primary" onClick={() => setDialog('generate')}>
-          <Sparkles size={15} /> Generate from a use case
+          <Sparkles size={15} /> Describe a journey
         </button>
       </header>
       <div className="page-body">
@@ -49,9 +49,9 @@ export function JourneysPage() {
         {filtered.length === 0 ? (
           <div className="empty" style={{ maxWidth: 720 }}>
             <strong>{journeys.length ? 'No journey matches these filters.' : 'No journey yet.'}</strong>
-            <span>Generate one from a use case to start from your component library, or start from a blank canvas.</span>
+            <span>Describe the journey you need in a sentence; the platform drafts the pages from your library.</span>
             <button type="button" className="btn primary" onClick={() => setDialog('generate')}>
-              <Sparkles size={15} /> Generate from a use case
+              <Sparkles size={15} /> Describe a journey
             </button>
           </div>
         ) : null}
@@ -116,7 +116,7 @@ export function JourneysPage() {
           ))}
         </div>
       </div>
-      {dialog === 'generate' ? <GenerateJourneyDialog onClose={() => setDialog(null)} /> : null}
+      {dialog === 'generate' ? <DescribeJourneyDialog onClose={() => setDialog(null)} /> : null}
       {dialog === 'new' ? <NewJourneyDialog onClose={() => setDialog(null)} /> : null}
       {confirm ? (
         <Dialog

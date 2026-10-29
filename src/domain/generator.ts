@@ -6,7 +6,7 @@ import type { ComponentDef, ComponentInstance, Insight, Journey, JourneyEdge, Jo
 // result out on the canvas. The interface (GenerateInput -> GenerateResult) is the seam where a
 // model-backed generator can be plugged in later.
 
-type Topic = 'form-length' | 'progress' | 'errors' | 'code' | 'expiry' | 'next-step' | 'trust' | 'findability' | 'contact' | 'mobile';
+export type Topic = 'form-length' | 'progress' | 'errors' | 'code' | 'expiry' | 'next-step' | 'trust' | 'findability' | 'contact' | 'mobile' | 'jobs' | 'events' | 'content' | 'location' | 'investor' | 'assessment' | 'partner' | 'culture' | 'newsletter';
 
 const TOPIC_KEYWORDS: Record<Topic, RegExp> = {
   'form-length': /\b(long|field|form|lengthy|too many)\b/i,
@@ -19,6 +19,15 @@ const TOPIC_KEYWORDS: Record<Topic, RegExp> = {
   findability: /\b(find|search|filter|browse|lost)\b/i,
   contact: /\b(contact|reach|call|talk|expert|reply)\b/i,
   mobile: /\b(mobile|phone|small screen)\b/i,
+  jobs: /\b(jobs?|careers?|apply|application|cv|recruit\w*|candidates?|roles?|emplois?|postes?|candidat\w*)\b/i,
+  events: /\b(events?|webinars?|summit|replays?|registr\w*|conference|événements?|evenements?|inscri\w*)\b/i,
+  content: /\b(whitepapers?|ebooks?|download\w*|gated|chapters?|livre blanc|télécharg\w*|telecharg\w*)\b/i,
+  location: /\b(offices?|address|bureaux?|agences?|locations?|map)\b/i,
+  investor: /\b(investors?|financial|annual report|press|journalists?|investisseurs?|rapport)\b/i,
+  assessment: /\b(assess\w*|maturity|diagnostic|quiz|self-assessment|maturité)\b/i,
+  partner: /\b(aws|amazon|microsoft|azure|google cloud|servicenow|partners?|partenaires?|hyperscaler)\b/i,
+  culture: /\b(culture|testimonials?|team|teams|équipe|employer)\b/i,
+  newsletter: /\b(newsletter|subscri\w*|abonn\w*|tech2tech)\b/i,
 };
 
 export function insightTopics(i: Pick<Insight, 'title' | 'detail'>): Topic[] {
@@ -79,6 +88,308 @@ const field = (label: string, type: string, hint = ''): CSpec => ({ componentId:
 const progress = (current: number, total: number): CSpec => ({ componentId: 'cmp-progress', variantId: 'steps', props: { current, total } });
 const alert = (text: string): CSpec => ({ componentId: 'cmp-alert', variantId: 'error', props: { text } });
 
+// Section-based journey patterns, derived from the devoteam.com use cases. Copy uses {vars}.
+const sec = (componentId: string, props: Record<string, string | number | boolean> = {}, key?: string, kind: 'navigate' | 'submit' | 'back' | 'none' = 'navigate'): CSpec => ({
+  key, componentId, props, ...(key ? { interaction: { kind } } : {}),
+});
+const header = (key?: string): CSpec => sec('cmp-site-header', { brand: 'Devoteam', items: 'Expertise, Industries, Insights, Careers', cta: 'Contact us' }, key);
+const footer: CSpec = sec('cmp-site-footer', { groups: 'Expertise, Company, Careers, Legal' });
+const confirm = (title: string, body: string): CSpec => ({ componentId: 'cmp-confirmation', variantId: 'success', props: { title, body } });
+const err = (text: string): CSpec => alert(text);
+const v = (variantId: string, c: CSpec): CSpec => ({ ...c, variantId });
+
+const SITE_PATTERNS: JourneyPattern[] = [
+  {
+    id: 'expert-contact',
+    name: 'Talk to an expert',
+    summary: 'Expertise page with offerings, named experts and proof, then a short contact form and a confirmation that names the reply delay.',
+    basis: 'devoteam.com service pages name experts but offer no contact path (site review); Awwwards: always-visible contact action on 8 of 33 sites.',
+    fits: /\b(contact|expert|talk|lead|quote|demand|parler|contacter|devis)\b/i,
+    steps: [
+      { key: 'start', kind: 'start', title: 'Searches for {topic} consulting', description: 'Arrives from search or a campaign.', lane: 'main' },
+      { key: 'service', kind: 'screen', title: '{Topic} expertise page', description: 'Value, offerings, named experts, proof and one action.', lane: 'main', topics: ['trust', 'contact', 'partner'],
+        components: [header('nav'), v('split', sec('cmp-hero', { title: '{Topic} that delivers, from strategy to run', body: 'Certified teams on {partner}, AWS and Microsoft, in 25 countries.', cta: 'Talk to a {topic} expert' }, 'hero')), sec('pat-offerings', { tabs: '{partner}, AWS, Microsoft', items: 'Assessment and roadmap, Migration factory, Landing zone, FinOps, Managed services, Security by design' }), sec('pat-team', { title: 'Meet the {topic} experts' }, 'team'), sec('pat-quote'), sec('pat-stats')],
+        decisions: [{ text: 'Link every named expert to a contact path.', topic: 'contact' }, { text: 'Back the promise with figures and a client quote.', topic: 'trust' }] },
+      { key: 'form', kind: 'screen', title: 'Contact form', description: 'Name, work email, topic, message, consent.', lane: 'main', topics: ['form-length', 'errors', 'contact'],
+        components: [header(), sec('pat-contact', { title: 'Talk to a {topic} expert', cta: 'Send my request' }, 'send', 'submit')],
+        decisions: [{ text: 'Keep the form to four fields and say who replies.', topic: 'form-length' }] },
+      { key: 'valid', kind: 'decision', title: 'Request valid?', description: '', question: 'Are the required fields filled and the email well formed?', lane: 'main', topics: ['errors'] },
+      { key: 'error', kind: 'screen', title: 'Form with errors', description: 'Summary and the error next to the field.', lane: 'alt', topics: ['errors'],
+        components: [err('Check 1 field to send your request.'), { componentId: 'cmp-form-field', variantId: 'inline-error', props: { label: 'Work email', hint: '', type: 'email', required: true, error: 'Enter an email address in the format name@example.com' } }, btn('resend', 'Send my request', 'primary', 'submit')],
+        decisions: [{ text: 'Explain the fix next to the field.', topic: 'errors' }] },
+      { key: 'thanks', kind: 'screen', title: 'Request sent', description: 'Says who replies and when, then offers reading.', lane: 'main', topics: ['next-step'],
+        components: [header(), confirm('Request sent', 'A {topic} expert replies within two working days.'), sec('pat-articles', { title: 'While you wait', topic: '{Topic}' }, 'read')] },
+      { key: 'done', kind: 'outcome', title: 'Qualified lead', description: '', tone: 'success', lane: 'main' },
+    ],
+    branches: [
+      { from: 'start', to: 'service', label: 'Opens page' },
+      { from: 'service', to: 'form', label: 'Talk to an expert', trigger: 'hero' },
+      { from: 'service', to: 'form', label: 'Contact an expert', kind: 'alternative', trigger: 'team' },
+      { from: 'service', to: 'form', label: 'Contact us (header)', kind: 'alternative', trigger: 'nav' },
+      { from: 'form', to: 'valid', label: 'Send my request', trigger: 'send' },
+      { from: 'valid', to: 'thanks', label: 'Valid', condition: 'required fields filled and email well formed' },
+      { from: 'valid', to: 'error', label: 'Invalid', condition: 'missing or malformed field', kind: 'alternative', errorPath: true },
+      { from: 'error', to: 'valid', label: 'Corrects and resends', kind: 'alternative', trigger: 'resend', errorPath: true },
+      { from: 'thanks', to: 'done', label: 'Reads an insight', trigger: 'read' },
+    ],
+  },
+  {
+    id: 'browse-cases',
+    name: 'Explore success stories',
+    summary: 'Filterable case index, an empty state for no results, a case page with figures and quote, then contact.',
+    basis: 'devoteam.com story index runs to page 5+ with no sector filter (site review); Awwwards: filterable index on 6 sites, outcome-led cards on 5.',
+    fits: /\b(case stud\w*|success stor\w*|references?|portfolio|proof|cas client|témoignages? client)\b/i,
+    steps: [
+      { key: 'start', kind: 'start', title: 'Opens success stories', description: '', lane: 'main' },
+      { key: 'index', kind: 'screen', title: 'Success story index', description: 'Search, filter chips, outcome-led cards.', lane: 'main', topics: ['findability', 'trust'],
+        components: [header(), sec('pat-cases', { title: '{Topic} success stories' }, 'card')],
+        decisions: [{ text: 'Filter by expertise and industry, and announce the count.', topic: 'findability' }, { text: 'Lead every card with a measured result.', topic: 'trust' }] },
+      { key: 'results', kind: 'decision', title: 'Any results?', description: '', question: 'Do the filters match at least one story?', lane: 'main' },
+      { key: 'empty', kind: 'screen', title: 'No results', description: '', lane: 'alt', topics: ['findability'],
+        components: [header(), { key: 'clear', componentId: 'cmp-empty', variantId: 'no-results', props: { title: 'No story matches these filters', cta: 'Clear filters' }, interaction: { kind: 'back' } }] },
+      { key: 'case', kind: 'screen', title: 'Success story', description: 'Context, approach, results, contact.', lane: 'main', topics: ['trust', 'contact'],
+        components: [header(), sec('cmp-breadcrumbs', { items: 'Home, Success stories, {Topic}' }), v('compact', sec('cmp-hero', { title: 'How a telecom operator moved 400 applications to {partner}', body: 'Context, approach and measured results.', cta: 'Talk to the team' })), sec('pat-stats', { items: '400: applications migrated; 18 months: from audit to run; 30%: lower run costs' }), sec('pat-quote'), v('brand', sec('cmp-cta-band', { title: 'A similar challenge?', cta: 'Talk to an expert' }, 'cta'))] },
+      { key: 'done', kind: 'outcome', title: 'Goes to contact', description: '', tone: 'success', lane: 'main' },
+    ],
+    branches: [
+      { from: 'start', to: 'index', label: 'Opens index' },
+      { from: 'index', to: 'results', label: 'Applies filters' },
+      { from: 'results', to: 'case', label: 'Has results', condition: 'one or more stories match' },
+      { from: 'results', to: 'empty', label: 'No results', condition: 'no story matches', kind: 'alternative', errorPath: true },
+      { from: 'empty', to: 'index', label: 'Clear filters', kind: 'alternative', trigger: 'clear', errorPath: true },
+      { from: 'index', to: 'case', label: 'Opens a story', kind: 'alternative', trigger: 'card' },
+      { from: 'case', to: 'done', label: 'Talk to an expert', trigger: 'cta' },
+    ],
+  },
+  {
+    id: 'job-application',
+    name: 'Find a job and apply',
+    summary: 'Job board with filters and count, a job offer with share links, an application with CV upload, file errors handled.',
+    basis: 'devoteam.com: candidates land on offers from search, no job alert (site review); bench-02: job card, filters, file upload (GOV.UK, Carbon, Polaris).',
+    fits: /\b(jobs?|careers?|apply|application|recruit\w*|candidat\w*|emplois?|postes?|cv|hiring)\b/i,
+    steps: [
+      { key: 'start', kind: 'start', title: 'Searches for {role} jobs', description: 'Often lands from search.', lane: 'main', topics: ['jobs'] },
+      { key: 'board', kind: 'screen', title: 'Job board', description: 'Search, filters by country and practice, announced count.', lane: 'main', topics: ['jobs', 'findability'],
+        components: [header(), sec('pat-jobs', { title: 'Find your next role in {country}', country: '{country}' }, 'job'), footer],
+        decisions: [{ text: 'Filter by country and practice and announce the number of jobs.', topic: 'findability' }] },
+      { key: 'offer', kind: 'screen', title: 'Job offer', description: 'Missions, profile, share, apply.', lane: 'main', topics: ['jobs', 'culture'],
+        components: [header(), sec('cmp-breadcrumbs', { items: 'Careers, Jobs, {role}' }), sec('pat-job-detail', { title: '{role}, {partner}', cta: 'Apply for this role' }, 'apply'), sec('pat-team', { title: 'Who you will work with' })],
+        decisions: [{ text: 'Show the team and the real missions on the offer page.', topic: 'culture' }] },
+      { key: 'form', kind: 'screen', title: 'Application', description: 'Identity, CV upload, consent.', lane: 'main', topics: ['form-length', 'errors', 'jobs'],
+        components: [sec('pat-apply', { title: 'Apply for {role}', cta: 'Send my application' }, 'send', 'submit')],
+        decisions: [{ text: 'Ask only for identity and a CV; the rest comes in the interview.', topic: 'form-length' }] },
+      { key: 'valid', kind: 'decision', title: 'Application valid?', description: '', question: 'Is the CV attached in an accepted format and size?', lane: 'main', topics: ['errors'] },
+      { key: 'error', kind: 'screen', title: 'CV problem', description: 'One specific message per cause.', lane: 'alt', topics: ['errors'],
+        components: [err('Check your CV to send your application.'), { componentId: 'cmp-file', variantId: 'default', props: { label: 'Your CV (required)', hint: 'PDF, DOC or DOCX, 5MB maximum', file: '', error: 'The selected file must be smaller than 5MB' } }, btn('retry', 'Send my application', 'primary', 'submit')],
+        decisions: [{ text: 'Say exactly why the file was refused: type, size or empty.', topic: 'errors' }] },
+      { key: 'thanks', kind: 'screen', title: 'Application sent', description: 'What happens next and when.', lane: 'main', topics: ['next-step', 'jobs'],
+        components: [header(), confirm('Application sent', 'A recruiter reads every application and replies within ten working days.'), sec('pat-newsletter', { title: 'Get new {topic} jobs by email', cta: 'Create a job alert' }, 'alert', 'submit')],
+        decisions: [{ text: 'Offer a job alert so no candidate leaves empty-handed.', topic: 'jobs' }] },
+      { key: 'done', kind: 'outcome', title: 'Candidate in the pipeline', description: '', tone: 'success', lane: 'main' },
+    ],
+    branches: [
+      { from: 'start', to: 'board', label: 'Opens careers' },
+      { from: 'board', to: 'offer', label: 'Opens an offer', trigger: 'job' },
+      { from: 'offer', to: 'form', label: 'Apply for this role', trigger: 'apply' },
+      { from: 'form', to: 'valid', label: 'Send my application', trigger: 'send' },
+      { from: 'valid', to: 'thanks', label: 'Valid', condition: 'CV attached, accepted type and size' },
+      { from: 'valid', to: 'error', label: 'CV refused', condition: 'missing, wrong type, too big or empty', kind: 'alternative', errorPath: true },
+      { from: 'error', to: 'valid', label: 'Attaches another file', kind: 'alternative', trigger: 'retry', errorPath: true },
+      { from: 'thanks', to: 'done', label: 'Creates a job alert', trigger: 'alert' },
+    ],
+  },
+  {
+    id: 'event-registration',
+    name: 'Register for an event',
+    summary: 'Event listing filtered by format and country, event page with agenda and form, confirmation with share and replay.',
+    basis: 'devoteam.com: events spread across country paths, replays exist (site review); bench-02: event card with time zone (USWDS, UMD, GOV.UK dates).',
+    fits: /\b(events?|webinars?|summit|conference|meetup|replay|événements?|evenements?|webinaire|inscri\w*|register)\b/i,
+    steps: [
+      { key: 'start', kind: 'start', title: 'Sees a promoted event', description: '', lane: 'main', topics: ['events'] },
+      { key: 'list', kind: 'screen', title: 'Events and webinars', description: 'Filters by format and country.', lane: 'main', topics: ['events', 'findability'],
+        components: [header(), sec('pat-events', { title: 'Upcoming {topic} events' }, 'event')],
+        decisions: [{ text: 'One events index with format and country filters.', topic: 'events' }] },
+      { key: 'detail', kind: 'screen', title: '{event}', description: 'Time zone, agenda, registration.', lane: 'main', topics: ['events', 'form-length'],
+        components: [header(), sec('pat-event-detail', { title: '{event}', cta: 'Register for {event}' }, 'register', 'submit'), sec('pat-team', { title: 'Speakers' })],
+        decisions: [{ text: 'Show the time zone and name the event in the button.', topic: 'events' }] },
+      { key: 'valid', kind: 'decision', title: 'Seat available and form valid?', description: '', question: 'Is the form valid and a seat still available?', lane: 'main' },
+      { key: 'full', kind: 'screen', title: 'Event full', description: 'Offers the replay instead.', lane: 'alt', topics: ['events'],
+        components: [header(), { componentId: 'cmp-alert', variantId: 'info', props: { text: 'This event is full. We will send you the replay.' } }, { componentId: 'cmp-event-card', variantId: 'past', props: { title: '{event}', day: '18', month: 'Nov', date: '18 November 2026, 2pm to 5pm CET', format: 'In person', place: '{country}', language: 'English' } }, btn('replay', 'Get the replay', 'primary', 'submit')],
+        decisions: [{ text: 'Never leave a full event as a dead end: offer the replay.', topic: 'events' }] },
+      { key: 'confirm', kind: 'screen', title: 'Registration confirmed', description: 'Calendar file, share, newsletter.', lane: 'main', topics: ['next-step', 'newsletter'],
+        components: [header(), confirm('You are registered', 'Your ticket and a calendar file are on their way. Times are in CET.'), sec('cmp-share', { channels: 'LinkedIn, Email' }), sec('pat-newsletter', {}, 'sub', 'submit')] },
+      { key: 'done', kind: 'outcome', title: 'Attendee registered', description: '', tone: 'success', lane: 'main' },
+    ],
+    branches: [
+      { from: 'start', to: 'list', label: 'Opens events' },
+      { from: 'list', to: 'detail', label: 'Register', trigger: 'event' },
+      { from: 'detail', to: 'valid', label: 'Register for {event}', trigger: 'register' },
+      { from: 'valid', to: 'confirm', label: 'Registered', condition: 'form valid and seats left' },
+      { from: 'valid', to: 'full', label: 'Full', condition: 'no seat left', kind: 'alternative', errorPath: true },
+      { from: 'full', to: 'done', label: 'Gets the replay', kind: 'alternative', trigger: 'replay', errorPath: true },
+      { from: 'confirm', to: 'done', label: 'Subscribes', trigger: 'sub' },
+    ],
+  },
+  {
+    id: 'gated-download',
+    name: 'Download a whitepaper',
+    summary: 'Whitepaper landing with benefits and a short form, confirmation, then the chaptered reading experience.',
+    basis: 'devoteam.com: whitepapers and chaptered ebooks (site review); bench-02: contents and chapter navigation (NHS, GOV.UK, USWDS).',
+    fits: /\b(whitepapers?|ebooks?|download\w*|guide|report|livre blanc|télécharg\w*|telecharg\w*|gated)\b/i,
+    steps: [
+      { key: 'start', kind: 'start', title: 'Clicks a {topic} whitepaper ad', description: '', lane: 'main', topics: ['content'] },
+      { key: 'landing', kind: 'screen', title: 'Whitepaper page', description: 'What you will learn and a three-field form.', lane: 'main', topics: ['content', 'form-length'],
+        components: [header(), sec('pat-gated', { title: 'The {topic} playbook for 2027', cta: 'Get the whitepaper' }, 'get', 'submit'), sec('pat-logos')],
+        decisions: [{ text: 'Ask for three fields only; marketing consent is optional.', topic: 'form-length' }] },
+      { key: 'valid', kind: 'decision', title: 'Form valid?', description: '', question: 'Is the work email well formed?', lane: 'main', topics: ['errors'] },
+      { key: 'error', kind: 'screen', title: 'Form with errors', description: '', lane: 'alt', topics: ['errors'],
+        components: [err('Check 1 field to get the whitepaper.'), { componentId: 'cmp-form-field', variantId: 'inline-error', props: { label: 'Work email', hint: '', type: 'email', required: true, error: 'Enter an email address in the format name@example.com' } }, btn('again', 'Get the whitepaper', 'primary', 'submit')] },
+      { key: 'read', kind: 'screen', title: 'Read online', description: 'Chapters with contents and share links.', lane: 'main', topics: ['content', 'next-step'],
+        components: [header(), confirm('Your whitepaper is ready', 'Read it here or find the PDF in your inbox.'), sec('pat-longread', { title: 'The {topic} playbook for 2027', chapter: 'Where the budget goes' }, 'next')],
+        decisions: [{ text: 'Let people read online in chapters, not only as a PDF.', topic: 'content' }] },
+      { key: 'done', kind: 'outcome', title: 'Lead nurtured', description: '', tone: 'success', lane: 'main' },
+    ],
+    branches: [
+      { from: 'start', to: 'landing', label: 'Opens page' },
+      { from: 'landing', to: 'valid', label: 'Get the whitepaper', trigger: 'get' },
+      { from: 'valid', to: 'read', label: 'Valid', condition: 'work email well formed' },
+      { from: 'valid', to: 'error', label: 'Invalid', condition: 'email missing or malformed', kind: 'alternative', errorPath: true },
+      { from: 'error', to: 'valid', label: 'Corrects', kind: 'alternative', trigger: 'again', errorPath: true },
+      { from: 'read', to: 'done', label: 'Reads the next chapter', trigger: 'next' },
+    ],
+  },
+  {
+    id: 'ai-assessment',
+    name: 'Self-assessment',
+    summary: 'Home hero leading to a ten-question maturity assessment, a results page with experts and a contact form.',
+    basis: 'devoteam.com home hero promotes a short AI maturity self-assessment (site review).',
+    fits: /\b(assess\w*|maturity|maturité|diagnostic|quiz|readiness|score)\b/i,
+    steps: [
+      { key: 'start', kind: 'start', title: 'Lands on the home page', description: '', lane: 'main' },
+      { key: 'home', kind: 'screen', title: 'Home', description: 'Hero with the assessment as main action.', lane: 'main', topics: ['assessment'],
+        components: [header(), v('split', sec('cmp-hero', { title: 'How ready is your organisation for {topic}?', body: 'Ten questions, ten minutes, a personal report.', cta: 'Start the assessment' }, 'go')), sec('pat-stats'), sec('pat-expertise')],
+        decisions: [{ text: 'Promise the time it takes before the first question.', topic: 'progress' }] },
+      { key: 'quiz', kind: 'screen', title: 'Assessment question', description: 'One question per screen with progress.', lane: 'main', topics: ['assessment', 'progress'],
+        components: [sec('pat-assessment', { question: 'How is {topic} used in your organisation today?' }, 'next', 'submit')],
+        decisions: [{ text: 'Show "Question 3 of 10" on every screen.', topic: 'progress' }] },
+      { key: 'complete', kind: 'decision', title: 'All questions answered?', description: '', question: 'Has the person answered all ten questions?', lane: 'main' },
+      { key: 'results', kind: 'screen', title: 'Your results', description: 'Score, next steps, experts and contact.', lane: 'main', topics: ['next-step', 'contact'],
+        components: [header(), confirm('Your {topic} maturity: level 2 of 4', 'You have working pilots. The next step is governance and scale.'), sec('pat-team', { title: 'Experts who can help you reach level 3' }), sec('pat-contact', { title: 'Discuss your results', cta: 'Book a 30-minute call' }, 'book', 'submit')],
+        decisions: [{ text: 'End with a named next step, not just a score.', topic: 'next-step' }] },
+      { key: 'done', kind: 'outcome', title: 'Assessment lead qualified', description: '', tone: 'success', lane: 'main' },
+    ],
+    branches: [
+      { from: 'start', to: 'home', label: 'Opens home' },
+      { from: 'home', to: 'quiz', label: 'Start the assessment', trigger: 'go' },
+      { from: 'quiz', to: 'complete', label: 'Next question', trigger: 'next' },
+      { from: 'complete', to: 'results', label: 'Yes', condition: 'question 10 answered' },
+      { from: 'complete', to: 'quiz', label: 'Not yet', condition: 'questions remaining', kind: 'alternative' },
+      { from: 'results', to: 'done', label: 'Book a call', trigger: 'book' },
+    ],
+  },
+  {
+    id: 'office-finder',
+    name: 'Find an office',
+    summary: 'Office directory with search by city or country and consistent office cards.',
+    basis: 'devoteam.com office list is long with no filter or map and inconsistent fields (site review); bench-02 office card (GOV.UK contact pattern).',
+    fits: /\b(offices?|bureaux?|address|adresse|agences?|locations?|near me|près de)\b/i,
+    steps: [
+      { key: 'start', kind: 'start', title: 'Needs a local contact', description: '', lane: 'main', topics: ['location'] },
+      { key: 'dir', kind: 'screen', title: 'Our offices', description: 'Search, grouped by country, map links.', lane: 'main', topics: ['location', 'findability'],
+        components: [header(), sec('pat-offices', { title: 'Our offices in {country} and worldwide' }), sec('cmp-locale'), footer],
+        decisions: [{ text: 'Same fields on every office card, phone in international format.', topic: 'location' }] },
+      { key: 'found', kind: 'decision', title: 'Office found?', description: '', question: 'Does the search match an office?', lane: 'main' },
+      { key: 'none', kind: 'screen', title: 'No office matches', description: '', lane: 'alt', topics: ['findability'],
+        components: [header(), { key: 'clear', componentId: 'cmp-empty', variantId: 'no-results', props: { title: 'No office in this city', cta: 'Show all offices' }, interaction: { kind: 'back' } }, sec('pat-contact', { title: 'Or write to us', cta: 'Send my request' }, 'write', 'submit')] },
+      { key: 'done', kind: 'outcome', title: 'Office contacted', description: '', tone: 'success', lane: 'main' },
+    ],
+    branches: [
+      { from: 'start', to: 'dir', label: 'Opens offices' },
+      { from: 'dir', to: 'found', label: 'Searches' },
+      { from: 'found', to: 'done', label: 'Found', condition: 'one or more offices match' },
+      { from: 'found', to: 'none', label: 'Not found', condition: 'no office matches', kind: 'alternative', errorPath: true },
+      { from: 'none', to: 'dir', label: 'Show all offices', kind: 'alternative', trigger: 'clear', errorPath: true },
+      { from: 'none', to: 'done', label: 'Writes to us', kind: 'alternative', trigger: 'write', errorPath: true },
+    ],
+  },
+  {
+    id: 'insights-newsletter',
+    name: 'Read insights and subscribe',
+    summary: 'Topic hub of articles, a long read with contents and share links, and a newsletter sign-up.',
+    basis: 'devoteam.com content split across magazine, expert view and topic hubs; newsletter on its own page (site review).',
+    fits: /\b(insights?|articles?|blog|magazine|read|newsletter|subscri\w*|abonn\w*|thought leadership)\b/i,
+    steps: [
+      { key: 'start', kind: 'start', title: 'Arrives on an article from search', description: '', lane: 'main', topics: ['content'] },
+      { key: 'hub', kind: 'screen', title: '{Topic} insights', description: 'Topic hub across content types.', lane: 'main', topics: ['findability', 'content'],
+        components: [header(), sec('pat-articles', { title: 'Expert views on {topic}', topic: '{Topic}' }, 'open'), sec('pat-newsletter', {}, 'sub', 'submit')],
+        decisions: [{ text: 'One hub per topic across articles, ebooks and events.', topic: 'findability' }] },
+      { key: 'article', kind: 'screen', title: 'Article', description: 'Contents, share links, newsletter in context.', lane: 'main', topics: ['content', 'newsletter'],
+        components: [header(), sec('pat-longread', { title: 'Expert view', chapter: 'What {topic} changes for IT operations' }), sec('pat-newsletter', {}, 'sub2', 'submit')],
+        decisions: [{ text: 'Offer the newsletter inside the article, not only on its own page.', topic: 'newsletter' }] },
+      { key: 'valid', kind: 'decision', title: 'Email valid?', description: '', question: 'Is the email well formed and consent given?', lane: 'main', topics: ['errors'] },
+      { key: 'error', kind: 'screen', title: 'Sign-up error', description: '', lane: 'alt', topics: ['errors'],
+        components: [err('Enter an email address in the format name@example.com'), btn('again', 'Subscribe', 'primary', 'submit')] },
+      { key: 'thanks', kind: 'screen', title: 'Subscribed', description: '', lane: 'main', topics: ['next-step'],
+        components: [header(), confirm('You are subscribed', 'The next issue arrives on the first Tuesday of the month.'), sec('pat-articles', { title: 'Keep reading' }, 'more')] },
+      { key: 'done', kind: 'outcome', title: 'Subscriber gained', description: '', tone: 'success', lane: 'main' },
+    ],
+    branches: [
+      { from: 'start', to: 'hub', label: 'Opens hub' },
+      { from: 'hub', to: 'article', label: 'Opens an article', trigger: 'open' },
+      { from: 'hub', to: 'valid', label: 'Subscribes from the hub', kind: 'alternative', trigger: 'sub' },
+      { from: 'article', to: 'valid', label: 'Subscribe', trigger: 'sub2' },
+      { from: 'valid', to: 'thanks', label: 'Valid', condition: 'email well formed and consent given' },
+      { from: 'valid', to: 'error', label: 'Invalid', condition: 'email malformed', kind: 'alternative', errorPath: true },
+      { from: 'error', to: 'valid', label: 'Corrects', kind: 'alternative', trigger: 'again', errorPath: true },
+      { from: 'thanks', to: 'done', label: 'Keeps reading', trigger: 'more' },
+    ],
+  },
+  {
+    id: 'investor-docs',
+    name: 'Find financial documents',
+    summary: 'Investor page with documents filtered by year, each link stating type and size.',
+    basis: 'devoteam.com reports sit as loose PDFs (site review); bench-02 document list (GOV.UK attachment and document list).',
+    fits: /\b(investors?|financial|annual report|shareholders?|press|journalists?|investisseurs?|actionnaires?|résultats)\b/i,
+    steps: [
+      { key: 'start', kind: 'start', title: 'Results day', description: '', lane: 'main', topics: ['investor'] },
+      { key: 'docs', kind: 'screen', title: 'Financial information', description: 'Year filter, documents with type and size.', lane: 'main', topics: ['investor', 'findability'],
+        components: [header(), v('compact', sec('cmp-hero', { title: 'Investors', body: 'Results, reports and general meetings.', cta: 'Latest results' })), sec('pat-docs'), footer],
+        decisions: [{ text: 'Filter documents by year and state type and size in each link.', topic: 'investor' }] },
+      { key: 'done', kind: 'outcome', title: 'Document found', description: '', tone: 'success', lane: 'main' },
+    ],
+    branches: [
+      { from: 'start', to: 'docs', label: 'Opens investors' },
+      { from: 'docs', to: 'done', label: 'Opens a report' },
+    ],
+  },
+  {
+    id: 'faq',
+    name: 'Find an answer',
+    summary: 'FAQ section with a contact fallback when the answer is missing.',
+    basis: 'Webflow P1 accordion; Awwwards contact pattern as the fallback.',
+    fits: /\b(help|faq|questions?|answers?|support|aide)\b/i,
+    steps: [
+      { key: 'start', kind: 'start', title: 'Has a question', description: '', lane: 'main' },
+      { key: 'help', kind: 'screen', title: 'Help', description: '', lane: 'main', topics: ['findability'],
+        components: [header(), sec('pat-faq', { title: 'Questions about {topic}' }), v('brand', sec('cmp-cta-band', { title: 'Still a question?', cta: 'Ask an expert' }, 'ask'))],
+        decisions: [{ text: 'Write questions the way people ask them.', topic: 'findability' }] },
+      { key: 'found', kind: 'decision', title: 'Answer found?', description: '', question: 'Did the answer solve the problem?', lane: 'main' },
+      { key: 'contact', kind: 'screen', title: 'Ask an expert', description: '', lane: 'alt', topics: ['contact'],
+        components: [header(), sec('pat-contact', { title: 'Ask a {topic} expert', cta: 'Send my question' }, 'send', 'submit')] },
+      { key: 'done', kind: 'outcome', title: 'Question answered', description: '', tone: 'success', lane: 'main' },
+      { key: 'ticket', kind: 'outcome', title: 'Question sent', description: '', tone: 'neutral', lane: 'alt' },
+    ],
+    branches: [
+      { from: 'start', to: 'help', label: 'Opens help' },
+      { from: 'help', to: 'found', label: 'Reads an answer' },
+      { from: 'help', to: 'contact', label: 'Ask an expert', kind: 'alternative', trigger: 'ask' },
+      { from: 'found', to: 'done', label: 'Yes', condition: 'answer marked helpful' },
+      { from: 'found', to: 'contact', label: 'No', condition: 'answer marked unhelpful', kind: 'alternative', errorPath: true },
+      { from: 'contact', to: 'ticket', label: 'Send my question', trigger: 'send', kind: 'alternative' },
+    ],
+  },
+];
+
 export const PATTERNS: JourneyPattern[] = [
   {
     id: 'signup',
@@ -127,70 +438,6 @@ export const PATTERNS: JourneyPattern[] = [
     ],
   },
   {
-    id: 'contact',
-    name: 'Contact request',
-    summary: 'From a service page to a short contact form and a confirmation that says when you will hear back.',
-    basis: 'Awwwards bench: one always-visible contact action (8 of 33 sites); Webflow P0 form field set.',
-    fits: /\b(contact|lead|enquir|inquir|request|quote|talk|expert)\b/i,
-    steps: [
-      { key: 'start', kind: 'start', title: 'Lands on a service page', description: 'From search or a campaign.', lane: 'main' },
-      { key: 'service', kind: 'screen', title: 'Service page', description: 'Value, proof, one action.', lane: 'main', topics: ['trust', 'contact'],
-        components: [{ key: 'nav-cta', componentId: 'cmp-site-header', variantId: 'default', props: { brand: 'Devoteam', items: 'Services, Industries, Insights, Careers', cta: 'Contact us' }, interaction: { kind: 'navigate' } }, { componentId: 'cmp-hero', variantId: 'split', props: { title: 'Cloud migration without downtime', body: 'Plan, move and run your platforms with one team.', cta: 'Talk to an expert' } }, { componentId: 'cmp-stat', variantId: 'default', props: { value: '40%', label: 'average hosting cost reduction' } }, { componentId: 'cmp-testimonial', variantId: 'default', props: {} }, { key: 'band', componentId: 'cmp-cta-band', variantId: 'brand', props: { title: 'Have a project in mind?', cta: 'Contact our team' }, interaction: { kind: 'navigate' } }],
-        decisions: [{ text: 'Keep one contact action visible at all times.', topic: 'contact' }, { text: 'Back the promise with a figure and a client quote.', topic: 'trust' }] },
-      { key: 'form', kind: 'screen', title: 'Contact form', description: 'Four fields, topic pre-filled.', lane: 'main', topics: ['form-length', 'errors'],
-        components: [h1('Tell us about your project'), field('Full name', 'text'), field('Work email', 'email'), { componentId: 'cmp-select', variantId: 'default', props: { label: 'Topic', options: 'Cloud, Data and AI, Cybersecurity, Other' } }, { componentId: 'cmp-textarea', variantId: 'default', props: {} }, btn('send', 'Send request', 'primary', 'submit')],
-        decisions: [{ text: 'Limit the form to four fields.', topic: 'form-length' }] },
-      { key: 'valid', kind: 'decision', title: 'Request valid?', description: '', question: 'Are the required fields filled correctly?', lane: 'main' },
-      { key: 'error', kind: 'screen', title: 'Form with errors', description: '', lane: 'alt', topics: ['errors'],
-        components: [alert('Check 1 field to send your request.'), { componentId: 'cmp-form-field', variantId: 'inline-error', props: { label: 'Work email', hint: '', type: 'email', required: true, error: 'Enter an email address in the format name@example.com' } }, btn('resend', 'Send request', 'primary', 'submit')],
-        decisions: [{ text: 'Explain the fix next to the field.', topic: 'errors' }] },
-      { key: 'thanks', kind: 'screen', title: 'Request sent', description: 'Says who replies and when.', lane: 'main', topics: ['next-step', 'contact'],
-        components: [{ componentId: 'cmp-confirmation', variantId: 'success', props: { title: 'Request sent', body: 'An expert replies within two working days.' } }, btn('more', 'Read our case studies', 'secondary')],
-        decisions: [{ text: 'State the reply delay in the confirmation.', topic: 'contact' }] },
-      { key: 'done', kind: 'outcome', title: 'Lead qualified', description: '', tone: 'success', lane: 'main' },
-    ],
-    branches: [
-      { from: 'start', to: 'service', label: 'Opens page' },
-      { from: 'service', to: 'form', label: 'Contact our team', trigger: 'band' },
-      { from: 'service', to: 'form', label: 'Contact us (header)', kind: 'alternative', trigger: 'nav-cta' },
-      { from: 'form', to: 'valid', label: 'Send request', trigger: 'send' },
-      { from: 'valid', to: 'thanks', label: 'Valid', condition: 'required fields filled and email well formed' },
-      { from: 'valid', to: 'error', label: 'Invalid', condition: 'missing or malformed field', kind: 'alternative', errorPath: true },
-      { from: 'error', to: 'valid', label: 'Corrects and resends', kind: 'alternative', trigger: 'resend', errorPath: true },
-      { from: 'thanks', to: 'done', label: 'Read our case studies', trigger: 'more' },
-    ],
-  },
-  {
-    id: 'browse-cases',
-    name: 'Explore case studies',
-    summary: 'Filterable index of outcome-led case cards, an empty state for no results, a case page that ends on contact.',
-    basis: 'Awwwards bench: filterable work index (6 sites), outcome-led case cards (5), fixed case template (context, approach, results).',
-    fits: /\b(case stud|reference|portfolio|work|browse|explore|insight)\b/i,
-    steps: [
-      { key: 'start', kind: 'start', title: 'Opens the case study index', description: '', lane: 'main' },
-      { key: 'index', kind: 'screen', title: 'Case study index', description: 'Filter by expertise, scan outcomes.', lane: 'main', topics: ['findability', 'trust'],
-        components: [{ componentId: 'cmp-breadcrumbs', variantId: 'default', props: {} }, h1('Case studies'), { componentId: 'cmp-tag', variantId: 'filter', props: { items: 'Cloud, Data, AI, Security' } }, { key: 'card', componentId: 'cmp-case-card', variantId: 'default', props: {}, interaction: { kind: 'navigate' } }, { componentId: 'cmp-case-card', variantId: 'default', props: { title: 'Bank: fraud detection with AI', body: 'False positives down by a third.' } }],
-        decisions: [{ text: 'Filter by expertise with chips that announce the result count.', topic: 'findability' }, { text: 'Lead every card with a measured result.', topic: 'trust' }] },
-      { key: 'results', kind: 'decision', title: 'Any results?', description: '', question: 'Do the filters match at least one case?', lane: 'main' },
-      { key: 'empty', kind: 'screen', title: 'No results', description: '', lane: 'alt', topics: ['findability'],
-        components: [{ key: 'clear', componentId: 'cmp-empty', variantId: 'no-results', props: {}, interaction: { kind: 'back' } }],
-        decisions: [{ text: 'Offer to clear filters instead of a blank list.', topic: 'findability' }] },
-      { key: 'case', kind: 'screen', title: 'Case study', description: 'Context, approach, results, contact.', lane: 'main', topics: ['trust', 'contact'],
-        components: [{ componentId: 'cmp-breadcrumbs', variantId: 'default', props: { items: 'Home, Case studies, Retail cloud migration' } }, h1('Retail group: cloud migration'), { componentId: 'cmp-tabs', variantId: 'line', props: {} }, { componentId: 'cmp-stat', variantId: 'default', props: { value: '9 months', label: 'from audit to full migration' } }, { componentId: 'cmp-testimonial', variantId: 'default', props: {} }, { key: 'cta', componentId: 'cmp-cta-band', variantId: 'brand', props: {}, interaction: { kind: 'navigate' } }],
-        decisions: [{ text: 'Same structure for every case: context, approach, results.', topic: 'trust' }] },
-      { key: 'done', kind: 'outcome', title: 'Goes to contact', description: '', tone: 'success', lane: 'main' },
-    ],
-    branches: [
-      { from: 'start', to: 'index', label: 'Opens index' },
-      { from: 'index', to: 'results', label: 'Applies filters' },
-      { from: 'results', to: 'case', label: 'Has results', condition: 'one or more cases match', trigger: undefined },
-      { from: 'results', to: 'empty', label: 'No results', condition: 'no case matches', kind: 'alternative', errorPath: true },
-      { from: 'empty', to: 'index', label: 'Clear filters', kind: 'alternative', trigger: 'clear', errorPath: true },
-      { from: 'index', to: 'case', label: 'Opens a case', kind: 'alternative', trigger: 'card' },
-      { from: 'case', to: 'done', label: 'Contact our team', trigger: 'cta' },
-    ],
-  },
-  {
     id: 'recover',
     name: 'Access recovery',
     summary: 'Request a new code, handle unknown emails without revealing accounts, confirm.',
@@ -218,33 +465,13 @@ export const PATTERNS: JourneyPattern[] = [
       { from: 'sent', to: 'done', label: 'Enter my code', trigger: 'enter' },
     ],
   },
-  {
-    id: 'faq',
-    name: 'Find an answer',
-    summary: 'Help page with questions, and a contact fallback when the answer is missing.',
-    basis: 'Webflow P1 accordion; Awwwards contact pattern as the fallback.',
-    fits: /\b(help|faq|question|answer|support)\b/i,
-    steps: [
-      { key: 'start', kind: 'start', title: 'Has a question', description: '', lane: 'main' },
-      { key: 'help', kind: 'screen', title: 'Help centre', description: '', lane: 'main', topics: ['findability'],
-        components: [h1('How can we help?'), { componentId: 'cmp-accordion', variantId: 'single', props: {} }, { key: 'contact', componentId: 'cmp-link', variantId: 'standalone', props: { label: 'Ask our support team' }, interaction: { kind: 'navigate' } }],
-        decisions: [{ text: 'Write questions the way people ask them.', topic: 'findability' }] },
-      { key: 'found', kind: 'decision', title: 'Answer found?', description: '', question: 'Did the answer solve the problem?', lane: 'main' },
-      { key: 'ask', kind: 'screen', title: 'Ask support', description: '', lane: 'alt', topics: ['contact'],
-        components: [h1('Ask our support team'), { componentId: 'cmp-textarea', variantId: 'default', props: { label: 'Your question', hint: '' } }, btn('send', 'Send question', 'primary', 'submit')] },
-      { key: 'done', kind: 'outcome', title: 'Question answered', description: '', tone: 'success', lane: 'main' },
-      { key: 'ticket', kind: 'outcome', title: 'Ticket opened', description: '', tone: 'neutral', lane: 'alt' },
-    ],
-    branches: [
-      { from: 'start', to: 'help', label: 'Opens help' },
-      { from: 'help', to: 'found', label: 'Reads an answer' },
-      { from: 'help', to: 'ask', label: 'Ask our support team', kind: 'alternative', trigger: 'contact' },
-      { from: 'found', to: 'done', label: 'Yes', condition: 'person marks the answer helpful' },
-      { from: 'found', to: 'ask', label: 'No', condition: 'person marks the answer unhelpful', kind: 'alternative', errorPath: true },
-      { from: 'ask', to: 'ticket', label: 'Send question', trigger: 'send', kind: 'alternative' },
-    ],
-  },
+  ...SITE_PATTERNS,
 ];
+
+export type VarName = 'topic' | 'Topic' | 'partner' | 'country' | 'role' | 'event';
+export const DEFAULT_VARS: Record<VarName, string> = { topic: 'cloud', Topic: 'Cloud', partner: 'Google Cloud', country: 'France', role: 'Cloud Architect', event: 'Cloud Summit Paris' };
+
+const fill = (v: unknown, vars: Record<VarName, string>): unknown => (typeof v === 'string' ? v.replace(/\{(topic|Topic|partner|country|role|event)\}/g, (_, k: VarName) => vars[k]) : v);
 
 export interface GenerateInput {
   name: string;
@@ -252,6 +479,8 @@ export interface GenerateInput {
   useCase: UseCase | null;
   insights: Insight[];
   includeErrorPaths: boolean;
+  /** Values substituted for {topic}, {Topic}, {partner}, {country}, {role}, {event} in the pattern copy. */
+  vars?: Partial<Record<VarName, string>>;
 }
 
 export interface GenerateResult {
@@ -266,14 +495,23 @@ export interface GenerateResult {
 export function suggestPattern(useCase: UseCase | null): JourneyPattern {
   if (useCase) {
     const text = `${useCase.title} ${useCase.goal} ${useCase.businessObjective}`;
-    const hit = PATTERNS.find((p) => p.fits.test(text));
-    if (hit) return hit;
+    let best: JourneyPattern | null = null;
+    let bestScore = 0;
+    for (const p of PATTERNS) {
+      const n = (text.match(new RegExp(p.fits.source, 'gi')) ?? []).length;
+      if (n > bestScore) {
+        best = p;
+        bestScore = n;
+      }
+    }
+    if (best) return best;
   }
   return PATTERNS[0];
 }
 
 export function generateJourney(input: GenerateInput, catalog: ComponentDef[], makeId: (p: string) => string, now = new Date()): GenerateResult {
   const pattern = PATTERNS.find((p) => p.id === input.patternId) ?? PATTERNS[0];
+  const vars = { ...DEFAULT_VARS, ...(input.vars ?? {}) };
   const usable = new Map(catalog.filter((c) => c.status !== 'deprecated').map((c) => [c.id, c]));
   const skipped: GenerateResult['skipped'] = [];
   const used = new Set<string>();
@@ -319,7 +557,7 @@ export function generateJourney(input: GenerateInput, catalog: ComponentDef[], m
       used.add(def.id);
       const props: ComponentInstance['props'] = {};
       for (const p of def.props) props[p.name] = p.defaultValue;
-      Object.assign(props, c.props);
+      for (const [k, v] of Object.entries(c.props ?? {})) props[k] = fill(v, vars) as string | number | boolean;
       const variantId = def.variants.some((v) => v.id === c.variantId) ? c.variantId! : def.variants[0].id;
       components.push({ id: iid, componentId: def.id, variantId, props, ...(c.interaction ? { interaction: c.interaction } : {}) });
     }
@@ -328,11 +566,11 @@ export function generateJourney(input: GenerateInput, catalog: ComponentDef[], m
     const decisions = (s.decisions ?? [])
       .map((d) => ({ d, ids: input.insights.filter((i) => topicsByInsight.get(i.id)?.includes(d.topic)).map((i) => i.id) }))
       .filter((x2) => x2.ids.length > 0)
-      .map((x2) => ({ id: makeId('d'), text: x2.d.text, insightIds: x2.ids }));
+      .map((x2) => ({ id: makeId('d'), text: String(fill(x2.d.text, vars)), insightIds: x2.ids }));
 
     return {
-      id, kind: s.kind, title: s.title, description: s.description, position: { x, y }, components,
-      ...(s.question ? { question: s.question } : {}), ...(s.tone ? { tone: s.tone } : {}),
+      id, kind: s.kind, title: String(fill(s.title, vars)), description: String(fill(s.description, vars)), position: { x, y }, components,
+      ...(s.question ? { question: String(fill(s.question, vars)) } : {}), ...(s.tone ? { tone: s.tone } : {}),
       insightIds, decisions,
     };
   });
@@ -347,7 +585,7 @@ export function generateJourney(input: GenerateInput, catalog: ComponentDef[], m
     id: makeId('e'),
     source: nodeIdByKey.get(b.from)!,
     target: nodeIdByKey.get(b.to)!,
-    label: b.label,
+    label: String(fill(b.label, vars)),
     kind: b.kind ?? 'main',
     ...(b.condition ? { condition: b.condition } : {}),
     ...(b.trigger && triggerIdByKey.has(b.trigger) ? { triggerInstanceId: triggerIdByKey.get(b.trigger) } : {}),

@@ -117,7 +117,12 @@ function validateScreen(
       add({ code: 'S4', severity: 'error', area: 'Design system', message: `${def.name} in "${node.title}" uses a variant that no longer exists.`, fix: 'Choose one of the library variants.', nodeId: node.id, instanceId: inst.id });
     }
     if (def.status === 'deprecated') add({ code: 'S5', severity: 'warning', area: 'Design system', message: `${def.name} in "${node.title}" is deprecated.`, fix: 'Replace it with the recommended component.', nodeId: node.id, instanceId: inst.id });
-    if (def.status === 'beta') add({ code: 'S6', severity: 'info', area: 'Design system', message: `${def.name} in "${node.title}" is in beta; its API may change.`, nodeId: node.id, instanceId: inst.id });
+    for (const part of def.composedOf ?? []) {
+      const pc = components.find((c) => c.id === part);
+      if (!pc) add({ code: 'S10', severity: 'warning', area: 'Design system', message: `Pattern ${def.name} in "${node.title}" is built from a component that is no longer in the library.`, fix: 'Restore the component or update the pattern.', nodeId: node.id, instanceId: inst.id });
+      else if (pc.status === 'deprecated') add({ code: 'S10', severity: 'warning', area: 'Design system', message: `Pattern ${def.name} in "${node.title}" is built from ${pc.name}, which is deprecated.`, fix: 'Update the pattern to the recommended component.', nodeId: node.id, instanceId: inst.id });
+    }
+    if (def.status === 'beta' && def.category !== 'Patterns') add({ code: 'S6', severity: 'info', area: 'Design system', message: `${def.name} in "${node.title}" is in beta; its API may change.`, nodeId: node.id, instanceId: inst.id });
     for (const tn of def.tokens) {
       const tok = tokens.find((t) => t.name === tn);
       if (!tok) {
@@ -145,7 +150,11 @@ function validateScreen(
     }
   }
   if (primaries > 1) add({ code: 'S2', severity: 'warning', area: 'Design system', message: `"${node.title}" has ${primaries} primary buttons; the guideline is one per screen.`, fix: 'Switch the less important one to Secondary.', nodeId: node.id });
-  if (node.components.length > 0 && headings === 0 && !node.components.some((c) => c.componentId === 'cmp-confirmation')) {
+  const hasTitledSection = node.components.some((c) => {
+    const d = components.find((x) => x.id === c.componentId);
+    return c.componentId === 'cmp-confirmation' || d?.kind === 'hero' || d?.category === 'Patterns';
+  });
+  if (node.components.length > 0 && headings === 0 && !hasTitledSection) {
     add({ code: 'A3', severity: 'info', area: 'Accessibility', message: `"${node.title}" has no page title.`, fix: 'Add a Heading (Page title).', nodeId: node.id });
   }
   if (todoTokens.size) {

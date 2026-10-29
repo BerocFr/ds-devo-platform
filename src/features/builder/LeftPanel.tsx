@@ -155,7 +155,7 @@ function ContextTab({ journey, selection, onFocusNode }: { journey: Journey; sel
   );
 }
 
-const CATS: (ComponentCategory | 'All')[] = ['All', 'Actions', 'Forms', 'Feedback', 'Navigation', 'Content', 'Layout'];
+const CATS: (ComponentCategory | 'All')[] = ['All', 'Patterns', 'Actions', 'Forms', 'Feedback', 'Navigation', 'Content', 'Layout'];
 
 function ComponentsTab({ selection, journey, onAdd }: { selection: Selection; journey: Journey; onAdd: (id: string) => void }) {
   const components = usePlatform((s) => s.data.components);

@@ -112,3 +112,45 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+.ask-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 22px;
+  padding: 18px 20px;
+  border-radius: var(--r-3);
+  background: var(--c-panel);
+  border: 1px solid var(--c-line);
+  box-shadow: inset 4px 0 0 var(--c-accent);
+}
+.ask-label {
+  font-weight: 600;
+  font-size: 15px;
+}
+.ask-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--c-accent);
+}
+.ask-input {
+  flex: 1;
+  min-width: 0;
+  height: 40px;
+  border: 1px solid var(--c-line-strong);
+  border-radius: var(--r-2);
+  padding: 0 12px;
+  font-size: 15px;
+  background: var(--c-panel);
+  color: var(--c-ink);
+}
+.ask-input:focus {
+  outline: none;
+  border-color: var(--c-accent);
+  box-shadow: 0 0 0 3px var(--c-accent-soft);
+}
+@media (max-width: 760px) {
+  .ask-row {
+    flex-wrap: wrap;
+  }
+}
