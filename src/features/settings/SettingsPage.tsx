@@ -1,8 +1,17 @@
-import { Download, RotateCcw, Upload } from 'lucide-react';
+import { Copy, Download, RotateCcw, Upload } from 'lucide-react';
 import { useRef, useState } from 'react';
 import type { PlatformData } from '../../domain/types';
 import { usePlatform } from '../../store/store';
 import { Dialog, TextField } from '../../ui/kit';
+
+// In an embedded frame (for example a hosted preview) file downloads are blocked, so only copying is offered.
+const framed = (() => {
+  try {
+    return window.self !== window.top;
+  } catch {
+    return true;
+  }
+})();
 
 export function SettingsPage() {
   const st = usePlatform();
@@ -83,8 +92,25 @@ export function SettingsPage() {
                 This prototype saves the workspace in this browser. Storage goes through a repository interface, so a server or a design-token pipeline can replace it without changing the screens.
               </p>
               <div className="hstack wrap">
-                <button type="button" className="btn" onClick={exportJson}>
-                  <Download size={15} /> Export workspace (JSON)
+                {framed ? null : (
+                  <button type="button" className="btn" onClick={exportJson}>
+                    <Download size={15} /> Export workspace (JSON)
+                  </button>
+                )}
+                <button
+                  type="button"
+                  className="btn"
+                  onClick={async () => {
+                    const text = JSON.stringify(usePlatform.getState().data, null, 2);
+                    try {
+                      await navigator.clipboard.writeText(text);
+                      st.toast('Workspace JSON copied to the clipboard');
+                    } catch {
+                      st.toast('Copying is blocked here. Use Export instead.', 'error');
+                    }
+                  }}
+                >
+                  <Copy size={15} /> Copy workspace JSON
                 </button>
                 <button type="button" className="btn" onClick={() => fileRef.current?.click()}>
                   <Upload size={15} /> Import workspace

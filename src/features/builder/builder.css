@@ -810,3 +810,21 @@
   color: var(--c-warning);
   border-color: transparent;
 }
+
+@media (max-width: 760px) {
+  .builder {
+    grid-template-rows: auto 1fr;
+  }
+  .builder-body {
+    grid-template-columns: 1fr;
+    grid-template-rows: 62vh auto auto;
+    overflow: auto;
+  }
+  .builder-body .side {
+    max-height: 70vh;
+  }
+  .canvas .react-flow__minimap,
+  .legend {
+    display: none;
+  }
+}
