@@ -93,7 +93,7 @@ export function isValidTokenValue(type: DesignToken['type'], value: string): boo
     case 'dimension':
     case 'radius':
     case 'fontSize':
-      return /^-?\d+(\.\d+)?(px|rem|em|%)$/.test(v) || v === '0';
+      return /^-?\d+(\.\d+)?(px|rem|em|%)$/.test(v) || v === '0' || /^clamp\([^()]+\)$/.test(v);
     default:
       return true;
   }

@@ -46,7 +46,7 @@ function useReveal(root: React.RefObject<HTMLElement | null>, enabled: boolean, 
           }
         }
       },
-      { rootMargin: '0px 0px -15% 0px', threshold: 0.01 },
+      { rootMargin: '0px 0px -6% 0px', threshold: 0.01 },
     );
     targets.forEach((t) => io.observe(t));
     return () => io.disconnect();
@@ -210,6 +210,16 @@ function AboutPrototype({ defs }: { defs: Map<string, ComponentDef> }) {
         {others.map((p) => (
           <PageNotes key={p.id} page={p} defs={defs} compact />
         ))}
+      </section>
+
+      <section className="ds-sec tone-ink">
+        <h2 className="ds-display">Identity: AI leader, same DNA</h2>
+        <p className="ds-measure">
+          From the owner&apos;s benchmark of 11 agency sites (DS-Devo bench-04): one neutral canvas with one accent, oversized type, numbered sections, results shown next to the work. Kept from the
+          Devoteam DNA: coral, Montserrat, mint. Changed: a deep night canvas (#141414, proposed) for the hero, AI sections and footer; coral used as a signal on it (5.33:1), never as a surface; mint
+          reserved for evidence; Montserrat 600 set large and tight on a fluid scale; a mono face for indexes and data; the signal lattice, a grid where coral pulses travel and some nodes light up in
+          mint, as the AI motif. The lattice has a pause control and stays still under reduced motion.
+        </p>
       </section>
 
       <section className="ds-sec tone-mint">

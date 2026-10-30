@@ -6,6 +6,7 @@ import {
   ReactFlow,
   ReactFlowProvider,
   applyNodeChanges,
+  useNodesInitialized,
   useReactFlow,
   useViewport,
   type Connection,
@@ -185,6 +186,17 @@ function BuilderInner({ journeyId, focusNodeId }: { journeyId: string; focusNode
       }, 60);
     }
   }, [focusNodeId, rf]);
+
+  // The fitView prop can run before React Flow has measured the nodes (screens render a live
+  // miniature), which leaves the view off the journey. Fit again once they are measured.
+  const nodesReady = useNodesInitialized();
+  const fitted = useRef(false);
+  useEffect(() => {
+    if (!nodesReady || fitted.current) return;
+    fitted.current = true;
+    requestAnimationFrame(() => rf.fitView({ padding: 0.08, minZoom: 0.55, maxZoom: 1, nodes: (journey?.nodes ?? []).slice(0, 4).map((n) => ({ id: n.id })) }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nodesReady]);
 
   if (!journey) {
     return (

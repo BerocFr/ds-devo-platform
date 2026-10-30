@@ -122,6 +122,9 @@ await step('journey builder: undo restores the previous label', async () => {
 });
 
 await step('journey builder: link an insight and validate', async () => {
+  // Verify email sits right of the opening view: fit the whole journey first.
+  await page.getByRole('button', { name: 'Fit journey to view' }).click();
+  await page.waitForTimeout(400);
   await screenNode('Verify email').locator('.jnode-title').click();
   await page.getByRole('tab', { name: /Insights/ }).first().click();
   await page.getByRole('combobox', { name: 'Link an insight' }).selectOption({ label: 'Expired codes are a dead end' });
@@ -232,7 +235,7 @@ await step('site rebuild: services menu, keyboard and page navigation', async ()
   await page.keyboard.press('Escape');
   if ((await menu.getAttribute('aria-expanded')) !== 'false') throw new Error('Escape did not close the menu');
   await menu.click();
-  await page.locator('.ds-subnav').getByRole('link', { name: 'Cybersecurity' }).click();
+  await page.locator('.ds-subnav2').getByRole('link', { name: 'Cybersecurity' }).click();
   await page.getByRole('heading', { level: 1, name: 'Secure your journey, guard your path' }).waitFor();
   await page.getByRole('heading', { name: 'Alert Readiness Framework' }).waitFor();
   await page.getByRole('link', { name: /Contact Cyril/ }).click();

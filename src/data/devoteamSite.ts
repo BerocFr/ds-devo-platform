@@ -137,13 +137,15 @@ const home: SitePage = {
     header(),
     {
       componentId: 'pat-hero-media',
-      variantId: 'cover',
+      variantId: 'signal',
       props: {
         kicker: 'AI-driven tech consulting',
         title: 'Build your AI-driven transformation on Cloud, Data and Cyber foundations',
         lead: 'Unlock your AI potential. Assess your AI maturity in just 10 minutes.',
-        cta: 'Assess your AI maturity',
+        cta: 'Assess my AI maturity',
         ctaTo: 'ai-maturity',
+        ask: 'Ask how AI could change your business',
+        askLabel: 'Describe your AI question, then assess your maturity',
         cta2: 'Talk to an expert',
         cta2To: 'contact',
         image: 'pexels-28589369',
@@ -153,6 +155,8 @@ const home: SitePage = {
       componentId: 'pat-feature-duo',
       props: {
         title: 'In the spotlight',
+        index: '01',
+        kicker: 'Spotlight',
         items: [
           'Partner adoption|Gemini for Google Workspace|Devoteam AI-enables the workforce through Gemini for Google Workspace partner adoption.|pexels-1181745|google-cloud|Discover Gemini adoption',
           'Success story|Microsoft 365 Copilot|How Cellnex improves productivity and collaboration with Microsoft 365 Copilot.|pexels-8512131|success-stories|Read the Cellnex story',
@@ -163,6 +167,7 @@ const home: SitePage = {
       componentId: 'pat-expertise',
       props: {
         kicker: 'Services',
+        index: '02',
         title: 'Our services',
         lead: 'From strategy to managed services, every service builds on cloud, data and cyber foundations.',
         items: SERVICES.map(([l]) => l).join(', '),
@@ -172,19 +177,21 @@ const home: SitePage = {
       componentId: 'pat-partner-showcase',
       props: {
         kicker: 'Strategic partnerships',
+        index: '03',
         title: 'Strategic partnerships with the platforms you run on',
         items: PARTNERS.map(([n, id, line]) => `${n}|${line}|${id}`).join('; '),
       },
     },
     {
       componentId: 'pat-case-teaser',
-      props: { kicker: 'Success stories', title: 'Become a leading company embracing AI', items: STORIES, cta: 'Discover success stories', ctaTo: 'success-stories' },
+      props: { kicker: 'Success stories', index: '04', title: 'Become a leading company embracing AI', items: STORIES, cta: 'Discover success stories', ctaTo: 'success-stories' },
     },
     {
       componentId: 'pat-story-split',
       variantId: 'media-left',
       props: {
         kicker: 'About Devoteam',
+        index: '05',
         title: 'Acting as tech architects, Devoteam guides AI-driven transformations',
         body: 'Founded at the start of the tech revolution, Devoteam has guided its clients through the internet, then the cloud, and now AI. It works with AWS, Google Cloud, Microsoft and ServiceNow.',
         figures: '11,000+|employees; 25+|countries in Europe, the Middle East and Africa; 4|strategic partnerships',
@@ -195,7 +202,7 @@ const home: SitePage = {
     },
     {
       componentId: 'pat-logos',
-      props: { title: 'Partner badges', items: 'AWS, Google Cloud, Microsoft, ServiceNow', badge: 'Partner badge' },
+      props: { title: 'Partner badges', index: '06', items: 'AWS, Google Cloud, Microsoft, ServiceNow', badge: 'Partner badge' },
     },
     {
       componentId: 'pat-closing',
@@ -204,7 +211,8 @@ const home: SitePage = {
     footer(),
   ],
   changes: [
-    'Hero: the AI maturity assessment becomes an explicit primary action (the live hero shows the text without a button) and a secondary "Talk to an expert" is added.',
+    'Hero: night canvas with the AI signal lattice; the AI maturity assessment becomes an ask bar with an explicit action (the live hero shows the text without a button), plus "Talk to an expert".',
+    'Identity: night, paper, mist and mint canvases alternate; sections are numbered 01 to 06; Montserrat set large and tight (bench-04).',
     'Spotlight: the two cards (Gemini, Microsoft 365 Copilot) get a section title and a link that names each story.',
     'Services: the ten services keep their order, each gets an icon and leads to its page.',
     'Strategic partnerships: one line per partner says what the partnership brings, each card links to the partner page.',

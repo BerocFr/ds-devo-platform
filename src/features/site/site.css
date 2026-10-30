@@ -207,26 +207,26 @@
 }
 
 /* Partner row: moves only with motion on, pauses on demand, on hover and on focus */
-.ds-logoband2.marquee .dup,
-.ds-logoband2.marquee [data-marquee-toggle] {
+.ds-logoband3.marquee .dup,
+.ds-logoband3.marquee [data-marquee-toggle] {
   display: none;
 }
-.ds-logoband2.marquee .ds-logotrack ul {
+.ds-logoband3.marquee .ds-logotrack ul {
   flex-wrap: wrap;
 }
-.site-root.motion-on .ds-logoband2.marquee .dup {
+.site-root.motion-on .ds-logoband3.marquee .dup {
   display: flex;
 }
-.site-root.motion-on .ds-logoband2.marquee [data-marquee-toggle] {
+.site-root.motion-on .ds-logoband3.marquee [data-marquee-toggle] {
   display: inline-flex;
 }
-.site-root.motion-on .ds-logoband2.marquee .ds-logotrack ul {
+.site-root.motion-on .ds-logoband3.marquee .ds-logotrack ul {
   flex-wrap: nowrap;
   animation: site-marquee 40s linear infinite;
 }
-.site-root.motion-on .ds-logoband2.marquee.is-paused .ds-logotrack ul,
-.site-root.motion-on .ds-logoband2.marquee .ds-logotrack:hover ul,
-.site-root.motion-on .ds-logoband2.marquee:focus-within .ds-logotrack ul {
+.site-root.motion-on .ds-logoband3.marquee.is-paused .ds-logotrack ul,
+.site-root.motion-on .ds-logoband3.marquee .ds-logotrack:hover ul,
+.site-root.motion-on .ds-logoband3.marquee:focus-within .ds-logotrack ul {
   animation-play-state: paused;
 }
 @keyframes site-marquee {
@@ -243,4 +243,9 @@
 }
 .site-screen > * {
   margin: 0 !important;
+}
+
+/* The lattice is still under reduced motion: no pause control needed then. */
+.site-root:not(.motion-on) [data-motion-toggle] {
+  display: none;
 }
