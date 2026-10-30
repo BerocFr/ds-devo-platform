@@ -2261,12 +2261,70 @@ button.ds-stepcard:hover .ds-stepcard-in {
     grid-template-columns: 0.9fr 1.2fr;
   }
 }
-/* The hero leaves room for the overlapping card. */
-.ds-cinema.home {
-  padding-bottom: calc(clamp(2.5rem, 1.5rem + 2cqi, 4rem) + 64px);
+/* ---------- KPI block: label, large statement, 2 x 2 figures with hairlines ---------- */
+.ds-kpis {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px clamp(2rem, 1rem + 6cqi, 10rem);
 }
-@media (max-height: 820px) {
-  .ds-cinema.home {
-    padding-bottom: 88px;
+.ds-kpis-main {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(3rem, 2rem + 3cqi, 6rem);
+  min-width: 0;
+}
+.ds-kpis-statement {
+  margin: 0;
+  font-size: clamp(1.4rem, 1.15rem + 0.9cqi, 2.1rem);
+  font-weight: 500;
+  line-height: 1.32;
+  letter-spacing: -0.025em;
+  color: var(--ds-color-text-default);
+  max-width: 40ch;
+  text-wrap: pretty;
+}
+.ds-kpis-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(2rem, 1.5rem + 1.5cqi, 3.5rem) 32px;
+  margin: 0;
+}
+.ds-kpis-grid > div {
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 4px 0 4px clamp(1.25rem, 1rem + 1.5cqi, 3rem);
+  border-left: 1px solid var(--ds-color-border-default);
+}
+.ds-kpis-grid dd {
+  margin: 0;
+  font-size: clamp(2.6rem, 2rem + 2.2cqi, 4rem);
+  font-weight: 500;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  color: var(--ds-color-text-default);
+}
+.ds-kpis-grid dt {
+  font-size: 1.02rem;
+  line-height: 1.45;
+  color: var(--ds-color-text-muted);
+  max-width: 30ch;
+}
+.ds-kpis-grid dt strong {
+  font-weight: 600;
+  color: var(--ds-color-text-default);
+}
+@container screen (min-width: 640px) {
+  .ds-kpis-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@container screen (min-width: 1000px) {
+  .ds-kpis {
+    grid-template-columns: minmax(180px, 0.42fr) 1fr;
+  }
+  .ds-kpis-label {
+    padding-top: 0.5em;
   }
 }

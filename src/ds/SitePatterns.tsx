@@ -585,6 +585,33 @@ export function renderSitePattern(def: ComponentDef, inst: ComponentInstance, ct
       const title = s(p.title);
       const accent = s(p.accent);
       const at = accent ? title.indexOf(accent) : -1;
+      if (inst.variantId !== 'card')
+        return (
+          <section className={`ds-sec2 ${tone(p, 'paper')} ds-kpis`}>
+            <div className="ds-kpis-label">
+              <Label>{title}</Label>
+            </div>
+            <div className="ds-kpis-main">
+              {s(p.body) ? (
+                <p className="ds-kpis-statement" data-reveal>
+                  {s(p.body)}
+                </p>
+              ) : null}
+              <dl className="ds-kpis-grid">
+                {figs.map(([v, bold, rest], i) => (
+                  <div key={v + i} data-reveal style={st(i)}>
+                    <dt>
+                      {bold ? <strong>{bold}</strong> : null}
+                      {bold && rest ? ' ' : null}
+                      {rest}
+                    </dt>
+                    <dd>{v}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          </section>
+        );
       return (
         <section className={`ds-sec2 ${tone(p, 'mist')} ds-impact ${s(p.overlap) === 'no' ? '' : 'overlap'}`}>
           <dl className="ds-impact-card">
