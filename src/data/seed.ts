@@ -45,8 +45,8 @@ export const seedTokens: DesignToken[] = [
   t('color.ink.900', 'color', 'primitive', 'Color', '#3c3c3a', 'brand', 'Body text ink.'),
   t('color.ink.700', 'color', 'primitive', 'Color', '#5f5f5c', 'derived', 'Ink lightened for secondary text; 6.5:1 on white.'),
   // Night canvas of the "AI leader" identity (bench-04). Proposed, owner decision pending.
-  t('color.ink.950', 'color', 'primitive', 'Color', '#141414', 'derived', 'Deep ink for the night canvas. Coral #f8485e on it is 5.33:1 (bench-04, owner decision pending).'),
-  t('color.ink.850', 'color', 'primitive', 'Color', '#1c1c1b', 'derived', 'Raised surface on the night canvas (cards).'),
+  t('color.ink.950', 'color', 'primitive', 'Color', '#141414', 'todo-brand', 'Candidate night canvas (bench-04): coral #f8485e on it is 5.33:1. DS-Devo D-I2: the final value is derived from the brand ink in S-003.'),
+  t('color.ink.850', 'color', 'primitive', 'Color', '#1c1c1b', 'todo-brand', 'Candidate raised surface on the night canvas (DS-Devo D-I2, S-003).'),
   t('color.neutral.100', 'color', 'primitive', 'Color', '#f5f5f2', 'derived', 'Text on night, 16.9:1.'),
   t('color.neutral.600', 'color', 'primitive', 'Color', '#6b6b68', 'derived', 'Borders and lattice dots on night, 3.45:1.'),
   t('color.neutral.0', 'color', 'primitive', 'Color', '#ffffff', 'brand', 'Base surface.'),
@@ -77,7 +77,7 @@ export const seedTokens: DesignToken[] = [
   t('color.border.on-night', 'color', 'semantic', 'Color', '{color.neutral.600}', 'derived'),
   // Typography
   t('font.family.brand', 'fontFamily', 'primitive', 'Typography', '"Montserrat Variable", Montserrat, sans-serif', 'brand', 'Self-hosted via @fontsource-variable/montserrat (owner decision 3).'),
-  t('font.family.mono', 'fontFamily', 'primitive', 'Typography', '"JetBrains Mono Variable", "JetBrains Mono", ui-monospace, monospace', 'derived', 'Section indexes, data and AI labels (bench-04). Owner decision pending.'),
+  t('font.family.mono', 'fontFamily', 'primitive', 'Typography', '"JetBrains Mono Variable", "JetBrains Mono", ui-monospace, monospace', 'todo-brand', 'Section indexes, data and AI labels (bench-04). Owner decision OD-I1 pending; DS-Devo fallback is Montserrat 500.'),
   t('font.weight.regular', 'fontWeight', 'primitive', 'Typography', '400', 'brand'),
   t('font.weight.semibold', 'fontWeight', 'primitive', 'Typography', '600', 'brand'),
   t('font.weight.bold', 'fontWeight', 'primitive', 'Typography', '700', 'brand'),
