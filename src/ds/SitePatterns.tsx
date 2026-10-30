@@ -1,6 +1,5 @@
 import {
-  ArrowRight,
-  ArrowUpRight,
+  BadgeCheck,
   BarChart3,
   BrainCircuit,
   Briefcase,
@@ -10,6 +9,7 @@ import {
   Code2,
   Coins,
   Compass,
+  CornerDownRight,
   Fingerprint,
   Globe,
   GraduationCap,
@@ -34,16 +34,17 @@ import {
   X,
   type LucideIcon,
 } from 'lucide-react';
-import { Fragment, useEffect, useId, useMemo, useRef, useState, type CSSProperties, type FormEvent, type ReactNode } from 'react';
+import { Fragment, useEffect, useId, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import type { ComponentDef, ComponentInstance } from '../domain/types';
 import { getPhoto, photoUrl } from '../data/photos';
 import { SignalField } from './SignalField';
 import './site-patterns.css';
 
-// Patterns used to rebuild devoteam.com, in the "AI leader, same DNA" identity (bench-04):
-// night canvas for the hero, AI sections and footer; paper and mist for reading; mint only for
-// evidence (figures, quotes); coral as a signal, never a surface; Montserrat set large and tight;
-// a mono face for indexes and data; the signal lattice as the AI motif.
+// Patterns used to rebuild devoteam.com. Identity (bench-05, owner reference: the Rowalo Webflow
+// template, over the bench-04 direction): light canvases with black sections, coral as the
+// signal (the "+" of every label, icons, the cinematic duotone of heroes), Montserrat 500 set very
+// large and tight, centred section heads, generous 24px cards that step down in a stagger, pill
+// actions with a corner arrow, a duotone photo hero. Mint stays for evidence (figures).
 // Content is carried by text props: rows separated by ";", fields by "|". Every pattern takes an
 // optional `tone` prop (night, paper, mist, evidence) to change its canvas.
 // Links are keys ("contact", "cybersecurity") that the host resolves with ctx.linkFor:
@@ -72,7 +73,7 @@ const list = (v: unknown, sep = ',') =>
     .split(sep)
     .map((x) => x.trim())
     .filter(Boolean);
-const pad = (n: number) => String(n).padStart(2, '0');
+const pad = (n: number, w = 2) => String(n).padStart(w, '0');
 
 const TONES = new Set(['night', 'paper', 'mist', 'evidence']);
 const tone = (p: ComponentInstance['props'], fallback: string) => `t-${TONES.has(s(p.tone)) ? s(p.tone) : fallback}`;
@@ -162,12 +163,23 @@ function L({ to, ctx, inst, className, children, label }: { to?: string; ctx: Si
   );
 }
 
-/** Mono section index: number (when given) and label. */
-function Index({ n, children }: { n?: string; children: ReactNode }) {
+/** Section label: a coral plus and a short uppercase label. */
+function Label({ children }: { children: ReactNode }) {
   return (
-    <span className="ds-index">
-      {n ? <span className="n">{n}</span> : null}
-      <span>{children}</span>
+    <span className="ds-plus">
+      <span className="p" aria-hidden>
+        +
+      </span>
+      {children}
+    </span>
+  );
+}
+
+/** Corner arrow placed before an action label. Decorative. */
+function Go() {
+  return (
+    <span className="ds-go" aria-hidden>
+      <CornerDownRight size={18} strokeWidth={2} />
     </span>
   );
 }
@@ -191,32 +203,27 @@ function RevealTitle({ text, as: Tag = 'h1', className = '' }: { text: string; a
 
 const st = (i: number) => ({ '--i': Math.min(i, 6) }) as CSSProperties;
 
-function Arrow({ up = false }: { up?: boolean }) {
-  return <span className="ds-arrowdisc">{up ? <ArrowUpRight size={18} aria-hidden /> : <ArrowRight size={18} aria-hidden />}</span>;
-}
-
-/** Head of a section: index, title and optional intro, with an optional action on the right. */
-function SecHead({ p, fallbackKicker, ctx, inst, title }: { p: ComponentInstance['props']; fallbackKicker: string; ctx: SiteCtx; inst: ComponentInstance; title?: string }) {
-  const t = title ?? s(p.title);
+/** Centred head of a section: label, title, optional intro and action. */
+function SecHead({ p, fallback, ctx, inst, align = 'center' }: { p: ComponentInstance['props']; fallback: string; ctx: SiteCtx; inst: ComponentInstance; align?: 'center' | 'start' }) {
   return (
-    <div className="ds-sechead2">
-      <div className="ds-sechead2-text">
-        <Index n={s(p.index) || undefined}>{s(p.kicker) || fallbackKicker}</Index>
-        {t ? (
-          <h2 className="ds-dm" data-reveal>
-            {t}
-          </h2>
-        ) : null}
-        {s(p.lead) ? (
-          <p className="ds-lead2" data-reveal style={st(1)}>
-            {s(p.lead)}
-          </p>
-        ) : null}
-      </div>
-      {s(p.cta) ? (
-        <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 secondary">
-          {s(p.cta)} <Arrow />
-        </L>
+    <div className={`ds-head ${align}`}>
+      <Label>{s(p.kicker) || fallback}</Label>
+      {s(p.title) ? (
+        <h2 className={align === 'start' ? 'ds-dxl2' : 'ds-dm'} data-reveal>
+          {s(p.title)}
+        </h2>
+      ) : null}
+      {s(p.lead) ? (
+        <p className="ds-lead2" data-reveal style={st(1)}>
+          {s(p.lead)}
+        </p>
+      ) : null}
+      {s(p.cta) && align === 'center' ? (
+        <div data-reveal style={st(2)}>
+          <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 solid">
+            <Go /> {s(p.cta)}
+          </L>
+        </div>
       ) : null}
     </div>
   );
@@ -236,45 +243,15 @@ export function renderSitePattern(def: ComponentDef, inst: ComponentInstance, ct
       return <SiteFooter p={p} ctx={ctx} inst={inst} />;
 
     case 'pHeroMedia':
-      if (inst.variantId === 'signal' || inst.variantId === 'default') return <HeroSignal p={p} ctx={ctx} inst={inst} />;
-      return (
-        <section className={`ds-sec2 ${tone(p, 'night')} ds-hero3 ${inst.variantId === 'cover' ? 'cover' : 'split'}`}>
-          {inst.variantId === 'cover' ? <Photo id={s(p.image)} width={thumbW ?? 2000} className="bg" eager /> : null}
-          <div className="ds-hero3-text">
-            {s(p.kicker) ? <Index>{s(p.kicker)}</Index> : null}
-            <RevealTitle text={s(p.title)} className="ds-dl" />
-            {s(p.lead) ? (
-              <p className="ds-lead2" data-reveal style={st(3)}>
-                {s(p.lead)}
-              </p>
-            ) : null}
-            <div className="ds-row2" data-reveal style={st(4)}>
-              {s(p.cta) ? (
-                <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 primary">
-                  {s(p.cta)} <Arrow />
-                </L>
-              ) : null}
-              {s(p.cta2) ? (
-                <L to={s(p.cta2To)} ctx={ctx} inst={inst} className="ds-btn2 secondary">
-                  {s(p.cta2)}
-                </L>
-              ) : null}
-            </div>
-          </div>
-          {inst.variantId !== 'cover' ? (
-            <div className="ds-hero3-media" data-reveal="clip">
-              <Photo id={s(p.image)} width={thumbW ?? 1400} eager />
-            </div>
-          ) : null}
-        </section>
-      );
+      if (inst.variantId === 'lattice') return <HeroLattice p={p} ctx={ctx} inst={inst} />;
+      return <HeroCinema p={p} ctx={ctx} inst={inst} thumbW={thumbW} />;
 
     case 'pPageHero': {
       const crumbs = rows(p.crumbs);
       return (
-        <section className={`ds-sec2 ${tone(p, 'night')} ds-pagehero2 ${s(p.image) ? 'has-media' : ''}`}>
-          {!s(p.image) ? <SignalField still={ctx.mode !== 'interactive'} density={0.5} className="soft" /> : null}
-          <div className="ds-pagehero2-text">
+        <section className={`ds-sec2 t-night ds-cinema page ${s(p.image) ? '' : 'no-photo'}`}>
+          <Duotone image={s(p.image)} width={thumbW ?? 2000} />
+          <div className="ds-cinema-in">
             {crumbs.length ? (
               <nav aria-label="Breadcrumb" className="ds-crumbs3">
                 <ol>
@@ -292,7 +269,11 @@ export function renderSitePattern(def: ComponentDef, inst: ComponentInstance, ct
                 </ol>
               </nav>
             ) : null}
-            {s(p.kicker) ? <Index>{s(p.kicker)}</Index> : null}
+            {s(p.kicker) ? (
+              <span className="ds-glasspill">
+                <Sparkles size={16} aria-hidden strokeWidth={1.75} /> {s(p.kicker)}
+              </span>
+            ) : null}
             <RevealTitle text={s(p.title)} className="ds-dl" />
             {s(p.lead) ? (
               <p className="ds-lead2" data-reveal style={st(2)}>
@@ -301,62 +282,72 @@ export function renderSitePattern(def: ComponentDef, inst: ComponentInstance, ct
             ) : null}
             {s(p.cta) ? (
               <div data-reveal style={st(3)}>
-                <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 primary">
-                  {s(p.cta)} <Arrow />
+                <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 light">
+                  <Go /> {s(p.cta)}
                 </L>
               </div>
             ) : null}
           </div>
-          {s(p.image) ? (
-            <div className="ds-pagehero2-media" data-reveal="clip">
-              <Photo id={s(p.image)} width={thumbW ?? 1400} eager />
-            </div>
-          ) : null}
         </section>
       );
     }
 
-    case 'pFeatureDuo':
+    case 'pFeatureDuo': {
+      const items = rows(p.items);
+      const mid = s(p.statement);
       return (
         <section className={`ds-sec2 ${tone(p, 'paper')}`}>
-          <SecHead p={p} fallbackKicker="Spotlight" ctx={ctx} inst={inst} />
-          <div className="ds-duo2">
-            {rows(p.items).map(([tag, title, body, image, to, linkLabel], i) => (
-              <article key={title} className="ds-feature2" data-reveal style={st(i)}>
-                <Photo id={image} width={thumbW ?? 1100} className="zoom" />
-                <div className="ds-feature2-body">
-                  {tag ? <span className="ds-tag2">{tag}</span> : null}
-                  <h3 className="ds-ds">{title}</h3>
-                  {body ? <p className="ds-soft">{body}</p> : null}
-                  <L to={to} ctx={ctx} inst={inst} className="ds-arrowlink2">
-                    {linkLabel || `Read about ${title}`} <Arrow />
-                  </L>
-                </div>
-              </article>
+          <SecHead p={{ ...p, cta: '' }} fallback="Spotlight" ctx={ctx} inst={inst} />
+          <div className={`ds-cards3 ${mid ? 'with-mid' : ''}`}>
+            {items.map(([tag, title, body, image, to, linkLabel], i) => (
+              <Fragment key={title}>
+                {mid && i === 1 ? (
+                  <div className="ds-midcard" data-reveal style={st(1)}>
+                    <span className="ds-small">#{pad(1, 1)}</span>
+                    <p className="ds-ds">{mid}</p>
+                    {s(p.cta) ? (
+                      <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 solid wide">
+                        <Go /> {s(p.cta)}
+                      </L>
+                    ) : null}
+                  </div>
+                ) : null}
+                <article className="ds-blogcard" data-reveal style={st(i)}>
+                  <Photo id={image} width={thumbW ?? 1000} className="zoom" />
+                  <div className="ds-blogcard-body">
+                    {tag ? <span className="ds-small">{tag}</span> : null}
+                    <h3 className="ds-cardtitle">{title}</h3>
+                    {body ? <p className="ds-soft">{body}</p> : null}
+                    <L to={to} ctx={ctx} inst={inst} className="ds-textlink">
+                      <Go /> {linkLabel || `Read about ${title}`}
+                    </L>
+                  </div>
+                </article>
+              </Fragment>
             ))}
           </div>
         </section>
       );
+    }
 
     case 'pExpertiseGrid': {
       const items = list(p.items);
       return (
-        <section className={`ds-sec2 ${tone(p, 'paper')}`}>
-          <SecHead p={p} fallbackKicker="Expertise" ctx={ctx} inst={inst} />
+        <section className={`ds-sec2 ${tone(p, 'night')}`}>
+          <SecHead p={p} fallback="Expertise" ctx={ctx} inst={inst} />
           <ol className="ds-indexlist">
             {items.map((x, i) => {
               const I = iconFor(x);
               return (
                 <li key={x} data-reveal style={st(i)}>
                   <L to={x} ctx={ctx} inst={inst} className="ds-indexrow">
-                    <span className="n" aria-hidden>
-                      {pad(i + 1)}
+                    <span className="ic" aria-hidden>
+                      <I size={24} strokeWidth={1.5} />
                     </span>
                     <span className="t">{x}</span>
-                    <span className="ic" aria-hidden>
-                      <I size={22} strokeWidth={1.5} />
+                    <span className="n" aria-hidden>
+                      [{pad(i + 1)}]
                     </span>
-                    <Arrow up />
                   </L>
                 </li>
               );
@@ -368,16 +359,16 @@ export function renderSitePattern(def: ComponentDef, inst: ComponentInstance, ct
 
     case 'pPartnerShowcase':
       return (
-        <section className={`ds-sec2 ${tone(p, 'night')}`}>
-          <SecHead p={p} fallbackKicker="Partners" ctx={ctx} inst={inst} />
-          <div className="ds-bento">
+        <section className={`ds-sec2 ${tone(p, 'mist')}`}>
+          <SecHead p={p} fallback="Partners" ctx={ctx} inst={inst} />
+          <div className="ds-stagger">
             {rows(p.items).map(([name, body, to], i) => (
-              <L key={name} to={to} ctx={ctx} inst={inst} className={`ds-bento-cell ${i === 0 ? 'wide' : ''}`}>
-                <span className="ds-wordmark2" data-reveal style={st(i)}>
-                  {name}
+              <L key={name} to={to} ctx={ctx} inst={inst} className="ds-stepcard">
+                <span data-reveal style={st(i)} className="ds-stepcard-in">
+                  <Label>Partner {pad(i + 1, 3)}</Label>
+                  <span className="ds-wordmark3">{name}</span>
+                  <span className="ds-soft">{body}</span>
                 </span>
-                <span className="ds-soft">{body}</span>
-                <Arrow up />
               </L>
             ))}
           </div>
@@ -386,42 +377,65 @@ export function renderSitePattern(def: ComponentDef, inst: ComponentInstance, ct
 
     case 'pCaseTeaser':
       return (
-        <section className={`ds-sec2 ${tone(p, 'mist')}`}>
-          <SecHead p={p} fallbackKicker="Success stories" ctx={ctx} inst={inst} />
-          <div className="ds-cases3">
+        <section className={`ds-sec2 ${tone(p, 'paper')}`}>
+          <SecHead p={{ ...p, cta: '' }} fallback="Success stories" ctx={ctx} inst={inst} align="start" />
+          <div className="ds-projects">
             {rows(p.items).map(([tag, client, result, image, to], i) => (
-              <L key={client} to={to || s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-case3">
-                <span data-reveal style={st(i)} className="ds-case3-in">
-                  <Photo id={image} width={thumbW ?? 900} className="zoom" />
-                  <span className="ds-case3-meta">
-                    <span className="ds-tag2">{tag}</span>
-                    <span className="ds-mono-s">{client}</span>
-                  </span>
-                  <span className="ds-case3-result">{result}</span>
-                </span>
-              </L>
+              <article key={client} className="ds-project" data-reveal style={st(i)}>
+                <div className="ds-project-text">
+                  <h3 className="ds-project-title">
+                    <span className="c">{client}.</span> {result}
+                  </h3>
+                  <L to={to || s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-textlink under">
+                    <Go /> Read the story
+                  </L>
+                  <div className="ds-project-tags">
+                    <span className="ds-chip">{tag}</span>
+                    <span className="ds-chip">Success story</span>
+                    <span className="ds-chip dark">2026</span>
+                  </div>
+                </div>
+                <Photo id={image} width={thumbW ?? 1200} className="zoom" />
+              </article>
             ))}
           </div>
+          {s(p.cta) ? (
+            <div>
+              <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 solid">
+                <Go /> {s(p.cta)}
+              </L>
+            </div>
+          ) : null}
         </section>
       );
 
     case 'pStorySplit': {
       const figures = rows(p.figures);
+      const imgs = list(p.images).length ? list(p.images) : [s(p.image)];
       return (
-        <section className={`ds-sec2 ${tone(p, 'paper')} ds-story2 ${inst.variantId === 'media-right' ? 'flip' : ''}`}>
-          <div className="ds-story2-media" data-reveal="clip">
-            <Photo id={s(p.image)} width={thumbW ?? 1200} />
-          </div>
-          <div className="ds-story2-text">
-            {s(p.kicker) ? <Index n={s(p.index) || undefined}>{s(p.kicker)}</Index> : null}
-            <h2 className="ds-dm" data-reveal>
+        <section className={`ds-sec2 ${tone(p, 'paper')} ds-about`}>
+          <div className="ds-head center">
+            {s(p.kicker) ? <Label>{s(p.kicker)}</Label> : null}
+            <h2 className="ds-dm wide" data-reveal>
               {s(p.title)}
             </h2>
-            {s(p.body) ? (
-              <p className="ds-lead2" data-reveal>
-                {s(p.body)}
-              </p>
+            {s(p.cta) ? (
+              <div data-reveal style={st(1)}>
+                <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 solid">
+                  <Go /> {s(p.cta)}
+                </L>
+              </div>
             ) : null}
+          </div>
+          <div className="ds-collage" aria-hidden={imgs.length > 1 ? undefined : true}>
+            {imgs.slice(0, 3).map((id, i) => (
+              <div key={id + i} className={`ds-collage-${i}`} data-reveal style={st(i)}>
+                <Photo id={id} width={thumbW ?? 900} />
+              </div>
+            ))}
+          </div>
+          <div className="ds-about-foot">
+            {s(p.body) ? <p className="ds-lead2">{s(p.body)}</p> : <span />}
             {figures.length ? (
               <dl className="ds-evidence">
                 {figures.map(([v, l], i) => (
@@ -432,13 +446,6 @@ export function renderSitePattern(def: ComponentDef, inst: ComponentInstance, ct
                 ))}
               </dl>
             ) : null}
-            {s(p.cta) ? (
-              <div>
-                <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-arrowlink2">
-                  {s(p.cta)} <Arrow />
-                </L>
-              </div>
-            ) : null}
           </div>
         </section>
       );
@@ -448,21 +455,47 @@ export function renderSitePattern(def: ComponentDef, inst: ComponentInstance, ct
       return <LogoBand p={p} marquee={inst.variantId === 'marquee'} ti={ti} />;
 
     case 'pClosingStatement':
-      return <Closing p={p} ctx={ctx} inst={inst} thumbW={thumbW} />;
+      return (
+        <section className={`ds-sec2 ${tone(p, 'paper')} ds-ctawall`}>
+          <div className="ds-ctawall-tiles" aria-hidden>
+            {Array.from({ length: 6 }, (_, i) => (
+              <span key={i} className={`tile t${i}`} />
+            ))}
+          </div>
+          <div className="ds-ctacard t-night">
+            <Duotone image={s(p.media) === 'photo' ? s(p.image) : ''} width={thumbW ?? 1600} />
+            <div className="ds-ctacard-in">
+              <Label>{s(p.kicker) || 'Where AI becomes impact'}</Label>
+              <h2 className="ds-dm" data-reveal>
+                {s(p.title)}
+              </h2>
+              {s(p.cta) ? (
+                <div data-reveal style={st(1)}>
+                  <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 light">
+                    <Go /> {s(p.cta)}
+                  </L>
+                </div>
+              ) : null}
+            </div>
+          </div>
+        </section>
+      );
 
     case 'pChallenges':
       return (
-        <section className={`ds-sec2 ${tone(p, 'paper')}`}>
-          <SecHead p={p} fallbackKicker="Challenges" ctx={ctx} inst={inst} />
-          <div className="ds-challenges2">
+        <section className={`ds-sec2 ${tone(p, 'mist')}`}>
+          <SecHead p={p} fallback="Challenges" ctx={ctx} inst={inst} />
+          <div className="ds-stagger three">
             {rows(p.items).map(([icon, title, body], i) => (
-              <article key={title} className="ds-challenge2" data-reveal style={st(i)}>
-                <span className="top">
-                  <span className="ds-mono-s">{pad(i + 1)}</span>
-                  <Icon name={icon} size={26} />
+              <article key={title} className="ds-stepcard static" data-reveal style={st(i)}>
+                <span className="ds-stepcard-in">
+                  <Label>Challenge {pad(i + 1, 3)}</Label>
+                  <span className="ds-ds">{title}</span>
+                  <span className="ds-bigicon" aria-hidden>
+                    <Icon name={icon} size={56} />
+                  </span>
+                  <span className="ds-soft">{body}</span>
                 </span>
-                <h3 className="ds-ds">{title}</h3>
-                <p className="ds-soft">{body}</p>
               </article>
             ))}
           </div>
@@ -471,80 +504,119 @@ export function renderSitePattern(def: ComponentDef, inst: ComponentInstance, ct
 
     case 'pFeatureRows':
       return (
-        <section className={`ds-sec2 ${tone(p, 'paper')} ds-rows2`}>
-          {s(p.title) ? <SecHead p={p} fallbackKicker="Offer" ctx={ctx} inst={inst} /> : null}
-          {rows(p.items).map(([kicker, title, body, bullets, partners, image], i) => (
-            <article key={title} className={`ds-row3 ${i % 2 ? 'flip' : ''}`}>
-              <div className="ds-row3-media" data-reveal="clip">
-                <Photo id={image} width={thumbW ?? 1100} />
-              </div>
-              <div className="ds-row3-text">
-                <Index n={pad(i + 1)}>{kicker}</Index>
-                <h3 className="ds-ds big" data-reveal>
-                  {title}
-                </h3>
-                {body ? <p className="ds-soft">{body}</p> : null}
+        <section className={`ds-sec2 ${tone(p, 'night')}`}>
+          {s(p.title) ? <SecHead p={p} fallback="Offer" ctx={ctx} inst={inst} /> : null}
+          <div className="ds-servicerows">
+            {rows(p.items).map(([kicker, title, body, bullets, partners, image], i) => (
+              <article key={title} className="ds-servicerow">
+                <div className="ds-servicerow-media" data-reveal="clip">
+                  <Photo id={image} width={thumbW ?? 1000} />
+                </div>
+                <div className="ds-servicerow-main">
+                  <span className="ds-servicerow-top">
+                    <span className="ds-small">{kicker}</span>
+                    <span className="n">[{pad(i + 1)}]</span>
+                  </span>
+                  <div className="ds-servicerow-text">
+                    <h3 className="ds-ds" data-reveal>
+                      {title}
+                    </h3>
+                    {body ? <p className="ds-soft">{body}</p> : null}
+                    {list(partners).length ? (
+                      <p className="ds-withpartners2">
+                        {list(partners).map((x) => (
+                          <span key={x} className="ds-chip">
+                            {x}
+                          </span>
+                        ))}
+                      </p>
+                    ) : null}
+                  </div>
+                </div>
                 {list(bullets).length ? (
-                  <ul className="ds-points">
+                  <ul className="ds-pluslist">
                     {list(bullets).map((b, j) => (
                       <li key={b} data-reveal style={st(j)}>
+                        <span className="p" aria-hidden>
+                          +
+                        </span>
                         {b}
                       </li>
                     ))}
                   </ul>
                 ) : null}
-                {list(partners).length ? (
-                  <p className="ds-withpartners2">
-                    <span className="ds-mono-s">With</span>
-                    {list(partners).map((x) => (
-                      <span key={x} className="ds-tag2">
-                        {x}
-                      </span>
-                    ))}
-                  </p>
-                ) : null}
-              </div>
-            </article>
-          ))}
+              </article>
+            ))}
+          </div>
         </section>
       );
 
-    case 'pSpotlightBand':
-      return <Spotlight p={p} ctx={ctx} inst={inst} />;
+    case 'pSpotlightBand': {
+      const items = rows(p.items);
+      return (
+        <section className={`ds-sec2 ${tone(p, 'paper')}`}>
+          <SecHead p={{ ...p, lead: s(p.subtitle), cta: '' }} fallback="Method" ctx={ctx} inst={inst} />
+          {s(p.body) ? <p className="ds-lead2 center-text">{s(p.body)}</p> : null}
+          {items.length ? (
+            <ol className="ds-compare" aria-label={s(p.itemsLabel) || 'Steps'}>
+              {items.map(([label, text], i) => (
+                <li key={label} data-reveal style={st(i)}>
+                  <BadgeCheck size={22} aria-hidden className="ok" />
+                  <span className="b">
+                    <strong>{label}</strong>
+                    <span className="ds-soft">{text}</span>
+                  </span>
+                  <span className="n" aria-hidden>
+                    {pad(i + 1)}
+                  </span>
+                </li>
+              ))}
+            </ol>
+          ) : null}
+          {s(p.cta) ? (
+            <div className="center-row">
+              <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 solid">
+                <Go /> {s(p.cta)}
+              </L>
+            </div>
+          ) : null}
+        </section>
+      );
+    }
 
     case 'pIntroStatement':
       return (
-        <section className={`ds-sec2 ${tone(p, 'paper')} ds-intro2`}>
-          {s(p.kicker) ? <Index n={s(p.index) || undefined}>{s(p.kicker)}</Index> : null}
-          <p className="ds-statement2" data-reveal>
-            {s(p.lead)}
-          </p>
-          {s(p.body) ? (
-            <p className="ds-lead2 ds-soft" data-reveal style={st(1)}>
-              {s(p.body)}
+        <section className={`ds-sec2 ${tone(p, 'paper')}`}>
+          <div className="ds-head center">
+            {s(p.kicker) ? <Label>{s(p.kicker)}</Label> : null}
+            <p className="ds-dm wide" data-reveal>
+              {s(p.lead)}
             </p>
-          ) : null}
+            {s(p.body) ? (
+              <p className="ds-lead2" data-reveal style={st(1)}>
+                {s(p.body)}
+              </p>
+            ) : null}
+          </div>
         </section>
       );
 
     case 'pSignposts':
       return (
         <section className={`ds-sec2 ${tone(p, 'mist')}`}>
-          {s(p.title) ? <SecHead p={p} fallbackKicker="Next" ctx={ctx} inst={inst} /> : null}
-          <div className="ds-signposts2">
+          {s(p.title) ? <SecHead p={p} fallback="Next" ctx={ctx} inst={inst} /> : null}
+          <div className="ds-signposts3">
             {rows(p.items).map(([title, body, cta, to, image], i) => (
-              <L key={title} to={to} ctx={ctx} inst={inst} className="ds-signpost2">
-                <span data-reveal style={st(i)} className="ds-signpost2-in">
-                  {image ? <Photo id={image} width={thumbW ?? 900} className="zoom" /> : null}
-                  <span className="ds-signpost2-body">
-                    <span className="ds-ds">{title}</span>
-                    {body ? <span className="ds-soft">{body}</span> : null}
-                    <span className="ds-arrowlink2 as-text">
-                      {cta} <Arrow />
-                    </span>
-                  </span>
-                </span>
-              </L>
+              <article key={title} className="ds-blogcard" data-reveal style={st(i)}>
+                {image ? <Photo id={image} width={thumbW ?? 1000} className="zoom" /> : null}
+                <div className="ds-blogcard-body">
+                  <h3 className="ds-cardtitle">{title}</h3>
+                  {body ? <p className="ds-soft">{body}</p> : null}
+                  <L to={to} ctx={ctx} inst={inst} className="ds-btn2 solid">
+                    <Go /> {cta}
+                  </L>
+                </div>
+              </article>
             ))}
           </div>
         </section>
@@ -558,17 +630,9 @@ export function renderSitePattern(def: ComponentDef, inst: ComponentInstance, ct
             .map((x) => x.split(':').map((y) => y.trim()))
             .filter((x) => x[0]);
       return (
-        <section className={`ds-sec2 ${tone(p, 'evidence')} ds-stats2`}>
-          <div className="ds-stats2-head">
-            <Index n={s(p.index) || undefined}>{s(p.kicker) || 'In figures'}</Index>
-            {s(p.title) ? (
-              <h2 className="ds-dm" data-reveal>
-                {s(p.title)}
-              </h2>
-            ) : null}
-            {s(p.lead) ? <p className="ds-lead2">{s(p.lead)}</p> : null}
-          </div>
-          <dl className="ds-bigfig">
+        <section className={`ds-sec2 ${tone(p, 'paper')}`}>
+          <SecHead p={p} fallback="In figures" ctx={ctx} inst={inst} />
+          <dl className="ds-evidence big">
             {items.map(([v, l], i) => (
               <div key={`${v}${l}`} data-reveal style={st(i)}>
                 <dt>{l}</dt>
@@ -586,13 +650,13 @@ export function renderSitePattern(def: ComponentDef, inst: ComponentInstance, ct
         .map((x) => x.split(':').map((y) => y.trim()))
         .filter((x) => x[0]);
       return (
-        <section className={`ds-sec2 ${tone(p, 'paper')}`}>
-          <SecHead p={p} fallbackKicker="People" ctx={ctx} inst={inst} />
-          <ul className="ds-people2">
+        <section className={`ds-sec2 ${tone(p, 'mist')}`}>
+          <SecHead p={p} fallback="People" ctx={ctx} inst={inst} />
+          <ul className="ds-people3">
             {people.map(([nm, role], i) => {
               const first = nm.split(' ')[0];
               return (
-                <li key={nm} className="ds-person3" data-reveal style={st(i)}>
+                <li key={nm} className="ds-personcard" data-reveal style={st(i)}>
                   <span className="ds-avatar3" aria-hidden>
                     {nm
                       .split(/\s+/)
@@ -601,12 +665,10 @@ export function renderSitePattern(def: ComponentDef, inst: ComponentInstance, ct
                       .join('')
                       .toUpperCase()}
                   </span>
-                  <span className="ds-person3-text">
-                    <strong className="ds-person3-name">{nm}</strong>
-                    <span className="ds-soft">{role}</span>
-                  </span>
-                  <L to={s(p.ctaTo) || 'contact'} ctx={ctx} inst={inst} className="ds-arrowlink2 sm">
-                    Contact {first} <Arrow />
+                  <strong className="ds-cardtitle">{nm}</strong>
+                  <span className="ds-soft">{role}</span>
+                  <L to={s(p.ctaTo) || 'contact'} ctx={ctx} inst={inst} className="ds-textlink under">
+                    <Go /> Contact {first}
                   </L>
                 </li>
               );
@@ -626,118 +688,90 @@ export function renderSitePattern(def: ComponentDef, inst: ComponentInstance, ct
 
 /* ------------------------------------------------------------------ */
 
-function MotionToggle({ paused, setPaused, ctx }: { paused: boolean; setPaused: (v: boolean) => void; ctx: SiteCtx }) {
-  if (ctx.mode !== 'interactive') return null;
+/** Cinematic duotone: a stock photo turned into ink and coral, or coral light when there is none. */
+function Duotone({ image, width }: { image: string; width: number }) {
   return (
-    <button type="button" className="ds-motiontoggle" aria-pressed={paused} onClick={() => setPaused(!paused)} data-motion-toggle>
-      {paused ? <Play size={14} aria-hidden /> : <Pause size={14} aria-hidden />}
-      {paused ? 'Play the animation' : 'Pause the animation'}
-    </button>
+    <div className="ds-duotone" aria-hidden>
+      {image ? <Photo id={image} width={width} eager /> : null}
+      <span className="glow" />
+    </div>
   );
 }
 
-function HeroSignal({ p, ctx, inst }: { p: ComponentInstance['props']; ctx: SiteCtx; inst: ComponentInstance }) {
-  const [paused, setPaused] = useState(false);
-  const [q, setQ] = useState('');
-  const id = useId();
-  const { href, act } = useLink(ctx, inst)(s(p.ctaTo));
-  const submit = (e: FormEvent) => {
-    e.preventDefault();
-    if (href) window.location.hash = href.replace(/^#/, '');
-    else act?.();
-  };
+function HeroCinema({ p, ctx, inst, thumbW }: { p: ComponentInstance['props']; ctx: SiteCtx; inst: ComponentInstance; thumbW?: number }) {
   return (
-    <section className={`ds-sec2 ${tone(p, 'night')} ds-herosig`}>
+    <section className={`ds-sec2 t-night ds-cinema home`}>
+      <Duotone image={s(p.image)} width={thumbW ?? 2200} />
+      <div className="ds-cinema-grid">
+        <div className="ds-cinema-in">
+          {s(p.kicker) ? (
+            <span className="ds-glasspill" data-reveal>
+              <Sparkles size={16} aria-hidden strokeWidth={1.75} /> {s(p.kicker)}
+            </span>
+          ) : null}
+          <RevealTitle text={s(p.title)} className="ds-dxl" />
+          {s(p.lead) ? (
+            <p className="ds-lead2" data-reveal style={st(3)}>
+              {s(p.lead)}
+            </p>
+          ) : null}
+          <div className="ds-cinema-actions" data-reveal style={st(4)}>
+            {s(p.cta) ? (
+              <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 light big">
+                <Go /> {s(p.cta)}
+              </L>
+            ) : null}
+            {s(p.proof) ? (
+              <span className="ds-proof">
+                <span className="dots" aria-hidden>
+                  <span />
+                  <span />
+                  <span />
+                </span>
+                {s(p.proof)}
+              </span>
+            ) : null}
+          </div>
+        </div>
+        {s(p.cardTitle) ? (
+          <L to={s(p.cardTo)} ctx={ctx} inst={inst} className="ds-heroCard">
+            <span data-reveal style={st(5)} className="ds-heroCard-in">
+              <Photo id={s(p.cardImage)} width={thumbW ?? 800} className="zoom" />
+              <span className="ds-heroCard-label">
+                <span className="ds-small">{s(p.cardKicker) || 'Featured story'}</span>
+                <span className="t">{s(p.cardTitle)}</span>
+              </span>
+            </span>
+          </L>
+        ) : null}
+      </div>
+    </section>
+  );
+}
+
+/** Earlier "signal lattice" hero, kept as a variant (owner decision OD-I2 pending). */
+function HeroLattice({ p, ctx, inst }: { p: ComponentInstance['props']; ctx: SiteCtx; inst: ComponentInstance }) {
+  const [paused, setPaused] = useState(false);
+  return (
+    <section className={`ds-sec2 t-night ds-cinema home lattice`}>
       <SignalField paused={paused} still={ctx.mode !== 'interactive'} />
-      <div className="ds-herosig-in">
-        {s(p.kicker) ? <Index>{s(p.kicker)}</Index> : null}
+      <div className="ds-cinema-in">
+        {s(p.kicker) ? <span className="ds-glasspill">{s(p.kicker)}</span> : null}
         <RevealTitle text={s(p.title)} className="ds-dxl" />
-        {s(p.lead) ? (
-          <p className="ds-lead2" data-reveal style={st(3)}>
-            {s(p.lead)}
-          </p>
-        ) : null}
-        <form className="ds-ask" onSubmit={submit} data-reveal style={st(4)} role="search" aria-label={s(p.askLabel) || 'Ask about AI'}>
-          <label className="sr-only" htmlFor={id}>
-            {s(p.askLabel) || 'Describe your AI question'}
-          </label>
-          <span className="spark" aria-hidden>
-            <Sparkles size={18} strokeWidth={1.75} />
-          </span>
-          <input id={id} value={q} onChange={(e) => setQ(e.target.value)} placeholder={s(p.ask) || 'Ask how AI could change your business'} tabIndex={ctx.mode === 'thumb' ? -1 : undefined} readOnly={ctx.mode !== 'interactive'} autoComplete="off" />
-          <button type="submit" className="ds-btn2 primary" tabIndex={ctx.mode === 'thumb' ? -1 : undefined}>
-            {s(p.cta) || 'Start'} <Arrow />
-          </button>
-        </form>
-        {s(p.cta2) ? (
-          <div className="ds-row2" data-reveal style={st(5)}>
-            <L to={s(p.cta2To)} ctx={ctx} inst={inst} className="ds-arrowlink2">
-              {s(p.cta2)} <Arrow />
-            </L>
-          </div>
-        ) : null}
-      </div>
-      <MotionToggle paused={paused} setPaused={setPaused} ctx={ctx} />
-    </section>
-  );
-}
-
-function Closing({ p, ctx, inst, thumbW }: { p: ComponentInstance['props']; ctx: SiteCtx; inst: ComponentInstance; thumbW?: number }) {
-  const [paused, setPaused] = useState(false);
-  const photo = s(p.image) && s(p.media) === 'photo';
-  return (
-    <section className={`ds-sec2 ${tone(p, 'night')} ds-closing2`}>
-      {photo ? <Photo id={s(p.image)} width={thumbW ?? 2000} className="bg" /> : <SignalField paused={paused} still={ctx.mode !== 'interactive'} density={0.7} />}
-      <div className="ds-closing2-in">
-        <h2 className="ds-dl" data-reveal>
-          {s(p.title)}
-        </h2>
-        {s(p.cta) ? (
-          <div data-reveal style={st(1)}>
-            <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 primary">
-              {s(p.cta)} <Arrow />
-            </L>
-          </div>
-        ) : null}
-      </div>
-      {!photo ? <MotionToggle paused={paused} setPaused={setPaused} ctx={ctx} /> : null}
-    </section>
-  );
-}
-
-function Spotlight({ p, ctx, inst }: { p: ComponentInstance['props']; ctx: SiteCtx; inst: ComponentInstance }) {
-  const items = rows(p.items);
-  return (
-    <section className={`ds-sec2 ${tone(p, 'night')} ds-spot2`}>
-      <div className="ds-spot2-text">
-        {s(p.kicker) ? <Index n={s(p.index) || undefined}>{s(p.kicker)}</Index> : null}
-        <h2 className="ds-dl" data-reveal>
-          {s(p.title)}
-        </h2>
-        {s(p.subtitle) ? <p className="ds-lead2 strong">{s(p.subtitle)}</p> : null}
-        {s(p.body) ? <p className="ds-soft">{s(p.body)}</p> : null}
+        {s(p.lead) ? <p className="ds-lead2">{s(p.lead)}</p> : null}
         {s(p.cta) ? (
           <div>
-            <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 primary">
-              {s(p.cta)} <Arrow />
+            <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 light big">
+              <Go /> {s(p.cta)}
             </L>
           </div>
         ) : null}
       </div>
-      {items.length ? (
-        <ol className="ds-steps2" aria-label={s(p.itemsLabel) || 'Steps'}>
-          {items.map(([label, text], i) => (
-            <li key={label} data-reveal style={st(i)}>
-              <span className="n" aria-hidden>
-                {pad(i + 1)}
-              </span>
-              <span className="b">
-                <strong>{label}</strong>
-                <span className="ds-soft">{text}</span>
-              </span>
-            </li>
-          ))}
-        </ol>
+      {ctx.mode === 'interactive' ? (
+        <button type="button" className="ds-motiontoggle" aria-pressed={paused} onClick={() => setPaused(!paused)} data-motion-toggle>
+          {paused ? <Play size={14} aria-hidden /> : <Pause size={14} aria-hidden />}
+          {paused ? 'Play the animation' : 'Pause the animation'}
+        </button>
       ) : null}
     </section>
   );
@@ -797,14 +831,20 @@ function SiteHeader({ p, ctx, inst }: { p: ComponentInstance['props']; ctx: Site
                 {s(p.servicesLabel) || 'Services'} <ChevronDown size={16} aria-hidden style={{ transform: sub ? 'rotate(180deg)' : undefined }} />
               </button>
               <ul id={subId} className="ds-subnav2" hidden={!sub}>
-                {services.map(([label, to], i) => (
-                  <li key={label}>
-                    <L to={to || label} ctx={ctx} inst={inst} className="ds-subnav2-link">
-                      <span className="ds-mono-s">{pad(i + 1)}</span>
-                      {label}
-                    </L>
-                  </li>
-                ))}
+                {services.map(([label, to], i) => {
+                  const I = iconFor(label);
+                  return (
+                    <li key={label}>
+                      <L to={to || label} ctx={ctx} inst={inst} className="ds-subnav2-link">
+                        <span className="ic" aria-hidden>
+                          <I size={18} strokeWidth={1.5} />
+                        </span>
+                        <span className="grow">{label}</span>
+                        <span className="ds-small">[{pad(i + 1)}]</span>
+                      </L>
+                    </li>
+                  );
+                })}
               </ul>
             </li>
           ) : null}
@@ -823,7 +863,7 @@ function SiteHeader({ p, ctx, inst }: { p: ComponentInstance['props']; ctx: Site
             </span>
           ) : null}
           {s(p.cta) ? (
-            <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 primary sm">
+            <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 light sm">
               {s(p.cta)}
             </L>
           ) : null}
@@ -860,11 +900,16 @@ function SiteFooter({ p, ctx, inst }: { p: ComponentInstance['props']; ctx: Site
   return (
     <footer className={`ds-sec2 ${tone(p, 'night')} ds-sitefooter2`}>
       <div className="ds-sitefooter2-top">
-        {s(p.tagline) ? <p className="ds-statement2 small">{s(p.tagline)}</p> : null}
+        {s(p.tagline) ? <p className="ds-ds">{s(p.tagline)}</p> : null}
         <div className="ds-sitefooter2-cols">
           {groups.map((g) => (
             <nav key={g.title} aria-label={g.title}>
-              <h2 className="ds-mono-s">{g.title}</h2>
+              <h2 className="ds-plus">
+                <span className="p" aria-hidden>
+                  +
+                </span>
+                {g.title}
+              </h2>
               <ul>
                 {g.links.map(([label, to]) => (
                   <li key={label}>
@@ -905,35 +950,36 @@ function LogoBand({ p, marquee, ti }: { p: ComponentInstance['props']; marquee: 
   const items = list(p.items).length ? list(p.items) : ['Google Cloud', 'AWS', 'Microsoft', 'ServiceNow', 'Salesforce', 'SAP'];
   const [paused, setPaused] = useState(false);
   return (
-    <section className={`ds-sec2 ${tone(p, 'night')} ds-logoband3 ${marquee ? 'marquee' : ''} ${paused ? 'is-paused' : ''}`}>
-      <div className="ds-logoband3-head">
-        <Index n={s(p.index) || undefined}>{s(p.title)}</Index>
-        {marquee ? (
-          <button type="button" className="ds-motiontoggle static" tabIndex={ti} aria-pressed={paused} onClick={() => setPaused(!paused)} data-marquee-toggle>
-            {paused ? <Play size={14} aria-hidden /> : <Pause size={14} aria-hidden />}
-            {paused ? 'Play the partner list' : 'Pause the partner list'}
-          </button>
-        ) : null}
-      </div>
-      <div className="ds-logotrack">
-        <ul aria-label={s(p.listLabel) || 'Partners'}>
-          {items.map((x) => (
-            <li key={x}>
-              <span className="ds-wordmark2">{x}</span>
-              {s(p.badge) ? <span className="ds-mono-s">{s(p.badge)}</span> : null}
-            </li>
-          ))}
-        </ul>
-        {marquee ? (
-          <ul aria-hidden className="dup">
+    <section className={`ds-sec2 ${tone(p, 'paper')} ds-logos4 ${marquee ? 'marquee' : ''} ${paused ? 'is-paused' : ''}`}>
+      <div className="ds-logos4-card">
+        <div className="ds-logos4-text">
+          <p className="ds-cardtitle big">{s(p.title)}</p>
+          {marquee ? (
+            <button type="button" className="ds-motiontoggle static" tabIndex={ti} aria-pressed={paused} onClick={() => setPaused(!paused)} data-marquee-toggle>
+              {paused ? <Play size={14} aria-hidden /> : <Pause size={14} aria-hidden />}
+              {paused ? 'Play the partner list' : 'Pause the partner list'}
+            </button>
+          ) : null}
+        </div>
+        <div className="ds-logotrack">
+          <ul aria-label={s(p.listLabel) || 'Partners'}>
             {items.map((x) => (
               <li key={x}>
-                <span className="ds-wordmark2">{x}</span>
-                {s(p.badge) ? <span className="ds-mono-s">{s(p.badge)}</span> : null}
+                <span className="ds-wordmark3 sm">{x}</span>
+                {s(p.badge) ? <span className="ds-small">{s(p.badge)}</span> : null}
               </li>
             ))}
           </ul>
-        ) : null}
+          {marquee ? (
+            <ul aria-hidden className="dup">
+              {items.map((x) => (
+                <li key={x}>
+                  <span className="ds-wordmark3 sm">{x}</span>
+                </li>
+              ))}
+            </ul>
+          ) : null}
+        </div>
       </div>
     </section>
   );
@@ -960,7 +1006,7 @@ function OfficeDirectory({ p, ti, ctx }: { p: ComponentInstance['props']; ti?: n
           <Search size={18} aria-hidden />
           <input id={id} type="search" placeholder="for example: Lisbon" value={q} onChange={(e) => setQ(e.target.value)} readOnly={ctx.mode !== 'interactive'} tabIndex={ti} />
         </div>
-        <span className="ds-mono-s" role="status">
+        <span className="ds-small" role="status">
           {shown.length === 0
             ? `No office matches "${q}". Try a country name.`
             : `${shown.length} ${shown.length === 1 ? 'office' : 'offices'} in ${countries.length} ${countries.length === 1 ? 'country' : 'countries'}${q ? '' : ` (${total} in total)`}`}
@@ -969,7 +1015,7 @@ function OfficeDirectory({ p, ti, ctx }: { p: ComponentInstance['props']; ti?: n
       <div className="ds-offices2">
         {countries.map((c) => (
           <div key={c} className="ds-country2">
-            <h3 className="ds-ds">{c}</h3>
+            <h3 className="ds-cardtitle big">{c}</h3>
             <ul>
               {shown
                 .filter((o) => o[0] === c)
@@ -977,10 +1023,10 @@ function OfficeDirectory({ p, ti, ctx }: { p: ComponentInstance['props']; ti?: n
                   <li key={`${city}${address}`} className="ds-office3">
                     <span className="head">
                       <strong>{city}</strong>
-                      {badge ? <span className="ds-tag2">{badge}</span> : null}
+                      {badge ? <span className="ds-chip dark">{badge}</span> : null}
                     </span>
                     <address>{address}</address>
-                    <a className="ds-arrowlink2 sm" href={`https://www.openstreetmap.org/search?query=${encodeURIComponent(address ?? city)}`} target="_blank" rel="noopener noreferrer" tabIndex={ti}>
+                    <a className="ds-textlink" href={`https://www.openstreetmap.org/search?query=${encodeURIComponent(address ?? city)}`} target="_blank" rel="noopener noreferrer" tabIndex={ti}>
                       <MapPin size={14} aria-hidden /> View {city} office on the map<span className="sr-only"> (opens in a new tab)</span>
                     </a>
                   </li>

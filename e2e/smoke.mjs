@@ -51,7 +51,8 @@ const axe = async (label) => {
   for (const x of res) axeFindings.push(`${label}: ${x}`);
   return res;
 };
-const shot = (n) => page.screenshot({ path: `e2e/shots/${n}.png` });
+// Screenshots are evidence, not assertions: freeze CSS animations and allow slow software rendering.
+const shot = (n) => page.screenshot({ path: `e2e/shots/${n}.png`, animations: 'disabled', timeout: 60000 });
 
 await page.goto(BASE + '#/overview');
 await step('overview renders the brand-to-experience chain', async () => {

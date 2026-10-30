@@ -97,6 +97,8 @@ export function SiteApp({ pageId }: { pageId?: string }) {
   const head = instances.filter((i) => kindOf(i.componentId) === 'pSiteHeader');
   const foot = instances.filter((i) => kindOf(i.componentId) === 'pSiteFooter');
   const body = instances.filter((i) => !head.includes(i) && !foot.includes(i));
+  // The header floats over a cinematic hero; other pages keep it as a solid bar.
+  const overlay = !about && ['pHeroMedia', 'pPageHero'].includes(kindOf(body[0]?.componentId ?? ''));
   const chrome = toInstances(findPage('home')!);
   const shellHead = about ? chrome.filter((i) => kindOf(i.componentId) === 'pSiteHeader') : head;
   const shellFoot = about ? chrome.filter((i) => kindOf(i.componentId) === 'pSiteFooter') : foot;
@@ -144,7 +146,7 @@ export function SiteApp({ pageId }: { pageId?: string }) {
         </span>
       </div>
       <DsScope tokens={tokens} className="site-scope">
-        <div className="ds-screen wide site-screen">
+        <div className={`ds-screen wide site-screen ${overlay ? 'header-overlay' : ''}`}>
           {render(shellHead)}
           <main id="site-main" ref={mainRef} tabIndex={-1} className="site-main" key={pageId ?? 'home'}>
             {about ? <AboutPrototype defs={defs} /> : page ? render(body) : <NotFound />}
