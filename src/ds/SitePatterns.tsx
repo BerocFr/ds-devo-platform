@@ -19,7 +19,6 @@ import {
   Link2,
   LockKeyhole,
   MapPin,
-  Menu,
   MonitorSmartphone,
   Pause,
   Play,
@@ -31,12 +30,13 @@ import {
   Sparkles,
   Users,
   Workflow,
-  X,
   type LucideIcon,
 } from 'lucide-react';
 import { Fragment, useEffect, useId, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import type { ComponentDef, ComponentInstance } from '../domain/types';
 import { getPhoto, photoUrl } from '../data/photos';
+import { heroVisual } from '../data/heroVisuals';
 import { SignalField } from './SignalField';
 import './site-patterns.css';
 
@@ -220,7 +220,7 @@ function SecHead({ p, fallback, ctx, inst, align = 'center' }: { p: ComponentIns
       ) : null}
       {s(p.cta) && align === 'center' ? (
         <div data-reveal style={st(2)}>
-          <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 solid">
+          <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 primary">
             <Go /> {s(p.cta)}
           </L>
         </div>
@@ -249,8 +249,8 @@ export function renderSitePattern(def: ComponentDef, inst: ComponentInstance, ct
     case 'pPageHero': {
       const crumbs = rows(p.crumbs);
       return (
-        <section className={`ds-sec2 t-night ds-cinema page ${s(p.image) ? '' : 'no-photo'}`}>
-          <Duotone image={s(p.image)} width={thumbW ?? 2000} />
+        <section className={`ds-sec2 t-night ds-cinema page`}>
+          <Duotone image={s(p.image)} visual={s(p.visual) || 'fluted-2'} width={thumbW ?? 2000} />
           <div className="ds-cinema-in">
             {crumbs.length ? (
               <nav aria-label="Breadcrumb" className="ds-crumbs3">
@@ -282,7 +282,7 @@ export function renderSitePattern(def: ComponentDef, inst: ComponentInstance, ct
             ) : null}
             {s(p.cta) ? (
               <div data-reveal style={st(3)}>
-                <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 light">
+                <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 primary">
                   <Go /> {s(p.cta)}
                 </L>
               </div>
@@ -306,7 +306,7 @@ export function renderSitePattern(def: ComponentDef, inst: ComponentInstance, ct
                     <span className="ds-small">#{pad(1, 1)}</span>
                     <p className="ds-ds">{mid}</p>
                     {s(p.cta) ? (
-                      <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 solid wide">
+                      <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 primary wide">
                         <Go /> {s(p.cta)}
                       </L>
                     ) : null}
@@ -401,7 +401,7 @@ export function renderSitePattern(def: ComponentDef, inst: ComponentInstance, ct
           </div>
           {s(p.cta) ? (
             <div>
-              <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 solid">
+              <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 primary">
                 <Go /> {s(p.cta)}
               </L>
             </div>
@@ -421,7 +421,7 @@ export function renderSitePattern(def: ComponentDef, inst: ComponentInstance, ct
             </h2>
             {s(p.cta) ? (
               <div data-reveal style={st(1)}>
-                <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 solid">
+                <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 primary">
                   <Go /> {s(p.cta)}
                 </L>
               </div>
@@ -463,7 +463,7 @@ export function renderSitePattern(def: ComponentDef, inst: ComponentInstance, ct
             ))}
           </div>
           <div className="ds-ctacard t-night">
-            <Duotone image={s(p.media) === 'photo' ? s(p.image) : ''} width={thumbW ?? 1600} />
+            <Duotone image={s(p.media) === 'photo' ? s(p.image) : ''} visual={s(p.media) === 'photo' ? undefined : s(p.visual) || 'fluted-6'} width={thumbW ?? 1600} />
             <div className="ds-ctacard-in">
               <Label>{s(p.kicker) || 'Where AI becomes impact'}</Label>
               <h2 className="ds-dm" data-reveal>
@@ -471,7 +471,7 @@ export function renderSitePattern(def: ComponentDef, inst: ComponentInstance, ct
               </h2>
               {s(p.cta) ? (
                 <div data-reveal style={st(1)}>
-                  <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 light">
+                  <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 primary">
                     <Go /> {s(p.cta)}
                   </L>
                 </div>
@@ -575,7 +575,7 @@ export function renderSitePattern(def: ComponentDef, inst: ComponentInstance, ct
           ) : null}
           {s(p.cta) ? (
             <div className="center-row">
-              <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 solid">
+              <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 primary">
                 <Go /> {s(p.cta)}
               </L>
             </div>
@@ -612,7 +612,7 @@ export function renderSitePattern(def: ComponentDef, inst: ComponentInstance, ct
                 <div className="ds-blogcard-body">
                   <h3 className="ds-cardtitle">{title}</h3>
                   {body ? <p className="ds-soft">{body}</p> : null}
-                  <L to={to} ctx={ctx} inst={inst} className="ds-btn2 solid">
+                  <L to={to} ctx={ctx} inst={inst} className="ds-btn2 primary">
                     <Go /> {cta}
                   </L>
                 </div>
@@ -688,20 +688,22 @@ export function renderSitePattern(def: ComponentDef, inst: ComponentInstance, ct
 
 /* ------------------------------------------------------------------ */
 
-/** Cinematic duotone: a stock photo turned into ink and coral, or coral light when there is none. */
-function Duotone({ image, width }: { image: string; width: number }) {
+/** Hero background: a generated fluted-glass visual (default), or a stock photo in duotone. */
+function Duotone({ image, width, visual }: { image: string; width: number; visual?: string }) {
+  const src = heroVisual(visual || (image ? undefined : 'fluted-1'), width < 900);
   return (
-    <div className="ds-duotone" aria-hidden>
-      {image ? <Photo id={image} width={width} eager /> : null}
+    <div className={`ds-duotone ${src ? 'has-visual' : ''}`} aria-hidden>
+      {src ? <img className="ds-visual" src={src} alt="" loading="eager" decoding="async" /> : image ? <Photo id={image} width={width} eager /> : null}
       <span className="glow" />
     </div>
   );
 }
 
 function HeroCinema({ p, ctx, inst, thumbW }: { p: ComponentInstance['props']; ctx: SiteCtx; inst: ComponentInstance; thumbW?: number }) {
+  const people = list(p.proofPeople).length ? list(p.proofPeople) : ['pexels-27086922', 'pexels-37148308', 'pexels-12396627'];
   return (
     <section className={`ds-sec2 t-night ds-cinema home`}>
-      <Duotone image={s(p.image)} width={thumbW ?? 2200} />
+      <Duotone image={s(p.image)} visual={s(p.visual) || 'fluted-1'} width={thumbW ?? 2200} />
       <div className="ds-cinema-grid">
         <div className="ds-cinema-in">
           {s(p.kicker) ? (
@@ -717,16 +719,16 @@ function HeroCinema({ p, ctx, inst, thumbW }: { p: ComponentInstance['props']; c
           ) : null}
           <div className="ds-cinema-actions" data-reveal style={st(4)}>
             {s(p.cta) ? (
-              <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 light big">
+              <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 primary big">
                 <Go /> {s(p.cta)}
               </L>
             ) : null}
             {s(p.proof) ? (
               <span className="ds-proof">
-                <span className="dots" aria-hidden>
-                  <span />
-                  <span />
-                  <span />
+                <span className="faces" aria-hidden>
+                  {people.slice(0, 3).map((id) => (
+                    <Photo key={id} id={id} width={120} className="face" />
+                  ))}
                 </span>
                 {s(p.proof)}
               </span>
@@ -761,7 +763,7 @@ function HeroLattice({ p, ctx, inst }: { p: ComponentInstance['props']; ctx: Sit
         {s(p.lead) ? <p className="ds-lead2">{s(p.lead)}</p> : null}
         {s(p.cta) ? (
           <div>
-            <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 light big">
+            <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 primary big">
               <Go /> {s(p.cta)}
             </L>
           </div>
@@ -780,109 +782,194 @@ function HeroLattice({ p, ctx, inst }: { p: ComponentInstance['props']; ctx: Sit
 function SiteHeader({ p, ctx, inst }: { p: ComponentInstance['props']; ctx: SiteCtx; inst: ComponentInstance }) {
   const [open, setOpen] = useState(false);
   const [sub, setSub] = useState(false);
+  const [vars, setVars] = useState('');
+  const panelId = useId();
   const subId = useId();
-  const menuId = useId();
   const ref = useRef<HTMLElement>(null);
+  const panel = useRef<HTMLDivElement>(null);
+  const burger = useRef<HTMLButtonElement>(null);
   const items = rows(p.items);
   const services = rows(p.services);
   const ti = ctx.mode === 'thumb' ? -1 : undefined;
+  const interactive = ctx.mode === 'interactive';
 
+  const openMenu = () => {
+    // The panel is rendered in a portal (outside the container-query scope, so position:
+    // fixed covers the viewport); it takes the workspace tokens with it.
+    setVars((ref.current?.closest('.ds-scope') as HTMLElement | null)?.style.cssText ?? '');
+    setOpen(true);
+  };
+  const close = (focusBack = true) => {
+    setOpen(false);
+    setSub(false);
+    if (focusBack) requestAnimationFrame(() => burger.current?.focus());
+  };
+
+  // Escape closes; Tab stays inside the open panel; the page behind does not scroll.
   useEffect(() => {
-    if (!sub && !open) return;
+    if (!open) return;
+    const root = panel.current;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        setSub(false);
-        setOpen(false);
+        e.preventDefault();
+        close();
+      } else if (e.key === 'Tab' && root) {
+        const f = Array.from(root.querySelectorAll<HTMLElement>('a[href], button:not([disabled])')).filter((el) => el.offsetParent !== null);
+        if (!f.length) return;
+        const first = f[0];
+        const last = f[f.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
       }
     };
-    const onDoc = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setSub(false);
-    };
     document.addEventListener('keydown', onKey);
-    document.addEventListener('mousedown', onDoc);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    requestAnimationFrame(() => root?.querySelector<HTMLElement>('.ds-menu-main a, .ds-menu-main button')?.focus());
     return () => {
       document.removeEventListener('keydown', onKey);
-      document.removeEventListener('mousedown', onDoc);
+      document.body.style.overflow = prev;
     };
-  }, [sub, open]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
 
+  // Close after navigation.
   useEffect(() => {
     setOpen(false);
     setSub(false);
   }, [ctx.current]);
 
   const cur = (to?: string) => (to && ctx.current === to ? 'page' : undefined);
+  const visual = heroVisual('fluted-4');
+  const brand = s(p.brand) || 'devoteam';
 
-  return (
-    <header className={`ds-siteheader2 ${tone(p, 'night')} ${open ? 'is-open' : ''}`} ref={ref}>
-      <L to="home" ctx={ctx} inst={inst} className="ds-brandmark2" label={`${s(p.brand) || 'devoteam'}, home`}>
-        {s(p.brand) || 'devoteam'}
-        <span aria-hidden className="dot" />
-      </L>
-      <button type="button" className="ds-menubtn2" aria-expanded={open} aria-controls={menuId} tabIndex={ti} onClick={() => setOpen(!open)}>
-        {open ? <X size={18} aria-hidden /> : <Menu size={18} aria-hidden />}
-        Menu
-      </button>
-      <nav aria-label="Main" id={menuId} className="ds-mainnav2">
-        <ul>
+  const menu = (
+    <div className="ds-scope ds-menu-root" style={styleFrom(vars)}>
+      <div className={`ds-menu ${sub ? 'sub-open' : ''}`} id={panelId} ref={panel} role="dialog" aria-modal="true" aria-label="Menu">
+        {visual ? <img className="ds-menu-visual" src={visual} alt="" aria-hidden /> : null}
+        <div className="ds-bar in-menu">
+          <L to="home" ctx={ctx} inst={inst} className="ds-brandmark2" label={`${brand}, home`}>
+            {brand}
+            <span aria-hidden className="dot" />
+          </L>
+          <button type="button" className="ds-burger is-x" aria-expanded="true" aria-controls={panelId} onClick={() => close()}>
+            <span className="lines" aria-hidden>
+              <span />
+              <span />
+            </span>
+            <span className="label">Close</span>
+          </button>
+        </div>
+        <nav aria-label="Main" className="ds-menu-nav">
+          <ul className="ds-menu-main">
+            {services.length ? (
+              <li style={st(0)}>
+                <button type="button" className="ds-menu-link" aria-expanded={sub} aria-controls={subId} onClick={() => setSub(!sub)}>
+                  <span className="n" aria-hidden>
+                    01
+                  </span>
+                  {s(p.servicesLabel) || 'Services'}
+                  <ChevronDown size={28} aria-hidden className="chev" />
+                </button>
+              </li>
+            ) : null}
+            {items.map(([label, to], i) => (
+              <li key={label} style={st(i + 1)}>
+                <NavLink to={to} ctx={ctx} inst={inst} current={cur(to)} className="ds-menu-link">
+                  <span className="n" aria-hidden>
+                    {pad(i + 2)}
+                  </span>
+                  {label}
+                </NavLink>
+              </li>
+            ))}
+          </ul>
           {services.length ? (
-            <li className="has-sub">
-              <button type="button" aria-expanded={sub} aria-controls={subId} tabIndex={ti} onClick={() => setSub(!sub)}>
-                {s(p.servicesLabel) || 'Services'} <ChevronDown size={16} aria-hidden style={{ transform: sub ? 'rotate(180deg)' : undefined }} />
-              </button>
-              <ul id={subId} className="ds-subnav2" hidden={!sub}>
-                {services.map(([label, to], i) => {
-                  const I = iconFor(label);
-                  return (
-                    <li key={label}>
-                      <L to={to || label} ctx={ctx} inst={inst} className="ds-subnav2-link">
-                        <span className="ic" aria-hidden>
-                          <I size={18} strokeWidth={1.5} />
-                        </span>
-                        <span className="grow">{label}</span>
-                        <span className="ds-small">[{pad(i + 1)}]</span>
-                      </L>
-                    </li>
-                  );
-                })}
-              </ul>
-            </li>
+            <ul id={subId} className="ds-menu-sub" hidden={!sub} aria-label={s(p.servicesLabel) || 'Services'}>
+              {services.map(([label, to], i) => {
+                const I = iconFor(label);
+                return (
+                  <li key={label} style={st(i)}>
+                    <L to={to || label} ctx={ctx} inst={inst} className="ds-menu-sublink">
+                      <span className="ic" aria-hidden>
+                        <I size={20} strokeWidth={1.5} />
+                      </span>
+                      {label}
+                    </L>
+                  </li>
+                );
+              })}
+            </ul>
           ) : null}
-          {items.map(([label, to]) => (
-            <li key={label}>
-              <NavLink to={to} ctx={ctx} inst={inst} current={cur(to)}>
-                {label}
-              </NavLink>
-            </li>
-          ))}
-        </ul>
-        <div className="ds-headeractions2">
+        </nav>
+        <div className="ds-menu-foot">
           {s(p.locale) ? (
             <span className="ds-localechip2">
               <Globe size={15} aria-hidden /> {s(p.locale)}
             </span>
           ) : null}
           {s(p.cta) ? (
-            <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 light sm">
+            <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 primary sm">
               {s(p.cta)}
             </L>
           ) : null}
         </div>
-      </nav>
+      </div>
+    </div>
+  );
+
+  return (
+    <header className={`ds-siteheader3 ${tone(p, 'night')}`} ref={ref}>
+      <div className="ds-bar">
+        <L to="home" ctx={ctx} inst={inst} className="ds-brandmark2" label={`${brand}, home`}>
+          {brand}
+          <span aria-hidden className="dot" />
+        </L>
+        <div className="ds-bar-actions">
+          {s(p.cta) ? (
+            <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 primary sm ds-bar-cta">
+              {s(p.cta)}
+            </L>
+          ) : null}
+          <button ref={burger} type="button" className="ds-burger" aria-expanded={open} aria-controls={panelId} tabIndex={ti} onClick={interactive ? openMenu : undefined}>
+            <span className="lines" aria-hidden>
+              <span />
+              <span />
+            </span>
+            <span className="label">Menu</span>
+          </button>
+        </div>
+      </div>
+      {open && typeof document !== 'undefined' ? createPortal(menu, document.body) : null}
     </header>
   );
 }
 
-function NavLink({ to, ctx, inst, current, children }: { to: string; ctx: SiteCtx; inst: ComponentInstance; current?: 'page'; children: ReactNode }) {
+/** Turns a copied inline style string (the workspace tokens) back into a style object. */
+function styleFrom(css: string): CSSProperties {
+  const out: Record<string, string> = {};
+  for (const decl of css.split(';')) {
+    const i = decl.indexOf(':');
+    if (i > 0) out[decl.slice(0, i).trim()] = decl.slice(i + 1).trim();
+  }
+  return out as CSSProperties;
+}
+
+function NavLink({ to, ctx, inst, current, children, className = 'ds-navlink2' }: { to: string; ctx: SiteCtx; inst: ComponentInstance; current?: 'page'; children: ReactNode; className?: string }) {
   const href = ctx.linkFor?.(to);
   if (href)
     return (
-      <a className="ds-navlink2" href={href} aria-current={current}>
+      <a className={className} href={href} aria-current={current}>
         {children}
       </a>
     );
   return (
-    <L to={to} ctx={ctx} inst={inst} className="ds-navlink2">
+    <L to={to} ctx={ctx} inst={inst} className={className}>
       {children}
     </L>
   );

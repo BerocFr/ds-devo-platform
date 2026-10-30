@@ -259,6 +259,7 @@
   inset: 0 0 auto;
   z-index: 10;
 }
-.site-screen.header-overlay > .site-block:first-child .ds-siteheader2 {
+.site-screen.header-overlay > .site-block:first-child .ds-siteheader2,
+.site-screen.header-overlay > .site-block:first-child .ds-siteheader3:not(.is-open) {
   background: transparent;
 }

@@ -229,14 +229,22 @@ await step('site rebuild: home renders from patterns, in the live order', async 
   await page.evaluate(() => window.scrollTo(0, 0));
 });
 
-await step('site rebuild: services menu, keyboard and page navigation', async () => {
-  const menu = page.getByRole('button', { name: 'Services' });
-  await menu.click();
-  await page.getByRole('link', { name: 'Cybersecurity' }).first().waitFor();
+await step('site rebuild: burger menu, services submenu, keyboard and page navigation', async () => {
+  const burger = page.getByRole('button', { name: 'Menu', exact: true });
+  await burger.click();
+  const dialog = page.getByRole('dialog', { name: 'Menu' });
+  await dialog.waitFor();
+  await page.waitForTimeout(900);
+  await dialog.getByRole('button', { name: 'Services' }).click();
+  await dialog.getByRole('link', { name: 'Cybersecurity' }).waitFor();
+  await page.waitForTimeout(700);
+  await shot('26-site-menu');
   await page.keyboard.press('Escape');
-  if ((await menu.getAttribute('aria-expanded')) !== 'false') throw new Error('Escape did not close the menu');
-  await menu.click();
-  await page.locator('.ds-subnav2').getByRole('link', { name: 'Cybersecurity' }).click();
+  await dialog.waitFor({ state: 'detached' });
+  if ((await page.evaluate(() => document.activeElement?.textContent ?? '')).trim() !== 'Menu') throw new Error('focus did not return to the menu button');
+  await burger.click();
+  await dialog.getByRole('button', { name: 'Services' }).click();
+  await dialog.locator('.ds-menu-sub').getByRole('link', { name: 'Cybersecurity' }).click();
   await page.getByRole('heading', { level: 1, name: 'Secure your journey, guard your path' }).waitFor();
   await page.getByRole('heading', { name: 'Alert Readiness Framework' }).waitFor();
   await page.getByRole('link', { name: /Contact Cyril/ }).click();
@@ -286,8 +294,9 @@ await step('site rebuild: every page renders and passes axe (reduced motion)', a
   await page.locator('h1').first().waitFor();
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   if (overflow > 1) throw new Error(`horizontal overflow ${overflow}px at 390px`);
-  await page.getByRole('button', { name: 'Menu' }).click();
-  await page.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: 'Careers' }).waitFor();
+  await page.getByRole('button', { name: 'Menu', exact: true }).click();
+  await page.getByRole('dialog', { name: 'Menu' }).getByRole('link', { name: 'Careers' }).waitFor();
+  await page.waitForTimeout(900);
   await shot('23-site-phone');
   await axe('site phone');
   await page.setViewportSize({ width: 1440, height: 900 });

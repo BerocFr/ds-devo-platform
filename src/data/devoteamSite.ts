@@ -38,10 +38,10 @@ const SERVICES: [string, string, string][] = [
 ];
 
 const PARTNERS: [string, string, string, string][] = [
-  ['AWS', 'aws', 'Cloud migration, modernisation and managed services on AWS.', 'pexels-17489150'],
-  ['Google Cloud', 'google-cloud', 'Data, AI and Google Workspace transformation on Google Cloud.', 'pexels-30547567'],
-  ['Microsoft', 'microsoft', 'Cloud, security and Copilot adoption on Microsoft.', 'pexels-8512131'],
-  ['ServiceNow', 'servicenow', 'Service management and workflow automation on ServiceNow.', 'pexels-7876664'],
+  ['AWS', 'aws', 'Migration and modernisation.', 'pexels-17489150'],
+  ['Google Cloud', 'google-cloud', 'Data, AI and Workspace.', 'pexels-30547567'],
+  ['Microsoft', 'microsoft', 'Cloud, security and Copilot.', 'pexels-8512131'],
+  ['ServiceNow', 'servicenow', 'Workflows and service management.', 'pexels-7876664'],
 ];
 
 const TOPIC_PHOTO: Record<string, string> = {
@@ -141,17 +141,12 @@ const home: SitePage = {
       props: {
         kicker: 'AI-driven tech consulting',
         title: 'Build your AI-driven transformation on Cloud, Data and Cyber foundations',
-        lead: 'Unlock your AI potential. Assess your AI maturity in just 10 minutes.',
+        lead: 'Assess your AI maturity in just 10 minutes.',
         cta: 'Assess my AI maturity',
         ctaTo: 'ai-maturity',
         proof: '11,000+ experts in 25+ countries',
-        cardKicker: 'Success stories',
-        cardTitle: 'Become a leading company embracing AI',
-        cardImage: 'pexels-1181354',
-        cardTo: 'success-stories',
-        cta2: 'Talk to an expert',
-        cta2To: 'contact',
-        image: 'pexels-6804068',
+        visual: 'fluted-1',
+        proofPeople: 'pexels-27086922, pexels-37148308, pexels-12396627',
       },
     },
     {
@@ -160,12 +155,9 @@ const home: SitePage = {
         title: 'In the spotlight',
         index: '01',
         kicker: 'Spotlight',
-        statement: 'Two ways our clients already put AI to work.',
-        cta: 'Discover success stories',
-        ctaTo: 'success-stories',
         items: [
-          'Partner adoption|Gemini for Google Workspace|Devoteam AI-enables the workforce through Gemini for Google Workspace partner adoption.|pexels-1181745|google-cloud|Discover Gemini adoption',
-          'Success story|Microsoft 365 Copilot|How Cellnex improves productivity and collaboration with Microsoft 365 Copilot.|pexels-8512131|success-stories|Read the Cellnex story',
+          'Partner adoption|Gemini for Google Workspace||pexels-1181745|google-cloud|Discover Gemini adoption',
+          'Success story|Microsoft 365 Copilot at Cellnex||pexels-8512131|success-stories|Read the Cellnex story',
         ].join('; '),
       },
     },
@@ -175,7 +167,6 @@ const home: SitePage = {
         kicker: 'Services',
         index: '02',
         title: 'Our services',
-        lead: 'From strategy to managed services, every service builds on cloud, data and cyber foundations.',
         items: SERVICES.map(([l]) => l).join(', '),
       },
     },
@@ -199,7 +190,6 @@ const home: SitePage = {
         kicker: 'About Devoteam',
         index: '05',
         title: 'Acting as tech architects, Devoteam guides AI-driven transformations',
-        body: 'Founded at the start of the tech revolution, Devoteam has guided its clients through the internet, then the cloud, and now AI. It works with AWS, Google Cloud, Microsoft and ServiceNow.',
         figures: '11,000+|employees; 25+|countries in Europe, the Middle East and Africa; 4|strategic partnerships',
         cta: 'Meet our people',
         ctaTo: 'join-us',
@@ -218,7 +208,7 @@ const home: SitePage = {
     footer(),
   ],
   changes: [
-    'Hero: cinematic duotone in ink and coral; the AI maturity assessment becomes an explicit action (the live hero shows the text without a button), with the proof line and a featured card for the success stories.',
+    'Hero: generated visual of coral light through fluted glass; the AI maturity assessment becomes an explicit red primary action (the live hero shows the text without a button), with a proof line and portraits.',
     'Identity (bench-05, owner reference Rowalo): light canvases with black sections, coral plus labels, centred heads, staggered 24px cards, pill actions with a corner arrow, Montserrat 500 very large and tight.',
     'Spotlight: the two cards (Gemini, Microsoft 365 Copilot) get a section title and a link that names each story.',
     'Services: the ten services keep their order, each gets an icon and leads to its page.',
@@ -241,6 +231,7 @@ const cybersecurity: SitePage = {
       componentId: 'pat-page-hero',
       props: {
         crumbs: 'Home|home; Services; Cybersecurity',
+        visual: 'fluted-2',
         kicker: 'Cybersecurity',
         title: 'Secure your journey, guard your path',
         lead: 'Balance innovation with protection and operational efficiency.',
@@ -267,11 +258,11 @@ const cybersecurity: SitePage = {
         kicker: 'Our services',
         title: 'Our cybersecurity services',
         items: [
-          'GRC|Empower a proactive GRC culture|Align your business strategy with a future-proofed security posture, keep track of the threat landscape and build a culture of compliance.|Strategy and risk, Risk management and vulnerability assessment, Compliance and regulatory guidance|ServiceNow|pexels-7876664',
-          'Digital identity|Establish a unified, secure digital identity framework|One identity framework for people, services and privileged accounts.|Access management (AM), Privileged access management (PAM), Identity governance and administration (IGA)||pexels-5483240',
+          'GRC|Empower a proactive GRC culture||Strategy and risk, Risk management and vulnerability assessment, Compliance and regulatory guidance|ServiceNow|pexels-7876664',
+          'Digital identity|Establish a unified, secure digital identity framework||Access management (AM), Privileged access management (PAM), Identity governance and administration (IGA)||pexels-5483240',
           'Secure cloud|Empower secure cloud transformation|Zero trust access, SecDevOps and cloud native application protection platforms (CNAPP).|Risk prevention, Visibility and control, Runtime protection|AWS, Google Cloud, Microsoft, ServiceNow, Palo Alto Networks|pexels-17489150',
-          'Security posture|Proactively strengthen your security posture|Find the gaps before attackers do and train people to spot threats.|Penetration testing, Maturity assessment, Security awareness programmes||pexels-8108728',
-          'Secure AI|Empower secure and responsible AI innovation|Adopt AI with a secure architecture and secure development practices.|AI adoption, Secure AI architecture, Secure AI development||pexels-8386437',
+          'Security posture|Proactively strengthen your security posture||Penetration testing, Maturity assessment, Security awareness programmes||pexels-8108728',
+          'Secure AI|Empower secure and responsible AI innovation||AI adoption, Secure AI architecture, Secure AI development||pexels-8386437',
         ].join('; '),
       },
     },
@@ -281,7 +272,7 @@ const cybersecurity: SitePage = {
         kicker: 'Developed by Devoteam',
         title: 'Alert Readiness Framework',
         subtitle: 'Bridging business and cybersecurity in a modern framework',
-        body: 'A business-centric approach to cyber resilience. Inspired by military alert levels, the ARF lets an organisation adapt its security controls to the threat level in real time.',
+        body: 'Security controls that follow the threat level, like military alert levels.',
         itemsLabel: 'How the framework works',
         items: 'Map|Link business activities to the assets they depend on.; Set levels|Define alert levels and the controls each level turns on.; Adapt|Raise or lower the level as the threat changes.',
         cta: 'Talk about the ARF',
@@ -320,6 +311,7 @@ const cloudNative: SitePage = {
       componentId: 'pat-page-hero',
       props: {
         crumbs: 'Home|home; Services; Cloud Native Architecture',
+        visual: 'fluted-3',
         kicker: 'Cloud Native Architecture',
         title: 'Build your multi-cloud and hybrid business by adopting the cloud at scale',
         lead: 'Maximise the value from your cloud native architecture to innovate with AI, and grow faster.',
@@ -333,7 +325,7 @@ const cloudNative: SitePage = {
       props: {
         kicker: 'The challenge',
         lead: 'You started with a small cloud native setup. Today you run data centres and several public clouds.',
-        body: 'Moving workloads gets harder and innovation slows down. A distributed cloud strategy with one control plane reduces this complexity, meets regulatory needs, controls costs and avoids vendor lock-in, with the governance that keeps data secure and fast.',
+        body: 'One control plane over every cloud reduces complexity, costs and lock-in.',
       },
     },
     {
@@ -342,8 +334,8 @@ const cloudNative: SitePage = {
         kicker: 'Cloud native architecture',
         title: 'Why you need a multi-cloud or hybrid approach',
         items: [
-          'Reasons|Reasons to go multi-cloud or hybrid|One control plane over every environment, with governance built in.|Meet regulatory needs, Control costs, Avoid vendor lock-in, Keep data secure and fast||pexels-11857023',
-          'Services|Cloud native architecture services|From the first steps to full hybrid and multi-cloud development, with a partner ecosystem and Agile methods.|Faster innovation, Greater agility, Streamlined operations, Lower costs|Google Cloud|pexels-6804068',
+          'Reasons|Reasons to go multi-cloud or hybrid||Meet regulatory needs, Control costs, Avoid vendor lock-in, Keep data secure and fast||pexels-11857023',
+          'Services|Cloud native architecture services||Faster innovation, Greater agility, Streamlined operations, Lower costs|Google Cloud|pexels-6804068',
         ].join('; '),
       },
     },
@@ -383,6 +375,7 @@ const joinUs: SitePage = {
       componentId: 'pat-page-hero',
       props: {
         crumbs: 'Home|home; Careers',
+        visual: 'fluted-5',
         kicker: 'Does this sound like you?',
         title: 'Putting people at the heart of technology is the way to unlock the future',
         lead: 'That is what we believe at Devoteam.',
@@ -395,7 +388,7 @@ const joinUs: SitePage = {
       componentId: 'pat-stats',
       props: {
         title: 'Want to challenge yourself?',
-        lead: 'Work with the best cloud platforms and join our 8,000 tech and business leaders on cloud, data and cyber security.',
+        lead: 'Work with the best cloud platforms, with 8,000 tech and business leaders.',
         items: '8,000|tech and business leaders; 18|EMEA countries; 25 years|in tech',
       },
     },
@@ -405,9 +398,9 @@ const joinUs: SitePage = {
         kicker: 'Life at Devoteam',
         title: 'Multidisciplinary approach with international opportunities',
         items: [
-          'Teams|Join a multidisciplinary team|Cloud experts, designers, business consultants, security experts, engineers and developers in more than 18 EMEA countries.|Cloud experts, Designers, Business consultants, Security experts, Engineers and developers||pexels-5945799',
-          'Growth|Learn, certify and grow|Learning opportunities and certifications from our partners, a studio mode way of working, career growth and flexibility.|Partner certifications, Studio mode, Career growth, Flexibility||pexels-1181260',
-          'Impact|Fuse creativity with technology|Build innovative solutions that actively change things for the better, for clients across Europe and the Middle East.|||pexels-7581000',
+          'Teams|Join a multidisciplinary team||Cloud experts, Designers, Business consultants, Security experts, Engineers and developers||pexels-5945799',
+          'Growth|Learn, certify and grow||Partner certifications, Studio mode, Career growth, Flexibility||pexels-1181260',
+          'Impact|Fuse creativity with technology|Solutions that change things for the better.|||pexels-7581000',
         ].join('; '),
       },
     },
@@ -419,7 +412,7 @@ const joinUs: SitePage = {
       componentId: 'pat-signposts',
       props: {
         items: [
-          'Our offices|More than 25 years in tech and offices in 18 countries across EMEA and beyond, with a focus on human values.|See our offices|our-offices|pexels-30702962',
+          'Our offices|Offices in 18 countries.|See our offices|our-offices|pexels-30702962',
           'Get in touch|The time for better change is now.|Contact us|contact|pexels-1181745',
         ].join('; '),
       },
@@ -442,7 +435,7 @@ const offices: SitePage = {
     header(),
     {
       componentId: 'pat-page-hero',
-      props: { crumbs: 'Home|home; Our offices', kicker: 'Devoteam worldwide', title: 'Our offices', lead: 'Discover our people nearby.', image: 'pexels-11936697' },
+      props: { crumbs: 'Home|home; Our offices', visual: 'fluted-4', kicker: 'Devoteam worldwide', title: 'Our offices', lead: 'Discover our people nearby.', image: 'pexels-11936697' },
     },
     { componentId: 'pat-offices', props: { title: '', offices: OFFICES } },
     {
@@ -470,7 +463,7 @@ const successStories: SitePage = {
   source: 'https://www.devoteam.com/success-stories/',
   sections: [
     header(),
-    { componentId: 'pat-page-hero', props: { crumbs: 'Home|home; Success stories', kicker: 'Success stories', title: 'Become a leading company embracing AI', lead: 'How our clients build on cloud, data and cyber foundations.', image: 'pexels-6476261' } },
+    { componentId: 'pat-page-hero', props: { crumbs: 'Home|home; Success stories', visual: 'fluted-6', kicker: 'Success stories', title: 'Become a leading company embracing AI', lead: 'How our clients build on cloud, data and cyber foundations.', image: 'pexels-6476261' } },
     { componentId: 'pat-cases', props: { title: 'All success stories', filters: 'AI, Cloud, Data, Cybersecurity, Digital workplace' } },
     { componentId: 'pat-closing', props: { title: 'Your story could be the next one', cta: 'Talk to an expert', ctaTo: 'contact', image: 'pexels-28589369' } },
     footer(),
@@ -483,7 +476,7 @@ const contactPage: SitePage = {
   name: 'Contact',
   sections: [
     header(),
-    { componentId: 'pat-page-hero', props: { crumbs: 'Home|home; Contact', kicker: 'Get in touch', title: 'The time for better change is now', lead: 'Tell us about your project and an expert in your area will reply.', image: 'pexels-1181745' } },
+    { componentId: 'pat-page-hero', props: { crumbs: 'Home|home; Contact', visual: 'fluted-2', kicker: 'Get in touch', title: 'The time for better change is now', lead: 'Tell us about your project and an expert in your area will reply.', image: 'pexels-1181745' } },
     contact('Talk to an expert', 'An expert in your area replies within two working days.'),
     { componentId: 'pat-signposts', props: { items: 'Our offices|Find the office nearest to you.|See our offices|our-offices|pexels-30702962; Careers|Looking for a job instead?|Explore opportunities|jobs|pexels-9489396' } },
     footer(),
@@ -496,7 +489,7 @@ const aiMaturity: SitePage = {
   name: 'AI maturity assessment',
   sections: [
     header(),
-    { componentId: 'pat-page-hero', props: { crumbs: 'Home|home; AI maturity assessment', kicker: 'Unlock your AI potential', title: 'Assess your AI maturity in just 10 minutes', lead: 'Ten questions, then a short report with your next steps.' } },
+    { componentId: 'pat-page-hero', props: { crumbs: 'Home|home; AI maturity assessment', visual: 'fluted-1', kicker: 'Unlock your AI potential', title: 'Assess your AI maturity in just 10 minutes', lead: 'Ten questions, then a short report with your next steps.' } },
     { componentId: 'pat-assessment', props: { question: 'How is AI used in your organisation today?', answers: 'Not yet, A few experiments, Some use cases in production, At scale with governance', current: '1', total: '10' } },
     footer(),
   ],
@@ -508,7 +501,7 @@ const jobs: SitePage = {
   name: 'Jobs',
   sections: [
     header(),
-    { componentId: 'pat-page-hero', props: { crumbs: 'Home|home; Careers|join-us; Jobs', kicker: 'Careers', title: 'Explore opportunities', lead: 'Cloud, data, cyber security and business roles in more than 18 countries.', image: 'pexels-5945799' } },
+    { componentId: 'pat-page-hero', props: { crumbs: 'Home|home; Careers|join-us; Jobs', visual: 'fluted-5', kicker: 'Careers', title: 'Explore opportunities', lead: 'Cloud, data, cyber security and business roles in more than 18 countries.', image: 'pexels-5945799' } },
     { componentId: 'pat-jobs', props: { title: 'Find your next role', country: 'France' } },
     { componentId: 'pat-closing', props: { title: "It's all out there, just imagine", cta: 'Talk to a recruiter', ctaTo: 'contact', image: 'pexels-9489396' } },
     footer(),
@@ -522,7 +515,7 @@ function topicPage(id: string, name: string, kicker: string, lead: string, image
     name,
     sections: [
       header(),
-      { componentId: 'pat-page-hero', props: { crumbs: `Home|home; ${kicker}; ${name}`, kicker, title: name, lead, cta: 'Talk to an expert', ctaTo: 'contact', image } },
+      { componentId: 'pat-page-hero', props: { crumbs: `Home|home; ${kicker}; ${name}`, kicker, title: name, lead, cta: 'Talk to an expert', ctaTo: 'contact', image, visual: `fluted-${(id.length % 6) + 1}` } },
       { componentId: 'pat-case-teaser', props: { kicker: 'Success stories', title: `What we deliver`, items: STORIES, cta: 'Discover success stories', ctaTo: 'success-stories' } },
       contact(`Talk to a ${name} expert`, 'An expert replies within two working days.'),
       footer(),
@@ -539,7 +532,7 @@ const topics: SitePage[] = [
     name: 'Partners',
     sections: [
       header(),
-      { componentId: 'pat-page-hero', props: { crumbs: 'Home|home; Partners', kicker: 'Strategic partnerships', title: 'Built with the platforms you run on', lead: 'Certified teams on AWS, Google Cloud, Microsoft and ServiceNow.', image: 'pexels-30547567' } },
+      { componentId: 'pat-page-hero', props: { crumbs: 'Home|home; Partners', visual: 'fluted-3', kicker: 'Strategic partnerships', title: 'Built with the platforms you run on', lead: 'Certified teams on AWS, Google Cloud, Microsoft and ServiceNow.', image: 'pexels-30547567' } },
       { componentId: 'pat-partner-showcase', props: { kicker: 'Partners', title: 'Our strategic partners', items: PARTNERS.map(([n, pid, line]) => `${n}|${line}|${pid}`).join('; ') } },
       { componentId: 'pat-logos', props: { title: 'Partner badges', items: 'AWS, Google Cloud, Microsoft, ServiceNow', badge: 'Partner badge' } },
       footer(),
