@@ -303,7 +303,10 @@ await step('site rebuild: every page renders and passes axe (reduced motion)', a
   await dialog.getByRole('link', { name: 'Cybersecurity' }).waitFor();
   await page.keyboard.press('Escape');
   await dialog.waitFor({ state: 'detached' });
-  if ((await page.evaluate(() => document.activeElement?.textContent ?? '')).trim() !== 'Menu') throw new Error('focus did not return to the menu button');
+  // Focus goes back to the menu button on the next frame; allow a slow runner a moment.
+  await page.waitForFunction(() => (document.activeElement?.textContent ?? '').trim() === 'Menu', null, { timeout: 3000 }).catch(() => {
+    throw new Error('focus did not return to the menu button');
+  });
   await burger.click();
   await dialog.getByRole('link', { name: 'Careers' }).waitFor();
   await page.waitForTimeout(900);
