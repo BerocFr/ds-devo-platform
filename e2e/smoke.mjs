@@ -226,6 +226,18 @@ await step('site rebuild: home renders from patterns, in the live order', async 
     const b = await loc.boundingBox();
     if (!b || b.y + b.height > 900) throw new Error(`below the fold: ${b ? Math.round(b.y + b.height) : 'missing'}px`);
   }
+  // Same promise on short screens: a 1280 x 720 laptop and a 1000 x 600 window.
+  for (const [w, h] of [[1280, 720], [1000, 600]]) {
+    await page.setViewportSize({ width: w, height: h });
+    await page.waitForTimeout(400);
+    for (const loc of [page.getByRole('link', { name: 'Get in Touch' }).first(), page.getByText('11,000+ experts in 25+ countries').first()]) {
+      const b = await loc.boundingBox();
+      if (!b || b.y + b.height > h) throw new Error(`below the fold at ${w}x${h}: ${b ? Math.round(b.y + b.height) : 'missing'}px`);
+    }
+    await shot(`20-site-home-${w}x${h}`);
+  }
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.waitForTimeout(300);
   const order = await page.locator('.site-block').evaluateAll((els) => els.map((e) => e.getAttribute('data-pattern')));
   const expected = ['Site header', 'Hero with media', 'Featured stories', 'Expertise grid', 'Partner showcase', 'Story teaser', 'Story split', 'Partner band', 'Closing statement', 'Site footer'];
   if (order.join('|') !== expected.join('|')) throw new Error(`order ${order.join(', ')}`);

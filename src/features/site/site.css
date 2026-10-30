@@ -263,3 +263,8 @@
 .site-screen.header-overlay > .site-block:first-child .ds-siteheader3:not(.is-open) {
   background: transparent;
 }
+
+/* The home hero fills the first screen below the prototype notice. */
+.site-root .ds-cinema.home {
+  min-height: calc(100svh - 44px);
+}

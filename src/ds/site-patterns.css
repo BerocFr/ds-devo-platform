@@ -2120,3 +2120,43 @@ button.ds-stepcard:hover .ds-stepcard-in {
 .ds-cinema-actions .ds-btn2 {
   min-height: 56px;
 }
+
+/* Hero claim sized by width AND height, so the claim, the actions and the proof stay above the
+   fold on short laptop screens too (owner screenshot, 2026-10-30). */
+.ds-cinema.home .ds-dxl {
+  font-size: clamp(1.9rem, min(0.9rem + 3.3cqi, 5.6svh), 4rem);
+  max-width: 24ch;
+}
+.ds-cinema.home .ds-heroCard {
+  width: min(100%, 380px, 58svh);
+}
+@media (max-height: 820px) {
+  .ds-cinema.home {
+    min-height: 0;
+    padding-top: 100px;
+    padding-bottom: 24px;
+  }
+  .ds-cinema.home .ds-cinema-in {
+    gap: 14px;
+  }
+  .ds-cinema.home .ds-lead2 {
+    font-size: 1.02rem;
+  }
+  .ds-cinema.home .ds-cinema-actions .ds-btn2 {
+    min-height: 50px;
+  }
+  .ds-cinema.home .ds-heroCard .ds-photo {
+    aspect-ratio: 16 / 9;
+  }
+}
+.ds-inlink {
+  white-space: nowrap;
+}
+@container screen (max-width: 1180px) {
+  .ds-bar-locale {
+    display: none !important;
+  }
+  .ds-inline-nav {
+    margin-left: 24px !important;
+  }
+}
