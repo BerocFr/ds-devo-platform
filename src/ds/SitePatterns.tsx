@@ -30,6 +30,7 @@ import {
   Sparkles,
   Users,
   Workflow,
+  Award,
   type LucideIcon,
 } from 'lucide-react';
 import { Fragment, useEffect, useId, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react';
@@ -103,6 +104,7 @@ const ICONS: Record<string, LucideIcon> = {
   key: KeyRound,
   building: Building2,
   workflow: Workflow,
+  award: Award,
 };
 
 /** Icon per service name. Lucide (DS-Devo D-M2), decorative. */
@@ -217,9 +219,7 @@ function CountUp({ value }: { value: string }) {
 function Label({ children }: { children: ReactNode }) {
   return (
     <span className="ds-plus">
-      <span className="p" aria-hidden>
-        +
-      </span>
+      <span className="dot" aria-hidden />
       {children}
     </span>
   );
@@ -637,7 +637,7 @@ export function renderSitePattern(def: ComponentDef, inst: ComponentInstance, ct
       const at = accent ? title.indexOf(accent) : -1;
       if (inst.variantId !== 'card')
         return (
-          <section className={`ds-sec2 ${tone(p, 'paper')} ds-kpis`}>
+          <section className={`ds-sec2 ${tone(p, 'mist')} ds-kpis`}>
             <div className="ds-kpis-label">
               <Label>{title}</Label>
             </div>
@@ -647,19 +647,29 @@ export function renderSitePattern(def: ComponentDef, inst: ComponentInstance, ct
                   {s(p.body)}
                 </p>
               ) : null}
-              <dl className="ds-kpis-grid">
-                {figs.map(([v, bold, rest], i) => (
-                  <div key={v + i} data-reveal style={st(i)}>
-                    <dt>
+            </div>
+            <ul className="ds-kpicards" role="list">
+              {figs.map(([v, bold, rest, icon, tag], i) => {
+                const I = ICONS[icon] ?? Sparkles;
+                const dark = String(i + 1) === (s(p.highlight) || '2');
+                return (
+                  <li key={v + i} className={`ds-kpicard ${dark ? 't-night' : ''}`} data-reveal style={st(i)}>
+                    <div className="ds-kpicard-top">
+                      <I className="ds-kpicard-icon" aria-hidden strokeWidth={1.5} />
+                      {tag ? <span className="ds-kpicard-tag">{tag}</span> : null}
+                    </div>
+                    <p className="ds-kpicard-value">
+                      <CountUp value={v} />
+                    </p>
+                    <p className="ds-kpicard-text">
                       {bold ? <strong>{bold}</strong> : null}
                       {bold && rest ? ' ' : null}
                       {rest}
-                    </dt>
-                    <dd><CountUp value={v} /></dd>
-                  </div>
-                ))}
-              </dl>
-            </div>
+                    </p>
+                  </li>
+                );
+              })}
+            </ul>
           </section>
         );
       return (

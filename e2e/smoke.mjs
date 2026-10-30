@@ -239,7 +239,7 @@ await step('site rebuild: home renders from patterns, in the live order', async 
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.waitForTimeout(300);
   const order = await page.locator('.site-block').evaluateAll((els) => els.map((e) => e.getAttribute('data-pattern')));
-  const expected = ['Site header', 'Hero with media', 'Impact intro', 'Featured stories', 'Expertise grid', 'Partner showcase', 'Story teaser', 'Story split', 'Partner band', 'Closing statement', 'Site footer'];
+  const expected = ['Site header', 'Hero with media', 'Impact intro', 'Intro statement', 'Featured stories', 'Expertise grid', 'Partner showcase', 'Story teaser', 'Story split', 'Partner band', 'Closing statement', 'Site footer'];
   if (order.join('|') !== expected.join('|')) throw new Error(`order ${order.join(', ')}`);
   await page.waitForTimeout(1300);
   await shot('20-site-home');

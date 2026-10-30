@@ -160,10 +160,10 @@ const home: SitePage = {
       variantId: 'statement',
       props: {
         figures: [
-          '2,400+|AI projects|delivered yearly with 350+ atomic agents',
-          '11,000+|AI-Certified Experts|with 25,000+ Certifications',
-          '5,000+||Happy Customers',
-          '5|Partner of the Year Awards|for AI-era innovation + 10 Specialisations',
+          '2,400+|AI projects|delivered yearly with 350+ atomic agents|brain|AI delivery',
+          '11,000+|AI-Certified Experts|with 25,000+ Certifications|graduation|Expertise',
+          '5,000+|Happy Customers||users|Customers',
+          '5|Partner of the Year Awards|for AI-era innovation + 10 Specialisations|award|Recognition',
         ].join('; '),
         title: 'We are Agents of Change',
         accent: 'Agents of Change',
