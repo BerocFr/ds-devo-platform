@@ -86,7 +86,7 @@ export const seedTokens: DesignToken[] = [
   t('font.size.medium', 'fontSize', 'primitive', 'Typography', '1.5rem', 'brand', 'h4.'),
   t('font.size.large', 'fontSize', 'primitive', 'Typography', '2rem', 'brand', 'h3.'),
   // Fluid display scale (bench-04), relative to the width of the screen the section sits in.
-  t('font.size.display-xl', 'fontSize', 'primitive', 'Typography', 'clamp(2.4rem, 1rem + 4.2cqi, 5rem)', 'derived', 'Home hero only.'),
+  t('font.size.display-xl', 'fontSize', 'primitive', 'Typography', 'clamp(2.1rem, 0.9rem + 3.3cqi, 4rem)', 'derived', 'Home hero only.'),
   t('font.size.display-l', 'fontSize', 'primitive', 'Typography', 'clamp(2.5rem, 1.67rem + 3.7cqi, 5rem)', 'derived', 'Page heroes, closing statements.'),
   t('font.size.display-m', 'fontSize', 'primitive', 'Typography', 'clamp(2rem, 1.5rem + 2.22cqi, 3.5rem)', 'derived', 'Section titles.'),
   t('font.size.display-s', 'fontSize', 'primitive', 'Typography', 'clamp(1.5rem, 1.17rem + 1.48cqi, 2.5rem)', 'derived', 'Card and row titles.'),

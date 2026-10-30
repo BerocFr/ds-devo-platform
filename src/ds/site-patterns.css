@@ -1836,8 +1836,9 @@ button.ds-stepcard:hover .ds-stepcard-in {
   padding-bottom: clamp(2.5rem, 1.5rem + 2cqi, 4rem);
 }
 .ds-cinema.home .ds-dxl {
-  max-width: 19ch;
-  line-height: 1.02;
+  max-width: 22ch;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
 }
 .ds-cinema.home .ds-lead2 {
   max-width: 44ch;

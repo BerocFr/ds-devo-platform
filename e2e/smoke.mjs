@@ -52,7 +52,12 @@ const axe = async (label) => {
   return res;
 };
 // Screenshots are evidence, not assertions: freeze CSS animations and allow slow software rendering.
-const shot = (n) => page.screenshot({ path: `e2e/shots/${n}.png`, animations: 'disabled', timeout: 60000 });
+const warnings = [];
+const shot = (n) =>
+  page.screenshot({ path: `e2e/shots/${n}.png`, animations: 'disabled', timeout: 60000 }).catch((e) => {
+    // A screenshot that the software renderer cannot produce in time is reported, not failed.
+    warnings.push(`screenshot ${n}: ${e.message.split('\n')[0]}`);
+  });
 
 await page.goto(BASE + '#/overview');
 await step('overview renders the brand-to-experience chain', async () => {
@@ -330,6 +335,7 @@ await step('mobile width: shell stays usable', async () => {
 await browser.close();
 server.kill();
 console.log(steps.join('\n'));
+if (warnings.length) console.log('WARNINGS:\n' + warnings.join('\n'));
 // Surface failures as GitHub annotations so they are readable without the raw log.
 if (process.env.GITHUB_ACTIONS) for (const s of steps.filter((x) => x.startsWith('FAIL'))) console.log(`::error::${s.replace(/\x1b\[[0-9;]*m/g, '').slice(0, 400)}`);
 if (process.env.GITHUB_ACTIONS) for (const a of axeFindings) console.log(`::error::AXE ${a.slice(0, 300)}`);
