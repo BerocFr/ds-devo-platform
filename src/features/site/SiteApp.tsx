@@ -216,7 +216,7 @@ function AboutPrototype({ defs }: { defs: Map<string, ComponentDef> }) {
         <h2 className="ds-display">Motion</h2>
         <p className="ds-measure">
           From the benchmark of 26 agency sites seen on Awwwards (DS-Devo bench-03): scroll reveals that fade and rise 16px in 600ms, the page headline revealed word by word once, staggered grids (50ms,
-          six items at most), photos revealed by a clip, a crossfade between pages, and a partner row that moves slowly with a pause button. Rejected: scroll-jacking, cursor followers, autoplay without
+          six items at most), photos revealed by a clip and a crossfade between pages. A moving partner row with a pause button exists in the library for campaign pages only; these corporate pages keep it static. Rejected: scroll-jacking, cursor followers, autoplay without
           pause. With reduced motion requested, nothing moves.
         </p>
       </section>

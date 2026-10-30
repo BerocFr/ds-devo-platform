@@ -195,7 +195,6 @@ const home: SitePage = {
     },
     {
       componentId: 'pat-logos',
-      variantId: 'marquee',
       props: { title: 'Partner badges', items: 'AWS, Google Cloud, Microsoft, ServiceNow', badge: 'Partner badge' },
     },
     {
@@ -211,7 +210,7 @@ const home: SitePage = {
     'Strategic partnerships: one line per partner says what the partnership brings, each card links to the partner page.',
     'Success stories: the heading and its action now come with three stories, so the claim has proof next to it.',
     'About: the figures (11,000+ employees, 25+ countries, 4 partnerships) are pulled out of the paragraph into a figure row.',
-    'Partner badges: one band, moving slowly with a visible pause control; static when reduced motion is requested.',
+    'Partner badges: one static band (DS-Devo D-M9: no marquee on corporate pages; the moving variant with a pause control stays in the library for campaign pages).',
     'Closing banner: gets an action, so the page ends on a next step.',
     'Footer: rebuilt with grouped links (services, partners, company) and a legal line.',
   ],

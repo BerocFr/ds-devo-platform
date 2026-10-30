@@ -162,10 +162,10 @@ function Kicker({ children }: { children: ReactNode }) {
 function RevealTitle({ text, as: Tag = 'h1', className = '' }: { text: string; as?: 'h1' | 'h2'; className?: string }) {
   const words = text.split(/\s+/).filter(Boolean);
   return (
-    <Tag className={`${className} ds-wordreveal`} data-reveal="words">
+    <Tag className={`${className} ds-wordreveal`} data-reveal="words" aria-label={text}>
       {words.map((w, i) => (
         <Fragment key={i}>
-          <span className="w">
+          <span className="w" aria-hidden>
             <span style={{ '--i': Math.min(i, 12) } as CSSProperties}>{w}</span>
           </span>
           {i < words.length - 1 ? ' ' : null}

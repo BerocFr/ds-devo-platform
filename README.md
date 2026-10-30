@@ -57,7 +57,7 @@ They came from an analysis of devoteam.com (12 use cases, 19 insights, 38 compon
 - **UI pass**: each page lists what changed compared with the live page (missing calls to action added, experts linked to contact, figures pulled out of paragraphs, an office search, a contact section closing each service page).
 - **Photos**: 37 royalty-free photos from Pexels (`src/data/photos.json`), loaded from the Pexels CDN at view time; token-built brand art replaces any photo that cannot load. No stock face is put on a real person: experts show initials.
 - **Icons**: Lucide.
-- **Motion**: from the agency benchmark (DS-Devo `docs/slices/research/bench-03-motion-agencies.md`): scroll fade and rise, headline word reveal once per page, staggered grids, photo clip reveal, page crossfade, a partner row with a pause control. Tokens `motion.expressive.*` are marked derived. Reduced motion turns all of it off.
+- **Motion**: from the agency benchmark (DS-Devo `docs/slices/research/bench-03-motion-agencies.md`): scroll fade and rise, headline word reveal once per page, staggered grids, photo clip reveal, page crossfade. The moving partner row (with a pause control) exists as a library variant for campaign pages only; the corporate pages keep it static (DS-Devo D-M9). Tokens `motion.expressive.*` are marked derived. Reduced motion turns all of it off.
 - **Sample content**: stories other than Cellnex, jobs, assessment questions and the generic service and partner pages are samples; forms send nothing. A banner on every page says it is a prototype.
 
 ## Journey generation from the catalog
