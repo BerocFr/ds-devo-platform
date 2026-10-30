@@ -214,6 +214,8 @@ await step('persistence: reload keeps the generated journey', async () => {
 await step('site rebuild: home renders from patterns, in the live order', async () => {
   await page.goto(BASE + '#/site');
   await page.getByRole('heading', { level: 1, name: /Your Forward Deployed Tech Partner/ }).waitFor();
+  await page.evaluate(() => document.fonts.ready);
+  await page.waitForTimeout(300);
   // Claim, actions, proof and the success story card all sit above the fold at 1440 x 900.
   for (const loc of [page.getByRole('link', { name: 'Get in Touch' }).first(), page.getByText('11,000+ experts in 25+ countries').first(), page.locator('.ds-heroCard').first()]) {
     const b = await loc.boundingBox();
@@ -325,6 +327,9 @@ await step('mobile width: shell stays usable', async () => {
 await browser.close();
 server.kill();
 console.log(steps.join('\n'));
+// Surface failures as GitHub annotations so they are readable without the raw log.
+if (process.env.GITHUB_ACTIONS) for (const s of steps.filter((x) => x.startsWith('FAIL'))) console.log(`::error::${s.replace(/\x1b\[[0-9;]*m/g, '').slice(0, 400)}`);
+if (process.env.GITHUB_ACTIONS) for (const a of axeFindings) console.log(`::error::AXE ${a.slice(0, 300)}`);
 if (axeFindings.length) console.log('AXE:\n' + axeFindings.join('\n'));
 if (errors.length) console.log('CONSOLE ERRORS:\n' + [...new Set(errors)].join('\n'));
 const failed = steps.filter((s) => s.startsWith('FAIL')).length + (errors.length ? 1 : 0);
