@@ -10,6 +10,9 @@ export type RenderMode = 'thumb' | 'preview' | 'interactive';
 interface RenderCtx {
   mode: RenderMode;
   onAction?: (instanceId: string) => void;
+  /** Site host only: resolves link keys to hrefs (see SitePatterns). */
+  linkFor?: (key: string) => string | undefined;
+  current?: string;
 }
 
 const list = (v: unknown) =>

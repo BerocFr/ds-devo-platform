@@ -1,0 +1,375 @@
+{
+  "source_note": "Photos from Pexels (pexels.com), free to use with no attribution required under the Pexels license. IDs and subjects were taken from pexels.com search result pages fetched on 2026-10-30 (photo 29267512 page fetched directly). Credits are inferred from Pexels download filenames and may differ slightly from profile display names. Image URLs follow the deterministic images.pexels.com pattern and were not downloaded.",
+  "photos": [
+    {
+      "id": "pexels-29267512",
+      "theme": "hero",
+      "alt": "A diverse team collaborating around laptops in a modern office",
+      "url": "https://images.pexels.com/photos/29267512/pexels-photo-29267512.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "page": "https://www.pexels.com/photo/diverse-team-collaboration-in-modern-workspace-29267512/",
+      "credit": "Matheus Bertelli",
+      "license": "Pexels",
+      "verified": true
+    },
+    {
+      "id": "pexels-28589369",
+      "theme": "hero",
+      "alt": "Blue light trails on a dark background",
+      "url": "https://images.pexels.com/photos/28589369/pexels-photo-28589369.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "page": "https://www.pexels.com/photo/dynamic-blue-light-trails-against-dark-background-28589369/",
+      "credit": "Tobi and Chris",
+      "license": "Pexels",
+      "verified": true
+    },
+    {
+      "id": "pexels-6804068",
+      "theme": "hero",
+      "alt": "A team of developers working at computer screens in a modern tech office",
+      "url": "https://images.pexels.com/photos/6804068/pexels-photo-6804068.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "page": "https://www.pexels.com/photo/men-sitting-at-the-desks-in-an-office-and-using-computers-6804068/",
+      "credit": "cottonbro studio",
+      "license": "Pexels",
+      "verified": true
+    },
+    {
+      "id": "pexels-8386437",
+      "theme": "ai-data",
+      "alt": "A robotic hand touching a digital network on a blue background",
+      "url": "https://images.pexels.com/photos/8386437/pexels-photo-8386437.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "page": "https://www.pexels.com/photo/robot-s-hand-on-a-blue-background-8386437/",
+      "credit": "Tara Winstead",
+      "license": "Pexels",
+      "verified": true
+    },
+    {
+      "id": "pexels-6476261",
+      "theme": "ai-data",
+      "alt": "A group of professionals discussing data analytics on laptops",
+      "url": "https://images.pexels.com/photos/6476261/pexels-photo-6476261.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "page": "https://www.pexels.com/photo/a-group-of-people-using-laptops-6476261/",
+      "credit": "Mikael Blomkvist",
+      "license": "Pexels",
+      "verified": true
+    },
+    {
+      "id": "pexels-30547567",
+      "theme": "ai-data",
+      "alt": "Abstract visualization of digital circuit blocks with glowing lights",
+      "url": "https://images.pexels.com/photos/30547567/pexels-photo-30547567.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "page": "https://www.pexels.com/photo/abstract-digital-circuit-block-graphic-art-30547567/",
+      "credit": "Pachon in Motion",
+      "license": "Pexels",
+      "verified": true
+    },
+    {
+      "id": "pexels-1181354",
+      "theme": "cloud",
+      "alt": "An engineer using a laptop while monitoring servers in a modern server room",
+      "url": "https://images.pexels.com/photos/1181354/pexels-photo-1181354.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "page": "https://www.pexels.com/photo/software-engineer-standing-beside-server-racks-1181354/",
+      "credit": "Christina Morillo",
+      "license": "Pexels",
+      "verified": true
+    },
+    {
+      "id": "pexels-17489150",
+      "theme": "cloud",
+      "alt": "A blue lit server rack in a data center",
+      "url": "https://images.pexels.com/photos/17489150/pexels-photo-17489150.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "page": "https://www.pexels.com/photo/light-on-computer-hardware-17489150/",
+      "credit": "Cookiecutter",
+      "license": "Pexels",
+      "verified": true
+    },
+    {
+      "id": "pexels-11857023",
+      "theme": "cloud",
+      "alt": "A laptop showing a cloud scene on its screen in natural light",
+      "url": "https://images.pexels.com/photos/11857023/pexels-photo-11857023.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "page": "https://www.pexels.com/photo/a-laptop-on-the-white-surface-11857023/",
+      "credit": "",
+      "license": "Pexels",
+      "verified": true
+    },
+    {
+      "id": "pexels-5380792",
+      "theme": "cybersecurity",
+      "alt": "Two monitors showing green code in a dark room",
+      "url": "https://images.pexels.com/photos/5380792/pexels-photo-5380792.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "page": "https://www.pexels.com/photo/close-up-view-of-system-hacking-5380792/",
+      "credit": "Tima Miroshnichenko",
+      "license": "Pexels",
+      "verified": true
+    },
+    {
+      "id": "pexels-5483240",
+      "theme": "cybersecurity",
+      "alt": "A laptop displaying the words cyber security in an office",
+      "url": "https://images.pexels.com/photos/5483240/pexels-photo-5483240.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "page": "https://www.pexels.com/photo/laptop-with-cyber-security-text-on-the-screen-5483240/",
+      "credit": "cottonbro studio",
+      "license": "Pexels",
+      "verified": true
+    },
+    {
+      "id": "pexels-8108728",
+      "theme": "cybersecurity",
+      "alt": "Circuit board with a neon glow behind a diagonal grid",
+      "url": "https://images.pexels.com/photos/8108728/pexels-photo-8108728.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "page": "https://www.pexels.com/photo/printed-circuit-board-behind-a-wire-mesh-8108728/",
+      "credit": "Mikhail Nilov",
+      "license": "Pexels",
+      "verified": true
+    },
+    {
+      "id": "pexels-1181745",
+      "theme": "digital-workplace",
+      "alt": "Colleagues around a table on a video call with a remote coworker",
+      "url": "https://images.pexels.com/photos/1181745/pexels-photo-1181745.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "page": "https://www.pexels.com/photo/diverse-coworkers-having-online-conference-in-modern-office-1181745/",
+      "credit": "Christina Morillo",
+      "license": "Pexels",
+      "verified": true
+    },
+    {
+      "id": "pexels-8512131",
+      "theme": "digital-workplace",
+      "alt": "A woman on a video call shown on a laptop screen",
+      "url": "https://images.pexels.com/photos/8512131/pexels-photo-8512131.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "page": "https://www.pexels.com/photo/photo-of-a-woman-on-the-screen-of-a-laptop-8512131/",
+      "credit": "Artem Podrez",
+      "license": "Pexels",
+      "verified": true
+    },
+    {
+      "id": "pexels-7495607",
+      "theme": "consulting",
+      "alt": "A team meeting around a whiteboard in a modern office",
+      "url": "https://images.pexels.com/photos/7495607/pexels-photo-7495607.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "page": "https://www.pexels.com/photo/a-man-explaining-in-front-of-the-whiteboard-7495607/",
+      "credit": "Moe Magners",
+      "license": "Pexels",
+      "verified": true
+    },
+    {
+      "id": "pexels-7876664",
+      "theme": "consulting",
+      "alt": "Colleagues discussing charts drawn on a whiteboard",
+      "url": "https://images.pexels.com/photos/7876664/pexels-photo-7876664.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "page": "https://www.pexels.com/photo/people-looking-at-the-graph-on-the-board-7876664/",
+      "credit": "Karola G",
+      "license": "Pexels",
+      "verified": true
+    },
+    {
+      "id": "pexels-9489396",
+      "theme": "careers",
+      "alt": "A group of smiling young professionals against a blue backdrop",
+      "url": "https://images.pexels.com/photos/9489396/pexels-photo-9489396.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "page": "https://www.pexels.com/photo/colleagues-standing-beside-each-other-9489396/",
+      "credit": "Gabby K",
+      "license": "Pexels",
+      "verified": true
+    },
+    {
+      "id": "pexels-7581000",
+      "theme": "careers",
+      "alt": "A person holding a red gift box with a welcome to the team note",
+      "url": "https://images.pexels.com/photos/7581000/pexels-photo-7581000.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "page": "https://www.pexels.com/photo/man-holding-a-red-present-7581000/",
+      "credit": "RDNE Stock project",
+      "license": "Pexels",
+      "verified": true
+    },
+    {
+      "id": "pexels-5945799",
+      "theme": "careers",
+      "alt": "A diverse group of colleagues talking in a modern office with laptops and coffee",
+      "url": "https://images.pexels.com/photos/5945799/pexels-photo-5945799.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "page": "https://www.pexels.com/photo/a-group-of-people-having-a-meeting-in-the-office-5945799/",
+      "credit": "Theo Decker",
+      "license": "Pexels",
+      "verified": true
+    },
+    {
+      "id": "pexels-1181260",
+      "theme": "careers",
+      "alt": "Three women working together on laptops on a shared project",
+      "url": "https://images.pexels.com/photos/1181260/pexels-photo-1181260.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "page": "https://www.pexels.com/photo/woman-in-black-and-white-striped-top-1181260/",
+      "credit": "Christina Morillo",
+      "license": "Pexels",
+      "verified": true
+    },
+    {
+      "id": "pexels-9275222",
+      "theme": "events",
+      "alt": "An audience watching a speaker on stage at a conference",
+      "url": "https://images.pexels.com/photos/9275222/pexels-photo-9275222.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "page": "https://www.pexels.com/photo/people-sitting-inside-the-auditorium-9275222/",
+      "credit": "FreeStockPro",
+      "license": "Pexels",
+      "verified": true
+    },
+    {
+      "id": "pexels-8761541",
+      "theme": "events",
+      "alt": "A woman presenting with a microphone at a business seminar",
+      "url": "https://images.pexels.com/photos/8761541/pexels-photo-8761541.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "page": "https://www.pexels.com/photo/woman-in-gray-suit-holding-microphone-8761541/",
+      "credit": "Pavel Danilyuk",
+      "license": "Pexels",
+      "verified": true
+    },
+    {
+      "id": "pexels-6632624",
+      "theme": "insights",
+      "alt": "A person typing on a laptop while holding a book",
+      "url": "https://images.pexels.com/photos/6632624/pexels-photo-6632624.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "page": "https://www.pexels.com/photo/a-person-holding-a-book-while-typing-on-a-laptop-6632624/",
+      "credit": "Karola G",
+      "license": "Pexels",
+      "verified": true
+    },
+    {
+      "id": "pexels-27524202",
+      "theme": "insights",
+      "alt": "A laptop, a book and a cup of coffee on a cozy desk",
+      "url": "https://images.pexels.com/photos/27524202/pexels-photo-27524202.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "page": "https://www.pexels.com/photo/a-person-reading-a-book-on-a-laptop-27524202/",
+      "credit": "Esra Salturk",
+      "license": "Pexels",
+      "verified": true
+    },
+    {
+      "id": "pexels-12932191",
+      "theme": "insights",
+      "alt": "Close-up of glowing blue and green fiber optic strands",
+      "url": "https://images.pexels.com/photos/12932191/pexels-photo-12932191.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "page": "https://www.pexels.com/photo/close-up-shot-of-a-green-and-blue-fiber-optic-12932191/",
+      "credit": "FreeStockPro",
+      "license": "Pexels",
+      "verified": true
+    },
+    {
+      "id": "pexels-30702962",
+      "theme": "office-paris",
+      "alt": "Paris rooftops and skyline seen from Montmartre on a cloudy day",
+      "url": "https://images.pexels.com/photos/30702962/pexels-photo-30702962.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "page": "https://www.pexels.com/photo/panoramic-view-of-paris-cityscape-from-montmartre-30702962/",
+      "credit": "TBD Traveller",
+      "license": "Pexels",
+      "verified": true
+    },
+    {
+      "id": "pexels-33624323",
+      "theme": "office-brussels",
+      "alt": "Aerial view of Brussels under a colorful sky",
+      "url": "https://images.pexels.com/photos/33624323/pexels-photo-33624323.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "page": "https://www.pexels.com/photo/panoramic-view-of-brussels-with-palais-de-justice-33624323/",
+      "credit": "2morrowdrm",
+      "license": "Pexels",
+      "verified": true
+    },
+    {
+      "id": "pexels-11936697",
+      "theme": "office-lisbon",
+      "alt": "Pedestrians on Rua Augusta in central Lisbon",
+      "url": "https://images.pexels.com/photos/11936697/pexels-photo-11936697.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "page": "https://www.pexels.com/photo/rua-augusta-street-in-lisbon-portugal-11936697/",
+      "credit": "J Costa",
+      "license": "Pexels",
+      "verified": true
+    },
+    {
+      "id": "pexels-4927541",
+      "theme": "office-madrid",
+      "alt": "Madrid skyline at golden hour",
+      "url": "https://images.pexels.com/photos/4927541/pexels-photo-4927541.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "page": "https://www.pexels.com/photo/dense-city-architecture-4927541/",
+      "credit": "Quique Olivar",
+      "license": "Pexels",
+      "verified": true
+    },
+    {
+      "id": "pexels-18026521",
+      "theme": "office-amsterdam",
+      "alt": "Traditional canal houses and trees along an Amsterdam waterfront",
+      "url": "https://images.pexels.com/photos/18026521/pexels-photo-18026521.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "page": "https://www.pexels.com/photo/traditional-houses-by-the-canal-in-amsterdam-netherlands-18026521/",
+      "credit": "Matreding",
+      "license": "Pexels",
+      "verified": true
+    },
+    {
+      "id": "pexels-36722338",
+      "theme": "office-milan",
+      "alt": "Milan skyline with modern towers and historic buildings",
+      "url": "https://images.pexels.com/photos/36722338/pexels-photo-36722338.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "page": "https://www.pexels.com/photo/aerial-view-of-modern-milano-architecture-36722338/",
+      "credit": "Earth Photart",
+      "license": "Pexels",
+      "verified": true
+    },
+    {
+      "id": "pexels-28288859",
+      "theme": "office-london",
+      "alt": "Wide view of the London skyline and the River Thames",
+      "url": "https://images.pexels.com/photos/28288859/pexels-photo-28288859.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "page": "https://www.pexels.com/photo/the-city-of-london-from-the-air-28288859/",
+      "credit": "Chengxin Zhao",
+      "license": "Pexels",
+      "verified": true
+    },
+    {
+      "id": "pexels-30475302",
+      "theme": "office-frankfurt",
+      "alt": "Frankfurt skyline with modern towers at dusk",
+      "url": "https://images.pexels.com/photos/30475302/pexels-photo-30475302.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "page": "https://www.pexels.com/photo/architectural-skyline-of-frankfurt-at-dusk-30475302/",
+      "credit": "Fabio Riccobono",
+      "license": "Pexels",
+      "verified": true
+    },
+    {
+      "id": "pexels-27086922",
+      "theme": "portrait",
+      "alt": "Portrait of a smiling woman in a business suit",
+      "url": "https://images.pexels.com/photos/27086922/pexels-photo-27086922.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "page": "https://www.pexels.com/photo/a-woman-in-a-business-suit-smiling-27086922/",
+      "credit": "Helena Lopes",
+      "license": "Pexels",
+      "verified": true
+    },
+    {
+      "id": "pexels-37148308",
+      "theme": "portrait",
+      "alt": "Portrait of a smiling man in a blue suit and tie",
+      "url": "https://images.pexels.com/photos/37148308/pexels-photo-37148308.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "page": "https://www.pexels.com/photo/portrait-of-a-business-professional-in-suit-37148308/",
+      "credit": "Vincent Santamaria",
+      "license": "Pexels",
+      "verified": true
+    },
+    {
+      "id": "pexels-12396627",
+      "theme": "portrait",
+      "alt": "Portrait of a smiling woman in formal business attire",
+      "url": "https://images.pexels.com/photos/12396627/pexels-photo-12396627.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "page": "https://www.pexels.com/photo/a-woman-wearing-formal-attire-sitting-while-smiling-at-the-camera-12396627/",
+      "credit": "Pisey Tuon",
+      "license": "Pexels",
+      "verified": true
+    },
+    {
+      "id": "pexels-38453564",
+      "theme": "portrait",
+      "alt": "Portrait of a man in a modern office with bookshelves",
+      "url": "https://images.pexels.com/photos/38453564/pexels-photo-38453564.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "page": "https://www.pexels.com/photo/confident-businessman-in-modern-office-setting-38453564/",
+      "credit": "Xomidov",
+      "license": "Pexels",
+      "verified": true
+    }
+  ]
+}

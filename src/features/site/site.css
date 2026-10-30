@@ -1,0 +1,246 @@
+/* Host of the devoteam.com rebuild: prototype notice, pattern overlay, and the motion layer
+   (bench-03). Motion classes only apply under .motion-on, which the host sets when the visitor
+   has not asked for reduced motion; without it every element is visible and still. */
+
+.site-root {
+  min-height: 100%;
+  background: var(--c-panel);
+}
+.site-scope {
+  min-height: 100%;
+}
+.site-screen {
+  min-height: 100vh;
+}
+.site-main:focus {
+  outline: none;
+}
+.site-skip {
+  position: absolute;
+  left: 8px;
+  top: -48px;
+  z-index: 50;
+  padding: 10px 14px;
+  border-radius: 6px;
+  background: #1b1f24;
+  color: #fff;
+}
+.site-skip:focus {
+  top: 8px;
+}
+
+/* Prototype notice: platform chrome, not Devoteam brand */
+.site-proto {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  padding: 8px max(16px, env(safe-area-inset-left, 0px));
+  background: #1b1f24;
+  color: #fff;
+  font: 500 12.5px/1.4 var(--f-ui);
+}
+.site-proto-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.site-proto-actions {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  align-items: center;
+}
+.site-proto a,
+.site-proto button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 28px;
+  color: #fff;
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.site-proto :focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+/* Pattern overlay */
+.site-block {
+  position: relative;
+}
+.show-patterns .site-block {
+  outline: 2px dashed #2556e0;
+  outline-offset: -2px;
+}
+.site-patterntag {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 6;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #2556e0;
+  color: #fff;
+  font: 600 12px/1.6 var(--f-ui);
+  text-decoration: none;
+}
+.site-patterntag:hover {
+  text-decoration: underline;
+}
+
+.site-notice {
+  position: fixed;
+  left: 50%;
+  bottom: max(20px, env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  z-index: 60;
+}
+.site-notice span {
+  display: block;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: #1b1f24;
+  color: #fff;
+  font: 500 13px/1.4 var(--f-ui);
+  box-shadow: 0 8px 28px rgba(20, 26, 34, 0.2);
+}
+
+/* About page */
+.site-facts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 28px;
+}
+.site-pagenote {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px 0;
+  border-top: 1px solid var(--ds-color-border-default);
+}
+.site-pagenote a {
+  color: var(--ds-color-text-default);
+}
+.site-sections {
+  margin: 0;
+  padding-left: 22px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 26px;
+  font-size: var(--ds-font-size-small);
+}
+.site-changes {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 4px;
+  max-width: 80ch;
+}
+.site-credits {
+  margin: 0;
+  padding-left: 18px;
+  columns: 2 260px;
+  font-size: var(--ds-font-size-small);
+}
+.site-credits a {
+  color: var(--ds-color-text-default);
+}
+
+/* ---------------- Motion (bench-03) ---------------- */
+.site-root.motion-on .site-main {
+  animation: site-in var(--ds-motion-duration-lg) var(--ds-motion-easing-standard);
+}
+@keyframes site-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Fade and rise */
+.site-root.motion-on [data-reveal='']:not(.is-in),
+.site-root.motion-on [data-reveal='true']:not(.is-in) {
+  opacity: 0;
+  transform: translateY(var(--ds-motion-expressive-distance-md));
+}
+.site-root.motion-on [data-reveal=''],
+.site-root.motion-on [data-reveal='true'] {
+  transition:
+    opacity var(--ds-motion-expressive-duration-moderate) var(--ds-motion-expressive-easing-entrance),
+    transform var(--ds-motion-expressive-duration-moderate) var(--ds-motion-expressive-easing-entrance);
+  transition-delay: calc(var(--i, 0) * var(--ds-motion-expressive-stagger));
+}
+
+/* Clip reveal for photos. The clip sits on the photo, not on the observed wrapper:
+   IntersectionObserver treats a fully clipped target as not visible. */
+.site-root.motion-on [data-reveal='clip'] > .ds-photo {
+  clip-path: inset(0 0 0 0 round var(--ds-radius-card));
+  transition: clip-path var(--ds-motion-expressive-duration-slow) var(--ds-motion-expressive-easing-emphasized);
+}
+.site-root.motion-on [data-reveal='clip']:not(.is-in) > .ds-photo {
+  clip-path: inset(0 0 100% 0 round var(--ds-radius-card));
+}
+.site-root.motion-on [data-reveal='clip'] img {
+  transition: transform var(--ds-motion-expressive-duration-slower) var(--ds-motion-expressive-easing-emphasized);
+}
+.site-root.motion-on [data-reveal='clip']:not(.is-in) img {
+  transform: scale(1.08);
+}
+
+/* Headline, word by word, once */
+.site-root.motion-on [data-reveal='words'] .w > span {
+  transition: transform var(--ds-motion-expressive-duration-slower) var(--ds-motion-expressive-easing-emphasized);
+  transition-delay: calc(var(--i, 0) * 40ms);
+}
+.site-root.motion-on [data-reveal='words']:not(.is-in) .w > span {
+  transform: translateY(110%);
+}
+
+/* Partner row: moves only with motion on, pauses on demand, on hover and on focus */
+.ds-logoband2.marquee .dup,
+.ds-logoband2.marquee [data-marquee-toggle] {
+  display: none;
+}
+.ds-logoband2.marquee .ds-logotrack ul {
+  flex-wrap: wrap;
+}
+.site-root.motion-on .ds-logoband2.marquee .dup {
+  display: flex;
+}
+.site-root.motion-on .ds-logoband2.marquee [data-marquee-toggle] {
+  display: inline-flex;
+}
+.site-root.motion-on .ds-logoband2.marquee .ds-logotrack ul {
+  flex-wrap: nowrap;
+  animation: site-marquee 40s linear infinite;
+}
+.site-root.motion-on .ds-logoband2.marquee.is-paused .ds-logotrack ul,
+.site-root.motion-on .ds-logoband2.marquee .ds-logotrack:hover ul,
+.site-root.motion-on .ds-logoband2.marquee:focus-within .ds-logotrack ul {
+  animation-play-state: paused;
+}
+@keyframes site-marquee {
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-root * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+.site-screen > * {
+  margin: 0 !important;
+}

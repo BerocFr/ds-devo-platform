@@ -9,7 +9,8 @@ export type Route =
   | { name: 'journeys' }
   | { name: 'journey'; id: string; node?: string }
   | { name: 'insights'; id?: string }
-  | { name: 'settings' };
+  | { name: 'settings' }
+  | { name: 'site'; page?: string };
 
 export function parseRoute(hash: string): Route {
   const [path, query = ''] = hash.replace(/^#/, '').split('?');
@@ -26,6 +27,8 @@ export function parseRoute(hash: string): Route {
       return { name: 'insights', id: parts[1] };
     case 'settings':
       return { name: 'settings' };
+    case 'site':
+      return { name: 'site', page: parts[1] };
     default:
       return { name: 'overview' };
   }
@@ -47,6 +50,8 @@ export function href(r: Route): string {
       return r.id ? `#/insights/${r.id}` : '#/insights';
     case 'settings':
       return '#/settings';
+    case 'site':
+      return r.page ? `#/site/${r.page}` : '#/site';
   }
 }
 

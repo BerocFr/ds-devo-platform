@@ -1,19 +1,19 @@
-import { ArrowRight, ArrowUpRight, Calendar, Check, ChevronDown, Clock, Copy, FileText, Globe, Link2, Mail, MapPin, Phone, Play, Search, Upload, X } from 'lucide-react';
+import { ArrowRight, Calendar, Check, ChevronDown, Clock, Copy, FileText, Globe, Link2, Mail, MapPin, Phone, Play, Search, Upload, X } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 import type { ComponentDef, ComponentInstance } from '../domain/types';
 import './sections.css';
+import { renderSitePattern, type SiteCtx } from './SitePatterns';
 
 // Renderers for the atoms and section patterns added after the devoteam.com analysis.
 // Every value reads --ds-* tokens through sections.css; copy is sample content, editable per instance.
 
-type Ctx = { mode: 'thumb' | 'preview' | 'interactive'; onAction?: (id: string) => void };
+type Ctx = SiteCtx;
 
 const list = (v: unknown, sep = ',') =>
   String(v ?? '')
     .split(sep)
     .map((s) => s.trim())
     .filter(Boolean);
-const pairs = (v: unknown) => list(v, ';').map((p) => p.split(':').map((x) => x.trim()) as [string, string?]);
 
 /** Brand art built from tokens only: coral disc, mint field, ink lines. Decorative. */
 export function Art({ seed = 1, label }: { seed?: number; label?: string }) {
@@ -109,6 +109,8 @@ export function renderSiteKind(def: ComponentDef, inst: ComponentInstance, ctx: 
   const p = inst.props;
   const ti = ctx.mode === 'thumb' ? -1 : undefined;
   const id = (s: string) => `${inst.id}-${s}`;
+  const rich = renderSitePattern(def, inst, ctx);
+  if (rich !== undefined) return rich;
   switch (def.kind) {
     /* ---------- atoms ---------- */
     case 'localeSwitcher':
@@ -287,46 +289,6 @@ export function renderSiteKind(def: ComponentDef, inst: ComponentInstance, ctx: 
       );
 
     /* ---------- patterns ---------- */
-    case 'pExpertiseGrid':
-      return (
-        <section className="ds-sec tone-light">
-          <Kicker>Expertise</Kicker>
-          <h2 className="ds-display">{String(p.title)}</h2>
-          <div className="ds-grid three">
-            {list(p.items).map((x, i) => (
-              <button key={x} type="button" className="ds-tile" tabIndex={ti} onClick={ctx.mode === 'interactive' ? () => ctx.onAction?.(inst.id) : undefined}>
-                <Art seed={i} />
-                <span className="ds-tile-t">{x}</span>
-                <ArrowUpRight size={20} aria-hidden />
-              </button>
-            ))}
-          </div>
-        </section>
-      );
-    case 'pStatsBand':
-      return (
-        <section className="ds-sec tone-ink">
-          <div className="ds-grid four">
-            {pairs(p.items).map(([v, l]) => (
-              <div key={v} className="ds-bigstat">
-                <span className="v">{v}</span>
-                <span className="l">{l}</span>
-              </div>
-            ))}
-          </div>
-        </section>
-      );
-    case 'pLogoBand':
-      return (
-        <section className="ds-sec tone-subtle ds-logoband">
-          <h2 className="ds-h">{String(p.title)}</h2>
-          <ul aria-label="Partners">
-            {['Google Cloud', 'AWS', 'Microsoft', 'ServiceNow', 'Salesforce', 'SAP'].map((x) => (
-              <li key={x}>{x}</li>
-            ))}
-          </ul>
-        </section>
-      );
     case 'pCaseGrid':
       return (
         <section className="ds-sec tone-light">
@@ -342,30 +304,6 @@ export function renderSiteKind(def: ComponentDef, inst: ComponentInstance, ctx: 
                 <span className="ds-card-title">{client}</span>
                 <span className="ds-case-r">{result}</span>
               </button>
-            ))}
-          </div>
-        </section>
-      );
-    case 'pExpertTeam':
-      return (
-        <section className="ds-sec tone-mint">
-          <Kicker>People</Kicker>
-          <h2 className="ds-display">{String(p.title)}</h2>
-          <div className="ds-grid three">
-            {pairs(p.names).map(([nm, role]) => (
-              <article key={nm} className="ds-person">
-                <div className="ds-avatar" aria-hidden>
-                  {nm
-                    .split(' ')
-                    .map((w) => w[0])
-                    .join('')}
-                </div>
-                <h3 className="ds-card-title">{nm}</h3>
-                <p className="ds-muted">{role}</p>
-                <button type="button" className="ds-link" tabIndex={ti} onClick={ctx.mode === 'interactive' ? () => ctx.onAction?.(inst.id) : undefined}>
-                  Contact {nm.split(' ')[0]}
-                </button>
-              </article>
             ))}
           </div>
         </section>
@@ -625,19 +563,6 @@ export function renderSiteKind(def: ComponentDef, inst: ComponentInstance, ctx: 
                 <h3 className="ds-card-title">{tt}</h3>
               </article>
             ))}
-          </div>
-        </section>
-      );
-    case 'pOfficeDirectory':
-      return (
-        <section className="ds-sec tone-light">
-          <h2 className="ds-display">{String(p.title)}</h2>
-          <SearchBar label="Find an office by city or country" placeholder="for example: Lisbon" count="42 offices in 22 countries" ctx={ctx} id={id('q')} />
-          <h3 className="ds-h">France</h3>
-          <div className="ds-grid three">
-            <OfficeCard o={['Levallois-Perret', '12 rue Exemple, 92300 Levallois-Perret', '+33 1 23 45 67 89', 'contact.fr@example.com', 'Headquarters']} ti={ti} />
-            <OfficeCard o={['Lyon', '8 place Exemple, 69002 Lyon', '+33 4 12 34 56 78', 'lyon@example.com', '']} ti={ti} />
-            <OfficeCard o={['Toulouse', '3 allée Exemple, 31000 Toulouse', '+33 5 12 34 56 78', 'toulouse@example.com', '']} ti={ti} />
           </div>
         </section>
       );

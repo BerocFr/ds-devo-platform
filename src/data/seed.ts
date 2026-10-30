@@ -8,7 +8,7 @@ import type {
   UseCase,
 } from '../domain/types';
 import { benchComponents } from './benchCatalog';
-import { siteAtoms, sitePatterns } from './siteCatalog';
+import { rebuildPatterns, siteAtoms, sitePatterns } from './siteCatalog';
 import { siteInsights, siteUseCases } from './siteUseCases';
 
 // Seed workspace: Devoteam. Brand values mirror BerocFr/DS-Devo brand/README.md
@@ -88,6 +88,15 @@ export const seedTokens: DesignToken[] = [
   t('motion.duration.md', 'duration', 'primitive', 'Motion', '200ms', 'brand', 'Small state change.'),
   t('motion.duration.lg', 'duration', 'primitive', 'Motion', '300ms', 'brand', 'Default transition.'),
   t('motion.easing.standard', 'easing', 'primitive', 'Motion', 'cubic-bezier(0.4, 0, 0.2, 1)', 'brand', 'UI movement.'),
+  // Expressive motion for page storytelling, derived from the agency benchmark (DS-Devo bench-03).
+  // The brand defines no motion personality yet; these are labelled derived, not brand.
+  t('motion.expressive.duration.moderate', 'duration', 'primitive', 'Motion', '600ms', 'derived', 'Scroll reveals (K72; agency reveals of 1.0 to 1.1 s, trimmed). bench-03.'),
+  t('motion.expressive.duration.slow', 'duration', 'primitive', 'Motion', '800ms', 'derived', 'Clip reveals and hover zoom (Gravity Works 700 ms, cover wipes 0.9 s trimmed). bench-03.'),
+  t('motion.expressive.duration.slower', 'duration', 'primitive', 'Motion', '1000ms', 'derived', 'Hero headline only, once per page (By-Kin, Blackstone). bench-03.'),
+  t('motion.expressive.easing.entrance', 'easing', 'primitive', 'Motion', 'cubic-bezier(0.22, 1, 0.36, 1)', 'derived', 'Elements entering the view. bench-03.'),
+  t('motion.expressive.easing.emphasized', 'easing', 'primitive', 'Motion', 'cubic-bezier(0.16, 1, 0.3, 1)', 'derived', 'Expo out for headline and clip reveals (fromanother, By-Kin, Cuberto, K72). bench-03.'),
+  t('motion.expressive.distance.md', 'dimension', 'primitive', 'Motion', '16px', 'derived', 'Rise distance of scroll reveals. bench-03.'),
+  t('motion.expressive.stagger', 'duration', 'primitive', 'Motion', '50ms', 'derived', 'Delay between items, capped at 6 items (Uncommon, By-Kin). bench-03.'),
 ];
 
 export const seedPrinciples: DesignPrinciple[] = [
@@ -456,10 +465,11 @@ export function createSeed(): PlatformData {
     },
     tokens: seedTokens,
     principles: seedPrinciples,
-    components: [...seedComponents.map((c) => ({ ...c, provenance: c.provenance ?? { source: 'core' as const } })), ...benchComponents, ...siteAtoms, ...sitePatterns],
+    components: [...seedComponents.map((c) => ({ ...c, provenance: c.provenance ?? { source: 'core' as const } })), ...benchComponents, ...siteAtoms, ...sitePatterns, ...rebuildPatterns],
     useCases: [...seedUseCases, ...siteUseCases],
     insights: [...seedInsights, ...siteInsights],
     journeys: [seedJourney, recoverJourney],
+    catalogVersion: 2,
     activity: [
       { id: 'a-1', at: '2026-10-29T08:40:00.000Z', text: 'Journey "Quick account creation" sent for review', target: { kind: 'journey', id: 'jr-signup' } },
       { id: 'a-2', at: '2026-10-28T16:20:00.000Z', text: 'Journey "Recover after expired code" created', target: { kind: 'journey', id: 'jr-recover' } },

@@ -110,8 +110,30 @@ export function setRepository(r: PlatformRepository) {
   repository = r;
 }
 
+/**
+ * A workspace saved before a catalog update keeps everything it has; library items, tokens,
+ * use cases and insights that the seed added since are appended (never overwritten).
+ */
+export function mergeSeed(saved: PlatformData, seed: PlatformData = createSeed()): PlatformData {
+  const target = seed.catalogVersion ?? 1;
+  if ((saved.catalogVersion ?? 1) >= target) return saved;
+  const add = <T,>(mine: T[], theirs: T[], key: (x: T) => string) => {
+    const have = new Set(mine.map(key));
+    return [...mine, ...theirs.filter((x) => !have.has(key(x)))];
+  };
+  return {
+    ...saved,
+    tokens: add(saved.tokens, seed.tokens, (x) => x.name),
+    components: add(saved.components, seed.components, (x) => x.id),
+    useCases: add(saved.useCases, seed.useCases, (x) => x.id),
+    insights: add(saved.insights, seed.insights, (x) => x.id),
+    catalogVersion: target,
+  };
+}
+
 function initialData(): PlatformData {
-  return repository.load() ?? createSeed();
+  const saved = repository.load();
+  return saved ? mergeSeed(saved) : createSeed();
 }
 
 const stamp = () => new Date().toISOString();

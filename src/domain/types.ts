@@ -152,7 +152,22 @@ export type ComponentKind =
   | 'pOfferings'
   | 'pAssessment'
   | 'pEventDetail'
-  | 'pJobDetail';
+  | 'pJobDetail'
+  // Patterns added for the devoteam.com rebuild (every block of the site is a pattern).
+  | 'pSiteHeader'
+  | 'pSiteFooter'
+  | 'pHeroMedia'
+  | 'pPageHero'
+  | 'pFeatureDuo'
+  | 'pPartnerShowcase'
+  | 'pCaseTeaser'
+  | 'pStorySplit'
+  | 'pClosingStatement'
+  | 'pChallenges'
+  | 'pFeatureRows'
+  | 'pSpotlightBand'
+  | 'pIntroStatement'
+  | 'pSignposts';
 
 /** Where a catalog entry comes from. Bench entries trace back to the DS-Devo benchmark arbitration. */
 export interface ComponentProvenance {
@@ -270,4 +285,6 @@ export interface PlatformData {
   insights: Insight[];
   journeys: Journey[];
   activity: ActivityEntry[];
+  /** Version of the seed catalog this workspace has absorbed (see mergeSeed). */
+  catalogVersion?: number;
 }
