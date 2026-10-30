@@ -269,11 +269,7 @@ export function renderSitePattern(def: ComponentDef, inst: ComponentInstance, ct
                 </ol>
               </nav>
             ) : null}
-            {s(p.kicker) ? (
-              <span className="ds-glasspill">
-                <Sparkles size={16} aria-hidden strokeWidth={1.75} /> {s(p.kicker)}
-              </span>
-            ) : null}
+            {s(p.kicker) ? <Badge text={s(p.kicker)} /> : null}
             <RevealTitle text={s(p.title)} className="ds-dl" />
             {s(p.lead) ? (
               <p className="ds-lead2" data-reveal style={st(2)}>
@@ -699,6 +695,18 @@ function Duotone({ image, width, visual }: { image: string; width: number; visua
   );
 }
 
+/** Hero badge: a signal dot in a soft halo, the line, and a hairline gradient border. */
+function Badge({ text }: { text: string }) {
+  return (
+    <span className="ds-badge2" data-reveal>
+      <span className="sig" aria-hidden>
+        <span />
+      </span>
+      {text}
+    </span>
+  );
+}
+
 function HeroCinema({ p, ctx, inst, thumbW }: { p: ComponentInstance['props']; ctx: SiteCtx; inst: ComponentInstance; thumbW?: number }) {
   const people = list(p.proofPeople).length ? list(p.proofPeople) : ['pexels-27086922', 'pexels-37148308', 'pexels-12396627'];
   return (
@@ -706,11 +714,7 @@ function HeroCinema({ p, ctx, inst, thumbW }: { p: ComponentInstance['props']; c
       <Duotone image={s(p.image)} visual={s(p.visual) || 'fluted-1'} width={thumbW ?? 2200} />
       <div className="ds-cinema-grid">
         <div className="ds-cinema-in">
-          {s(p.kicker) ? (
-            <span className="ds-glasspill" data-reveal>
-              <Sparkles size={16} aria-hidden strokeWidth={1.75} /> {s(p.kicker)}
-            </span>
-          ) : null}
+          {s(p.kicker) ? <Badge text={s(p.kicker)} /> : null}
           <RevealTitle text={s(p.title)} className="ds-dxl" />
           {s(p.lead) ? (
             <p className="ds-lead2" data-reveal style={st(3)}>
@@ -718,11 +722,18 @@ function HeroCinema({ p, ctx, inst, thumbW }: { p: ComponentInstance['props']; c
             </p>
           ) : null}
           <div className="ds-cinema-actions" data-reveal style={st(4)}>
-            {s(p.cta) ? (
-              <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 primary big">
-                <Go /> {s(p.cta)}
-              </L>
-            ) : null}
+            <span className="ds-row2">
+              {s(p.cta) ? (
+                <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 primary">
+                  <Go /> {s(p.cta)}
+                </L>
+              ) : null}
+              {s(p.cta2) ? (
+                <L to={s(p.cta2To)} ctx={ctx} inst={inst} className="ds-btn2 ghost">
+                  {s(p.cta2)}
+                </L>
+              ) : null}
+            </span>
             {s(p.proof) ? (
               <span className="ds-proof">
                 <span className="faces" aria-hidden>
@@ -740,8 +751,14 @@ function HeroCinema({ p, ctx, inst, thumbW }: { p: ComponentInstance['props']; c
             <span data-reveal style={st(5)} className="ds-heroCard-in">
               <Photo id={s(p.cardImage)} width={thumbW ?? 800} className="zoom" />
               <span className="ds-heroCard-label">
-                <span className="ds-small">{s(p.cardKicker) || 'Featured story'}</span>
+                <span className="k">
+                  <span className="dot" aria-hidden />
+                  {s(p.cardKicker) || 'Featured story'}
+                </span>
                 <span className="t">{s(p.cardTitle)}</span>
+                <span className="go" aria-hidden>
+                  <CornerDownRight size={18} />
+                </span>
               </span>
             </span>
           </L>
@@ -792,6 +809,23 @@ function SiteHeader({ p, ctx, inst }: { p: ComponentInstance['props']; ctx: Site
   const services = rows(p.services);
   const ti = ctx.mode === 'thumb' ? -1 : undefined;
   const interactive = ctx.mode === 'interactive';
+  // Desktop: inline navigation with a services dropdown. Phone and tablet: the burger panel.
+  const [drop, setDrop] = useState(false);
+  const dropId = useId();
+  useEffect(() => {
+    if (!drop) return;
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setDrop(false);
+    const onDoc = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setDrop(false);
+    };
+    document.addEventListener('keydown', onKey);
+    document.addEventListener('mousedown', onDoc);
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.removeEventListener('mousedown', onDoc);
+    };
+  }, [drop]);
+  useEffect(() => setDrop(false), [ctx.current]);
 
   const openMenu = () => {
     // The panel is rendered in a portal (outside the container-query scope, so position:
@@ -930,9 +964,47 @@ function SiteHeader({ p, ctx, inst }: { p: ComponentInstance['props']; ctx: Site
           {brand}
           <span aria-hidden className="dot" />
         </L>
+        <nav aria-label="Main" className="ds-inline-nav">
+          <ul>
+            {services.length ? (
+              <li className="has-drop">
+                <button type="button" className="ds-inlink" aria-expanded={drop} aria-controls={dropId} tabIndex={ti} onClick={() => setDrop(!drop)}>
+                  {s(p.servicesLabel) || 'Services'} <ChevronDown size={14} aria-hidden className="chev" />
+                </button>
+                <ul id={dropId} className="ds-navdrop" hidden={!drop}>
+                  {services.map(([label, to], i) => {
+                    const I = iconFor(label);
+                    return (
+                      <li key={label} style={st(i)}>
+                        <L to={to || label} ctx={ctx} inst={inst} className="ds-navdrop-link">
+                          <span className="ic" aria-hidden>
+                            <I size={18} strokeWidth={1.5} />
+                          </span>
+                          {label}
+                        </L>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </li>
+            ) : null}
+            {items.map(([label, to]) => (
+              <li key={label}>
+                <NavLink to={to} ctx={ctx} inst={inst} current={cur(to)} className="ds-inlink">
+                  {label}
+                </NavLink>
+              </li>
+            ))}
+          </ul>
+        </nav>
         <div className="ds-bar-actions">
+          {s(p.locale) ? (
+            <span className="ds-localechip2 ds-bar-locale">
+              <Globe size={14} aria-hidden /> {s(p.locale)}
+            </span>
+          ) : null}
           {s(p.cta) ? (
-            <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 primary sm ds-bar-cta">
+            <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 ghost sm ds-bar-cta">
               {s(p.cta)}
             </L>
           ) : null}

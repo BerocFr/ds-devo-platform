@@ -213,7 +213,12 @@ await step('persistence: reload keeps the generated journey', async () => {
 
 await step('site rebuild: home renders from patterns, in the live order', async () => {
   await page.goto(BASE + '#/site');
-  await page.getByRole('heading', { level: 1, name: /Build your AI-driven transformation/ }).waitFor();
+  await page.getByRole('heading', { level: 1, name: /Your Forward Deployed Tech Partner/ }).waitFor();
+  // Claim, actions, proof and the success story card all sit above the fold at 1440 x 900.
+  for (const loc of [page.getByRole('link', { name: 'Get in Touch' }).first(), page.getByText('11,000+ experts in 25+ countries').first(), page.locator('.ds-heroCard').first()]) {
+    const b = await loc.boundingBox();
+    if (!b || b.y + b.height > 900) throw new Error(`below the fold: ${b ? Math.round(b.y + b.height) : 'missing'}px`);
+  }
   const order = await page.locator('.site-block').evaluateAll((els) => els.map((e) => e.getAttribute('data-pattern')));
   const expected = ['Site header', 'Hero with media', 'Featured stories', 'Expertise grid', 'Partner showcase', 'Story teaser', 'Story split', 'Partner band', 'Closing statement', 'Site footer'];
   if (order.join('|') !== expected.join('|')) throw new Error(`order ${order.join(', ')}`);
@@ -229,22 +234,17 @@ await step('site rebuild: home renders from patterns, in the live order', async 
   await page.evaluate(() => window.scrollTo(0, 0));
 });
 
-await step('site rebuild: burger menu, services submenu, keyboard and page navigation', async () => {
-  const burger = page.getByRole('button', { name: 'Menu', exact: true });
-  await burger.click();
-  const dialog = page.getByRole('dialog', { name: 'Menu' });
-  await dialog.waitFor();
-  await page.waitForTimeout(900);
-  await dialog.getByRole('button', { name: 'Services' }).click();
-  await dialog.getByRole('link', { name: 'Cybersecurity' }).waitFor();
-  await page.waitForTimeout(700);
-  await shot('26-site-menu');
+await step('site rebuild: navigation, services dropdown, keyboard and page navigation', async () => {
+  const nav = page.getByRole('navigation', { name: 'Main' });
+  const services = nav.getByRole('button', { name: 'Services' });
+  await services.click();
+  await nav.getByRole('link', { name: 'Cybersecurity' }).waitFor();
+  await page.waitForTimeout(500);
+  await shot('26-site-dropdown');
   await page.keyboard.press('Escape');
-  await dialog.waitFor({ state: 'detached' });
-  if ((await page.evaluate(() => document.activeElement?.textContent ?? '')).trim() !== 'Menu') throw new Error('focus did not return to the menu button');
-  await burger.click();
-  await dialog.getByRole('button', { name: 'Services' }).click();
-  await dialog.locator('.ds-menu-sub').getByRole('link', { name: 'Cybersecurity' }).click();
+  if ((await services.getAttribute('aria-expanded')) !== 'false') throw new Error('Escape did not close the dropdown');
+  await services.click();
+  await nav.locator('.ds-navdrop').getByRole('link', { name: 'Cybersecurity' }).click();
   await page.getByRole('heading', { level: 1, name: 'Secure your journey, guard your path' }).waitFor();
   await page.getByRole('heading', { name: 'Alert Readiness Framework' }).waitFor();
   await page.getByRole('link', { name: /Contact Cyril/ }).click();
@@ -294,8 +294,16 @@ await step('site rebuild: every page renders and passes axe (reduced motion)', a
   await page.locator('h1').first().waitFor();
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   if (overflow > 1) throw new Error(`horizontal overflow ${overflow}px at 390px`);
-  await page.getByRole('button', { name: 'Menu', exact: true }).click();
-  await page.getByRole('dialog', { name: 'Menu' }).getByRole('link', { name: 'Careers' }).waitFor();
+  const burger = page.getByRole('button', { name: 'Menu', exact: true });
+  await burger.click();
+  const dialog = page.getByRole('dialog', { name: 'Menu' });
+  await dialog.getByRole('button', { name: 'Services' }).click();
+  await dialog.getByRole('link', { name: 'Cybersecurity' }).waitFor();
+  await page.keyboard.press('Escape');
+  await dialog.waitFor({ state: 'detached' });
+  if ((await page.evaluate(() => document.activeElement?.textContent ?? '')).trim() !== 'Menu') throw new Error('focus did not return to the menu button');
+  await burger.click();
+  await dialog.getByRole('link', { name: 'Careers' }).waitFor();
   await page.waitForTimeout(900);
   await shot('23-site-phone');
   await axe('site phone');

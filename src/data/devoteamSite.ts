@@ -139,14 +139,20 @@ const home: SitePage = {
       componentId: 'pat-hero-media',
       variantId: 'cinema',
       props: {
-        kicker: 'AI-driven tech consulting',
-        title: 'Build your AI-driven transformation on Cloud, Data and Cyber foundations',
-        lead: 'Assess your AI maturity in just 10 minutes.',
-        cta: 'Assess my AI maturity',
-        ctaTo: 'ai-maturity',
+        kicker: 'Building Agents of Change',
+        title: 'Your Forward Deployed Tech Partner for AI-Driven Business Transformation',
+        lead: 'Profit from AI built inside your business. Deployed to production, adopted by your teams.',
+        cta: 'Get in Touch',
+        ctaTo: 'contact',
+        cta2: 'Explore Services',
+        cta2To: 'services',
         proof: '11,000+ experts in 25+ countries',
         visual: 'fluted-1',
         proofPeople: 'pexels-27086922, pexels-37148308, pexels-12396627',
+        cardKicker: 'Success stories',
+        cardTitle: 'Become a leading company embracing AI',
+        cardImage: 'pexels-1181354',
+        cardTo: 'success-stories',
       },
     },
     {
@@ -208,7 +214,7 @@ const home: SitePage = {
     footer(),
   ],
   changes: [
-    'Hero: generated visual of coral light through fluted glass; the AI maturity assessment becomes an explicit red primary action (the live hero shows the text without a button), with a proof line and portraits.',
+    'Hero: the new positioning ("Your Forward Deployed Tech Partner for AI-Driven Business Transformation", owner copy), generated fluted-glass visual, red primary "Get in Touch" and "Explore Services", proof line with portraits and a success story card, all above the fold.',
     'Identity (bench-05, owner reference Rowalo): light canvases with black sections, coral plus labels, centred heads, staggered 24px cards, pill actions with a corner arrow, Montserrat 500 very large and tight.',
     'Spotlight: the two cards (Gemini, Microsoft 365 Copilot) get a section title and a link that names each story.',
     'Services: the ten services keep their order, each gets an icon and leads to its page.',
@@ -471,6 +477,19 @@ const successStories: SitePage = {
   changes: ['Rebuilt from search results only (the live index refused automated reading): searchable index with filters by expertise and pagination.'],
 };
 
+const servicesPage: SitePage = {
+  id: 'services',
+  name: 'Services',
+  sections: [
+    header(),
+    { componentId: 'pat-page-hero', props: { crumbs: 'Home|home; Services', kicker: 'Services', title: 'Our services', lead: 'From strategy to managed services, on cloud, data and cyber foundations.', visual: 'fluted-3' } },
+    { componentId: 'pat-expertise', props: { kicker: 'Services', title: 'Ten services, one AI-driven transformation', items: SERVICES.map(([l]) => l).join(', ') } },
+    { componentId: 'pat-closing', props: { kicker: 'Become an AI leader', title: 'Infinite possibilities to become an AI leader', cta: 'Get in Touch', ctaTo: 'contact' } },
+    footer(),
+  ],
+  changes: ['Services index, the destination of "Explore Services" in the home hero.'],
+};
+
 const contactPage: SitePage = {
   id: 'contact',
   name: 'Contact',
@@ -541,7 +560,7 @@ const topics: SitePage[] = [
   },
 ];
 
-export const SITE_PAGES: SitePage[] = [home, cybersecurity, cloudNative, joinUs, offices, successStories, contactPage, aiMaturity, jobs, ...topics];
+export const SITE_PAGES: SitePage[] = [home, cybersecurity, cloudNative, joinUs, offices, successStories, servicesPage, contactPage, aiMaturity, jobs, ...topics];
 
 export const SAMPLE_NOTES = [
   'Success stories other than Cellnex are anonymised samples, not real client references.',
