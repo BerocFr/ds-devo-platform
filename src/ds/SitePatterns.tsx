@@ -580,6 +580,47 @@ export function renderSitePattern(def: ComponentDef, inst: ComponentInstance, ct
       );
     }
 
+    case 'pImpactIntro': {
+      const figs = rows(p.figures);
+      const title = s(p.title);
+      const accent = s(p.accent);
+      const at = accent ? title.indexOf(accent) : -1;
+      return (
+        <section className={`ds-sec2 ${tone(p, 'mist')} ds-impact ${s(p.overlap) === 'no' ? '' : 'overlap'}`}>
+          <dl className="ds-impact-card">
+            {figs.map(([v, bold, rest], i) => (
+              <div key={v + i} data-reveal style={st(i)}>
+                <dt>
+                  {bold ? <strong>{bold}</strong> : null}
+                  {bold && rest ? ' ' : null}
+                  {rest}
+                </dt>
+                <dd>{v}</dd>
+              </div>
+            ))}
+          </dl>
+          <div className="ds-impact-intro">
+            <h2 className="ds-dm" data-reveal>
+              {at >= 0 ? (
+                <>
+                  {title.slice(0, at)}
+                  <span className="accent">{accent}</span>
+                  {title.slice(at + accent.length)}
+                </>
+              ) : (
+                title
+              )}
+            </h2>
+            {s(p.body) ? (
+              <p className="ds-lead2" data-reveal style={st(1)}>
+                {s(p.body)}
+              </p>
+            ) : null}
+          </div>
+        </section>
+      );
+    }
+
     case 'pIntroStatement':
       return (
         <section className={`ds-sec2 ${tone(p, 'paper')}`}>

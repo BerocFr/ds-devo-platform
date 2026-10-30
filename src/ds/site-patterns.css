@@ -2160,3 +2160,113 @@ button.ds-stepcard:hover .ds-stepcard-in {
     margin-left: 24px !important;
   }
 }
+
+/* ---------- Impact intro: figures card over the hero edge, then the statement ---------- */
+.ds-impact {
+  gap: clamp(3rem, 2rem + 4cqi, 7rem);
+  padding-top: 0;
+  overflow: visible;
+}
+.ds-impact.overlap {
+  margin-top: -64px;
+  z-index: 2;
+  border-radius: calc(var(--ds-radius-card) * 2) calc(var(--ds-radius-card) * 2) 0 0;
+}
+.ds-impact-card {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  margin: 0;
+  padding: 8px clamp(1.25rem, 1rem + 1.5cqi, 2.5rem);
+  border-radius: calc(var(--ds-radius-card) * 1.5);
+  background: var(--ds-color-surface-default);
+  box-shadow:
+    0 1px 0 color-mix(in srgb, var(--ds-color-surface-default) 80%, transparent) inset,
+    0 24px 60px color-mix(in srgb, var(--ds-color-surface-night) 14%, transparent);
+}
+.ds-impact.overlap .ds-impact-card {
+  margin-top: -40px;
+}
+.ds-impact-card > div {
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: clamp(1.25rem, 1rem + 1cqi, 2rem) 0;
+  border-bottom: 1px solid var(--ds-color-border-default);
+}
+.ds-impact-card > div:last-child {
+  border-bottom: 0;
+}
+.ds-impact-card dd {
+  margin: 0;
+  font-size: clamp(2.4rem, 1.8rem + 2.2cqi, 3.6rem);
+  font-weight: 500;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  color: var(--ds-color-text-default);
+}
+.ds-impact-card dt {
+  font-size: 1rem;
+  line-height: 1.45;
+  color: var(--ds-color-text-muted);
+  max-width: 26ch;
+}
+.ds-impact-card dt strong {
+  color: var(--ds-color-text-default);
+  font-weight: 600;
+}
+.ds-impact-intro {
+  display: grid;
+  gap: 24px 64px;
+  grid-template-columns: 1fr;
+  align-items: start;
+  padding-inline: clamp(0rem, -1rem + 4cqi, 4rem);
+}
+.ds-impact-intro .ds-dm {
+  max-width: 14ch;
+}
+.ds-impact-intro .accent {
+  color: var(--ds-color-action-primary);
+}
+.ds-impact-intro .ds-lead2 {
+  max-width: 60ch;
+  color: var(--ds-color-text-muted);
+}
+@container screen (min-width: 640px) {
+  .ds-impact-card {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 40px;
+  }
+  .ds-impact-card > div:nth-last-child(-n + 2) {
+    border-bottom: 0;
+  }
+}
+@container screen (min-width: 1000px) {
+  .ds-impact-card {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    column-gap: 0;
+    padding-block: 12px;
+  }
+  .ds-impact-card > div {
+    border-bottom: 0;
+    padding-inline: 28px;
+    border-left: 1px solid var(--ds-color-border-default);
+  }
+  .ds-impact-card > div:first-child {
+    border-left: 0;
+    padding-left: 12px;
+  }
+  .ds-impact-intro {
+    grid-template-columns: 0.9fr 1.2fr;
+  }
+}
+/* The hero leaves room for the overlapping card. */
+.ds-cinema.home {
+  padding-bottom: calc(clamp(2.5rem, 1.5rem + 2cqi, 4rem) + 64px);
+}
+@media (max-height: 820px) {
+  .ds-cinema.home {
+    padding-bottom: 88px;
+  }
+}

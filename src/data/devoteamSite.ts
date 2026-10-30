@@ -156,6 +156,20 @@ const home: SitePage = {
       },
     },
     {
+      componentId: 'pat-impact',
+      props: {
+        figures: [
+          '2,400+|AI projects|delivered yearly with 350+ atomic agents',
+          '11,000+|AI-Certified Experts|with 25,000+ Certifications',
+          '5,000+||Happy Customers',
+          '5|Partner of the Year Awards|for AI-era innovation + 10 Specialisations',
+        ].join('; '),
+        title: 'We are Agents of Change',
+        accent: 'Agents of Change',
+        body: 'Devoteam is a premium tech-native AI consulting firm working across EMEA. For 30 years, we have turned new technology, from the internet to cloud to AI, into bottom-line results for businesses and public institutions.',
+      },
+    },
+    {
       componentId: 'pat-feature-duo',
       props: {
         title: 'In the spotlight',
@@ -216,6 +230,7 @@ const home: SitePage = {
   changes: [
     'Hero: the new positioning ("Your Forward Deployed Tech Partner for AI-Driven Business Transformation", owner copy), generated fluted-glass visual, red primary "Get in Touch" and "Explore Services", proof line with portraits and a success story card, all above the fold.',
     'Identity (bench-05, owner reference Rowalo): light canvases with black sections, coral plus labels, centred heads, staggered 24px cards, pill actions with a corner arrow, Montserrat 500 very large and tight.',
+    'Impact intro (owner content): four key figures in a card that overlaps the hero edge, then "We are Agents of Change" and the positioning paragraph.',
     'Spotlight: the two cards (Gemini, Microsoft 365 Copilot) get a section title and a link that names each story.',
     'Services: the ten services keep their order, each gets an icon and leads to its page.',
     'Strategic partnerships: one line per partner says what the partnership brings, each card links to the partner page.',
