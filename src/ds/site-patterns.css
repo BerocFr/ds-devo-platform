@@ -2124,7 +2124,7 @@ button.ds-stepcard:hover .ds-stepcard-in {
 /* Hero claim sized by width AND height, so the claim, the actions and the proof stay above the
    fold on short laptop screens too (owner screenshot, 2026-10-30). */
 .ds-cinema.home .ds-dxl {
-  font-size: clamp(1.9rem, min(0.9rem + 3.3cqi, 5.6svh), 4rem);
+  font-size: clamp(2.1rem, min(1rem + 3.8cqi, 6.4svh), 4.5rem);
   max-width: 24ch;
 }
 .ds-cinema.home .ds-heroCard {
