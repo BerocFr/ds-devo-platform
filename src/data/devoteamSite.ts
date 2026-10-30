@@ -171,6 +171,17 @@ const home: SitePage = {
       },
     },
     {
+      componentId: 'pat-intro',
+      variantId: 'headline',
+      props: {
+        kicker: 'What we do',
+        lead: 'We advise. We build. We deploy.',
+        body: 'Devoteam builds impactful agentic AI solutions on top of strong Cloud, Data, and Cybersecurity foundations through strategic partnerships.',
+        cta: 'Explore Services',
+        ctaTo: 'services',
+      },
+    },
+    {
       componentId: 'pat-feature-duo',
       props: {
         title: 'In the spotlight',

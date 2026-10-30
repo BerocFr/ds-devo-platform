@@ -700,16 +700,37 @@ export function renderSitePattern(def: ComponentDef, inst: ComponentInstance, ct
 
     case 'pIntroStatement':
       return (
-        <section className={`ds-sec2 ${tone(p, 'paper')}`}>
+        <section className={`ds-sec2 ${tone(p, 'paper')} ds-intro ${inst.variantId === 'headline' ? 'headline' : ''}`}>
           <div className="ds-head center">
             {s(p.kicker) ? <Label>{s(p.kicker)}</Label> : null}
-            <p className="ds-dm wide" data-reveal>
-              {s(p.lead)}
-            </p>
+            {inst.variantId === 'headline' ? (
+              <h2 className="ds-intro-title" data-reveal>
+                {/* Each sentence stays whole, so lines break between sentences. */}
+                {s(p.lead)
+                  .split(/(?<=[.!?])\s+/)
+                  .map((part, i, all) => (
+                    <Fragment key={i}>
+                      <span className="ds-nobreak">{part}</span>
+                      {i < all.length - 1 ? ' ' : null}
+                    </Fragment>
+                  ))}
+              </h2>
+            ) : (
+              <p className="ds-dm wide" data-reveal>
+                {s(p.lead)}
+              </p>
+            )}
             {s(p.body) ? (
               <p className="ds-lead2" data-reveal style={st(1)}>
                 {s(p.body)}
               </p>
+            ) : null}
+            {s(p.cta) ? (
+              <div className="ds-intro-action" data-reveal style={st(2)}>
+                <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 primary">
+                  <Go /> {s(p.cta)}
+                </L>
+              </div>
             ) : null}
           </div>
         </section>

@@ -2331,3 +2331,28 @@ button.ds-stepcard:hover .ds-stepcard-in {
     padding-top: 0.5em;
   }
 }
+
+/* ---------- Intro statement, centred headline variant (owner reference, Rowalo "About studio") ---------- */
+.ds-intro.headline .ds-head {
+  gap: clamp(1.25rem, 1rem + 0.8cqi, 1.75rem);
+}
+.ds-intro-title {
+  margin: 0 auto;
+  font-size: clamp(2.4rem, 1.6rem + 3.4cqi, 5rem);
+  font-weight: 700;
+  line-height: 1.04;
+  letter-spacing: -0.045em;
+  max-width: 22ch;
+  text-wrap: balance;
+  color: var(--ds-color-text-default);
+}
+.ds-nobreak {
+  white-space: nowrap;
+}
+.ds-intro.headline .ds-lead2 {
+  max-width: 58ch;
+  color: var(--ds-color-text-muted);
+}
+.ds-intro-action {
+  margin-top: clamp(0.5rem, 0.25rem + 0.8cqi, 1.25rem);
+}
