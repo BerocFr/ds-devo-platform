@@ -164,6 +164,56 @@ function L({ to, ctx, inst, className, children, label }: { to?: string; ctx: Si
 }
 
 /** Section label: a coral plus and a short uppercase label. */
+/** Animates the number inside a figure such as "2,400+" once it scrolls into view.
+ *  Assistive tech reads the final value; reduced motion shows it at once. */
+function CountUp({ value }: { value: string }) {
+  const m = /^(\D*)([\d,.]+)(.*)$/.exec(value);
+  const ref = useRef<HTMLSpanElement>(null);
+  const target = m ? Number(m[2].replace(/,/g, '')) : 0;
+  const [shown, setShown] = useState<number | null>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!m || !el || target < 2) return;
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches || typeof IntersectionObserver === 'undefined') return;
+    setShown(0);
+    let raf = 0;
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((e) => e.isIntersecting)) return;
+        io.disconnect();
+        const t0 = performance.now();
+        const tick = (t: number) => {
+          const k = Math.min(1, (t - t0) / 1400);
+          if (k < 1) {
+            setShown(Math.round(target * (1 - Math.pow(1 - k, 3))));
+            raf = requestAnimationFrame(tick);
+          } else setShown(null);
+        };
+        raf = requestAnimationFrame(tick);
+      },
+      { rootMargin: '0px 0px -10% 0px' },
+    );
+    io.observe(el);
+    return () => {
+      io.disconnect();
+      cancelAnimationFrame(raf);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value]);
+  if (!m) return <>{value}</>;
+  const digits = shown === null ? m[2] : shown.toLocaleString('en-US');
+  return (
+    <span ref={ref} className="ds-count">
+      <span className="sr-only">{value}</span>
+      <span aria-hidden="true">
+        {m[1]}
+        {digits}
+        {m[3]}
+      </span>
+    </span>
+  );
+}
+
 function Label({ children }: { children: ReactNode }) {
   return (
     <span className="ds-plus">
@@ -605,7 +655,7 @@ export function renderSitePattern(def: ComponentDef, inst: ComponentInstance, ct
                       {bold && rest ? ' ' : null}
                       {rest}
                     </dt>
-                    <dd>{v}</dd>
+                    <dd><CountUp value={v} /></dd>
                   </div>
                 ))}
               </dl>
