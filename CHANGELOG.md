@@ -10,6 +10,7 @@ All notable changes to the Atelier platform (BerocFr/ds-devo-platform). The form
 
 ### Added
 
+- Forward Deployed Engineering as a working process (owner reference): stepped step cards with a 3D object each (Microsoft Fluent Emoji 3D, MIT) that floats and tilts toward the pointer, static under reduced motion; the statement panel stays as a variant. (d2eac54)
 - Home continuation from the owner capture of the live devoteam.com, in the live order after What we do: Forward Deployed Engineering, Multi Partner, Complete Tech Toolkit for AI, What Sets Us Apart, success story library, Change Starts Here, Insights from the field, FAQs. (681c609)
 - Six patterns: service steps panel `pat-fde`, partner cards `pat-partner-cards`, reasons and proof `pat-apart`, story library `pat-story-library` (search, topic filters, empty state, announced count), call to action with quotes `pat-change`, insights hub `pat-insights`. `catalogVersion` 4. (681c609)
 - Intro statement takes pills and a second action; footer takes a newsletter band. (681c609)
