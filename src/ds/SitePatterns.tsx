@@ -38,11 +38,12 @@ import {
   Star,
   type LucideIcon,
 } from 'lucide-react';
-import { Fragment, useEffect, useId, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import { Fragment, useEffect, useId, useMemo, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import type { ComponentDef, ComponentInstance } from '../domain/types';
 import { getPhoto, photoUrl } from '../data/photos';
 import { heroVisual } from '../data/heroVisuals';
+import { object3d } from '../data/objects3d';
 import { SignalField } from './SignalField';
 import './site-patterns.css';
 
@@ -1421,6 +1422,7 @@ type P = ComponentInstance['props'];
 
 /** Forward Deployed Engineering: a statement panel and the six service steps, one highlighted. */
 function FdeServices({ p, ctx, inst }: { p: P; ctx: SiteCtx; inst: ComponentInstance }) {
+  if (inst.variantId !== 'panel') return <ProcessSteps p={p} ctx={ctx} inst={inst} />;
   const I = ICONS[s(p.icon)] ?? Cog;
   const items = rows(p.items);
   const hi = s(p.highlight) || '2';
@@ -1766,5 +1768,83 @@ function Faq({ p, ti }: { p: P; ti?: number }) {
         ))}
       </div>
     </section>
+  );
+}
+
+/** Pointer tilt for a step card's 3D object (mouse only; reduced motion is handled in CSS). */
+function useTilt() {
+  const ref = useRef<HTMLSpanElement>(null);
+  const move = (e: ReactPointerEvent<HTMLElement>) => {
+    const el = ref.current;
+    if (!el || e.pointerType !== 'mouse') return;
+    const r = e.currentTarget.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - 0.5;
+    const y = (e.clientY - r.top) / r.height - 0.5;
+    el.style.setProperty('--rx', `${(-y * 18).toFixed(1)}deg`);
+    el.style.setProperty('--ry', `${(x * 22).toFixed(1)}deg`);
+  };
+  const leave = () => {
+    ref.current?.style.setProperty('--rx', '0deg');
+    ref.current?.style.setProperty('--ry', '0deg');
+  };
+  return { ref, move, leave };
+}
+
+/** Service steps as a working process (owner reference, 2026-10-31): centred head, step cards
+ *  with a step label, title, subtitle and a 3D object, stepped like the reference. */
+function ProcessSteps({ p, ctx, inst }: { p: P; ctx: SiteCtx; inst: ComponentInstance }) {
+  const items = rows(p.items);
+  return (
+    <section className={`ds-sec2 ${tone(p, 'mist')} ds-process`}>
+      <div className="ds-head center">
+        <Label>{s(p.kicker) || 'How we work'}</Label>
+        <h2 className="ds-h2" data-reveal>
+          {s(p.title)}
+        </h2>
+        {s(p.body) ? (
+          <p className="ds-lead2" data-reveal style={st(1)}>
+            {s(p.body)}{' '}
+            {s(p.link) ? (
+              <L to={s(p.linkTo)} ctx={ctx} inst={inst} className="ds-textlink2">
+                {s(p.link)}
+              </L>
+            ) : null}
+          </p>
+        ) : null}
+      </div>
+      <ol className="ds-process-steps" role="list">
+        {items.map(([title, sub, to, obj], i) => (
+          <ProcessStep key={title} n={i + 1} title={title} sub={sub} to={to} obj={object3d(obj)} ctx={ctx} inst={inst} />
+        ))}
+      </ol>
+      {s(p.cta) ? (
+        <div className="ds-center-action" data-reveal>
+          <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 primary">
+            {s(p.cta)}
+          </L>
+        </div>
+      ) : null}
+    </section>
+  );
+}
+
+function ProcessStep({ n, title, sub, to, obj, ctx, inst }: { n: number; title: string; sub: string; to: string; obj?: string; ctx: SiteCtx; inst: ComponentInstance }) {
+  const o = useTilt();
+  return (
+    <li data-reveal style={{ ...st(n - 1), '--float-delay': `${-(n * 0.9).toFixed(1)}s` } as CSSProperties} onPointerMove={o.move} onPointerLeave={o.leave}>
+      <L to={to} ctx={ctx} inst={inst} className="ds-process-card">
+        <span className="ds-plus">
+          <span className="dot" aria-hidden />
+          Step {pad(n)}
+        </span>
+        <span className="t">{title}</span>
+        <span className="d">{sub}</span>
+        {obj ? (
+          <span ref={o.ref} className="ds-obj3d" aria-hidden>
+            <img src={obj} alt="" width={256} height={256} loading="lazy" decoding="async" draggable={false} />
+          </span>
+        ) : null}
+      </L>
+    </li>
   );
 }

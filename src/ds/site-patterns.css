@@ -3422,3 +3422,107 @@ button.ds-stepcard:hover .ds-stepcard-in {
   grid-column: 1;
   grid-row: 1;
 }
+
+/* ---------- Service steps as a working process (owner reference, 2026-10-31) ---------- */
+.ds-process .ds-lead2 {
+  max-width: 62ch;
+}
+.ds-process-steps {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ds-process-steps > li {
+  border-radius: calc(var(--r-xl) * 1.25);
+}
+.ds-process-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  height: 100%;
+  min-height: clamp(340px, 300px + 6cqi, 440px);
+  padding: clamp(1.75rem, 1.4rem + 1cqi, 2.5rem) 24px 0;
+  border-radius: calc(var(--r-xl) * 1.25);
+  background: var(--ds-color-surface-default);
+  color: var(--ds-color-text-default);
+  text-align: center;
+  text-decoration: none;
+  overflow: hidden;
+}
+.ds-process-card .t {
+  margin-top: 4px;
+  font-size: clamp(1.6rem, 1.3rem + 1cqi, 2.3rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+.ds-process-card .d {
+  color: var(--ds-color-text-muted);
+  max-width: 26ch;
+}
+.ds-obj3d {
+  --rx: 0deg;
+  --ry: 0deg;
+  display: grid;
+  place-items: center;
+  margin-top: auto;
+  padding: 28px 0 36px;
+  perspective: 700px;
+}
+.ds-obj3d img {
+  width: clamp(130px, 110px + 4cqi, 180px);
+  height: auto;
+  filter: drop-shadow(0 22px 22px color-mix(in srgb, var(--ds-color-surface-night) 22%, transparent));
+  transform: rotateX(var(--rx)) rotateY(var(--ry));
+  transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+  animation: ds-float 6s ease-in-out infinite;
+  animation-delay: var(--float-delay, 0s);
+  user-select: none;
+}
+@keyframes ds-float {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -10px; }
+}
+.ds-process-card:hover .ds-obj3d img,
+.ds-process-card:focus-visible .ds-obj3d img {
+  scale: 1.06;
+}
+@container screen (min-width: 640px) {
+  .ds-process-steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@container screen (min-width: 1000px) {
+  .ds-process-steps {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: start;
+  }
+  /* Stepped like the reference: the second column a little lower, the third much lower. */
+  .ds-process-steps > li:nth-child(3n + 2) {
+    margin-top: 32px;
+  }
+  .ds-process-steps > li:nth-child(3n) {
+    margin-top: 150px;
+  }
+  .ds-process-steps > li:nth-child(n + 4) {
+    margin-top: 0;
+  }
+  .ds-process-steps > li:nth-child(5) {
+    margin-top: 32px;
+  }
+  .ds-process-steps > li:nth-child(6) {
+    margin-top: 150px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ds-obj3d img {
+    animation: none;
+    transition: none;
+    transform: none;
+  }
+}
