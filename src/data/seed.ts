@@ -488,7 +488,7 @@ export function createSeed(): PlatformData {
     useCases: [...seedUseCases, ...siteUseCases],
     insights: [...seedInsights, ...siteInsights],
     journeys: [seedJourney, recoverJourney],
-    catalogVersion: 3,
+    catalogVersion: 4,
     activity: [
       { id: 'a-1', at: '2026-10-29T08:40:00.000Z', text: 'Journey "Quick account creation" sent for review', target: { kind: 'journey', id: 'jr-signup' } },
       { id: 'a-2', at: '2026-10-28T16:20:00.000Z', text: 'Journey "Recover after expired code" created', target: { kind: 'journey', id: 'jr-recover' } },

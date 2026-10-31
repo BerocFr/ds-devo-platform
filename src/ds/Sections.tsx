@@ -1,4 +1,4 @@
-import { ArrowRight, Calendar, Check, ChevronDown, Clock, Copy, FileText, Globe, Link2, Mail, MapPin, Phone, Play, Search, Upload, X } from 'lucide-react';
+import { Calendar, Check, ChevronDown, Clock, Copy, FileText, Globe, Link2, Mail, MapPin, Phone, Play, Search, Upload, X } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 import type { ComponentDef, ComponentInstance } from '../domain/types';
 import './sections.css';
@@ -25,10 +25,11 @@ function Kicker({ children }: { children: ReactNode }) {
 }
 
 function Btn({ children, kind = 'primary', ctx, inst, icon = true }: { children: ReactNode; kind?: string; ctx: Ctx; inst: ComponentInstance; icon?: boolean }) {
+  // Text buttons carry no icon (owner, 2026-10-31); `icon` is kept for API compatibility.
+  void icon;
   return (
     <button type="button" className={`ds-btn ${kind}`} tabIndex={ctx.mode === 'thumb' ? -1 : undefined} onClick={ctx.mode === 'interactive' ? () => ctx.onAction?.(inst.id) : undefined}>
       {children}
-      {icon ? <ArrowRight size={16} aria-hidden /> : null}
     </button>
   );
 }

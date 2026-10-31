@@ -28,7 +28,7 @@ describe('devoteam.com rebuild', () => {
 
   it('keeps the home storytelling of the live site in order', () => {
     const order = findPage('home')!.sections.map((s) => s.componentId);
-    expect(order).toEqual(['pat-site-header', 'pat-hero-media', 'pat-impact', 'pat-intro', 'pat-feature-duo', 'pat-expertise', 'pat-partner-showcase', 'pat-case-teaser', 'pat-story-split', 'pat-logos', 'pat-closing', 'pat-site-footer']);
+    expect(order).toEqual(['pat-site-header', 'pat-hero-media', 'pat-impact', 'pat-intro', 'pat-fde', 'pat-partner-cards', 'pat-intro', 'pat-apart', 'pat-story-library', 'pat-change', 'pat-insights', 'pat-faq', 'pat-site-footer']);
   });
 
   it('resolves every internal link key to a page', () => {
@@ -36,7 +36,7 @@ describe('devoteam.com rebuild', () => {
     for (const page of SITE_PAGES)
       for (const s of page.sections) {
         const p = s.props;
-        for (const k of ['ctaTo', 'cta2To']) if (p[k]) keys.push(p[k]);
+        for (const k of ['ctaTo', 'cta2To', 'linkTo']) if (p[k]) keys.push(p[k]);
         // Field that holds the link, per pattern and prop.
         const LINK_FIELD: Record<string, Record<string, number>> = {
           'pat-site-header': { services: 1, items: 1 },
@@ -45,6 +45,10 @@ describe('devoteam.com rebuild', () => {
           'pat-case-teaser': { items: 4 },
           'pat-signposts': { items: 3 },
           'pat-partner-showcase': { items: 2 },
+          'pat-fde': { items: 2 },
+          'pat-partner-cards': { items: 3 },
+          'pat-story-library': { items: 4 },
+          'pat-insights': { topics: 2, article: 5, publication: 4 },
         };
         for (const [k, idx] of Object.entries(LINK_FIELD[s.componentId] ?? {}))
           for (const row of (p[k] ?? '').split(';')) {

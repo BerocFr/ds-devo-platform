@@ -168,7 +168,13 @@ export type ComponentKind =
   | 'pSpotlightBand'
   | 'pIntroStatement'
   | 'pSignposts'
-  | 'pImpactIntro';
+  | 'pImpactIntro'
+  | 'pFdeServices'
+  | 'pPartnerCards'
+  | 'pApart'
+  | 'pStoryLibrary'
+  | 'pChangeStarts'
+  | 'pInsights';
 
 /** Where a catalog entry comes from. Bench entries trace back to the DS-Devo benchmark arbitration. */
 export interface ComponentProvenance {

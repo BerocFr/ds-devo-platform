@@ -267,7 +267,6 @@ export function InstanceRender({ def, inst, ctx }: { def: ComponentDef; inst: Co
             <div className="ds-row">
               <button type="button" tabIndex={tabIndex} className="ds-btn primary" onClick={interactive ? act : undefined}>
                 {String(p.cta ?? '')}
-                <ArrowRight size={16} aria-hidden />
               </button>
             </div>
           </div>
@@ -281,7 +280,6 @@ export function InstanceRender({ def, inst, ctx }: { def: ComponentDef; inst: Co
             <h2 className="ds-h big">{String(p.title ?? '')}</h2>
             <button type="button" tabIndex={tabIndex} className="ds-btn primary" onClick={interactive ? act : undefined}>
               {String(p.cta ?? '')}
-              <ArrowRight size={16} aria-hidden />
             </button>
           </div>
         </section>

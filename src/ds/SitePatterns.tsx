@@ -31,6 +31,11 @@ import {
   Users,
   Workflow,
   Award,
+  Rocket,
+  Network,
+  Database,
+  Cog,
+  Star,
   type LucideIcon,
 } from 'lucide-react';
 import { Fragment, useEffect, useId, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react';
@@ -105,6 +110,12 @@ const ICONS: Record<string, LucideIcon> = {
   building: Building2,
   workflow: Workflow,
   award: Award,
+  rocket: Rocket,
+  network: Network,
+  database: Database,
+  cog: Cog,
+  star: Star,
+  badge: BadgeCheck,
 };
 
 /** Icon per service name. Lucide (DS-Devo D-M2), decorative. */
@@ -271,7 +282,7 @@ function SecHead({ p, fallback, ctx, inst, align = 'center' }: { p: ComponentIns
       {s(p.cta) && align === 'center' ? (
         <div data-reveal style={st(2)}>
           <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 primary">
-            <Go /> {s(p.cta)}
+            {s(p.cta)}
           </L>
         </div>
       ) : null}
@@ -329,7 +340,7 @@ export function renderSitePattern(def: ComponentDef, inst: ComponentInstance, ct
             {s(p.cta) ? (
               <div data-reveal style={st(3)}>
                 <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 primary">
-                  <Go /> {s(p.cta)}
+                  {s(p.cta)}
                 </L>
               </div>
             ) : null}
@@ -353,7 +364,7 @@ export function renderSitePattern(def: ComponentDef, inst: ComponentInstance, ct
                     <p className="ds-ds">{mid}</p>
                     {s(p.cta) ? (
                       <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 primary wide">
-                        <Go /> {s(p.cta)}
+                        {s(p.cta)}
                       </L>
                     ) : null}
                   </div>
@@ -448,7 +459,7 @@ export function renderSitePattern(def: ComponentDef, inst: ComponentInstance, ct
           {s(p.cta) ? (
             <div>
               <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 primary">
-                <Go /> {s(p.cta)}
+                {s(p.cta)}
               </L>
             </div>
           ) : null}
@@ -468,7 +479,7 @@ export function renderSitePattern(def: ComponentDef, inst: ComponentInstance, ct
             {s(p.cta) ? (
               <div data-reveal style={st(1)}>
                 <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 primary">
-                  <Go /> {s(p.cta)}
+                  {s(p.cta)}
                 </L>
               </div>
             ) : null}
@@ -518,7 +529,7 @@ export function renderSitePattern(def: ComponentDef, inst: ComponentInstance, ct
               {s(p.cta) ? (
                 <div data-reveal style={st(1)}>
                   <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 primary">
-                    <Go /> {s(p.cta)}
+                    {s(p.cta)}
                   </L>
                 </div>
               ) : null}
@@ -583,9 +594,7 @@ export function renderSitePattern(def: ComponentDef, inst: ComponentInstance, ct
                   <ul className="ds-pluslist">
                     {list(bullets).map((b, j) => (
                       <li key={b} data-reveal style={st(j)}>
-                        <span className="p" aria-hidden>
-                          +
-                        </span>
+                        <span className="dot" aria-hidden />
                         {b}
                       </li>
                     ))}
@@ -622,7 +631,7 @@ export function renderSitePattern(def: ComponentDef, inst: ComponentInstance, ct
           {s(p.cta) ? (
             <div className="center-row">
               <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 primary">
-                <Go /> {s(p.cta)}
+                {s(p.cta)}
               </L>
             </div>
           ) : null}
@@ -708,6 +717,27 @@ export function renderSitePattern(def: ComponentDef, inst: ComponentInstance, ct
       );
     }
 
+    case 'pFdeServices':
+      return <FdeServices p={p} ctx={ctx} inst={inst} />;
+
+    case 'pPartnerCards':
+      return <PartnerCards p={p} ctx={ctx} inst={inst} />;
+
+    case 'pApart':
+      return <Apart p={p} thumbW={thumbW} />;
+
+    case 'pStoryLibrary':
+      return <StoryLibrary p={p} ctx={ctx} inst={inst} thumbW={thumbW} />;
+
+    case 'pChangeStarts':
+      return <ChangeStarts p={p} ctx={ctx} inst={inst} />;
+
+    case 'pInsights':
+      return <Insights p={p} ctx={ctx} inst={inst} thumbW={thumbW} />;
+
+    case 'pFaq':
+      return <Faq p={p} ti={ti} />;
+
     case 'pIntroStatement':
       return (
         <section className={`ds-sec2 ${tone(p, 'paper')} ds-intro ${inst.variantId === 'headline' ? 'headline' : ''}`}>
@@ -720,7 +750,7 @@ export function renderSitePattern(def: ComponentDef, inst: ComponentInstance, ct
                   .split(/(?<=[.!?])\s+/)
                   .map((part, i, all) => (
                     <Fragment key={i}>
-                      <span className="ds-nobreak">{part}</span>
+                      <span className={all.length > 1 ? 'ds-nobreak' : undefined}>{part}</span>
                       {i < all.length - 1 ? ' ' : null}
                     </Fragment>
                   ))}
@@ -735,11 +765,25 @@ export function renderSitePattern(def: ComponentDef, inst: ComponentInstance, ct
                 {s(p.body)}
               </p>
             ) : null}
-            {s(p.cta) ? (
-              <div className="ds-intro-action" data-reveal style={st(2)}>
-                <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 primary">
-                  <Go /> {s(p.cta)}
-                </L>
+            {list(p.chips).length ? (
+              <ul className="ds-chips" role="list" data-reveal style={st(2)}>
+                {list(p.chips).map((c) => (
+                  <li key={c}>{c}</li>
+                ))}
+              </ul>
+            ) : null}
+            {s(p.cta) || s(p.cta2) ? (
+              <div className="ds-intro-action ds-actions" data-reveal style={st(3)}>
+                {s(p.cta) ? (
+                  <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 primary">
+                    {s(p.cta)}
+                  </L>
+                ) : null}
+                {s(p.cta2) ? (
+                  <L to={s(p.cta2To)} ctx={ctx} inst={inst} className="ds-btn2 outline">
+                    {s(p.cta2)}
+                  </L>
+                ) : null}
               </div>
             ) : null}
           </div>
@@ -758,7 +802,7 @@ export function renderSitePattern(def: ComponentDef, inst: ComponentInstance, ct
                   <h3 className="ds-cardtitle">{title}</h3>
                   {body ? <p className="ds-soft">{body}</p> : null}
                   <L to={to} ctx={ctx} inst={inst} className="ds-btn2 primary">
-                    <Go /> {cta}
+                    {cta}
                   </L>
                 </div>
               </article>
@@ -775,16 +819,18 @@ export function renderSitePattern(def: ComponentDef, inst: ComponentInstance, ct
             .map((x) => x.split(':').map((y) => y.trim()))
             .filter((x) => x[0]);
       return (
-        <section className={`ds-sec2 ${tone(p, 'paper')}`}>
+        <section className={`ds-sec2 ${tone(p, 'mist')}`}>
           <SecHead p={p} fallback="In figures" ctx={ctx} inst={inst} />
-          <dl className="ds-evidence big">
+          <ul className={`ds-kpicards stats n${items.length}`} role="list">
             {items.map(([v, l], i) => (
-              <div key={`${v}${l}`} data-reveal style={st(i)}>
-                <dt>{l}</dt>
-                <dd>{v}</dd>
-              </div>
+              <li key={`${v}${l}`} className={`ds-kpicard ${i === 0 ? 't-night' : ''}`} data-reveal style={st(i)}>
+                <p className="ds-kpicard-value">
+                  <CountUp value={v} />
+                </p>
+                <p className="ds-kpicard-text">{l}</p>
+              </li>
             ))}
-          </dl>
+          </ul>
         </section>
       );
     }
@@ -874,7 +920,7 @@ function HeroCinema({ p, ctx, inst, thumbW }: { p: ComponentInstance['props']; c
             <span className="ds-row2">
               {s(p.cta) ? (
                 <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 primary">
-                  <Go /> {s(p.cta)}
+                  {s(p.cta)}
                 </L>
               ) : null}
               {s(p.cta2) ? (
@@ -930,7 +976,7 @@ function HeroLattice({ p, ctx, inst }: { p: ComponentInstance['props']; ctx: Sit
         {s(p.cta) ? (
           <div>
             <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 primary big">
-              <Go /> {s(p.cta)}
+              {s(p.cta)}
             </L>
           </div>
         ) : null}
@@ -1207,15 +1253,37 @@ function SiteFooter({ p, ctx, inst }: { p: ComponentInstance['props']; ctx: Site
     });
   return (
     <footer className={`ds-sec2 ${tone(p, 'night')} ds-sitefooter2`}>
+      {(() => {
+        const [k, title, cta, ctaTo, cta2, cta2To] = rows(p.newsletter)[0] ?? [];
+        if (!title) return null;
+        return (
+          <div className="ds-newsletter2">
+            <div>
+              {k ? <p className="k">{k}</p> : null}
+              <p className="t">{title}</p>
+            </div>
+            <div className="ds-actions">
+              {cta ? (
+                <L to={ctaTo} ctx={ctx} inst={inst} className="ds-btn2 primary">
+                  {cta}
+                </L>
+              ) : null}
+              {cta2 ? (
+                <L to={cta2To} ctx={ctx} inst={inst} className="ds-btn2 outline">
+                  {cta2}
+                </L>
+              ) : null}
+            </div>
+          </div>
+        );
+      })()}
       <div className="ds-sitefooter2-top">
         {s(p.tagline) ? <p className="ds-ds">{s(p.tagline)}</p> : null}
         <div className="ds-sitefooter2-cols">
           {groups.map((g) => (
             <nav key={g.title} aria-label={g.title}>
               <h2 className="ds-plus">
-                <span className="p" aria-hidden>
-                  +
-                </span>
+                <span className="dot" aria-hidden />
                 {g.title}
               </h2>
               <ul>
@@ -1341,6 +1409,360 @@ function OfficeDirectory({ p, ti, ctx }: { p: ComponentInstance['props']; ti?: n
                 ))}
             </ul>
           </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* ===== Home continuation (owner capture of the live home, 2026-10-31) ===== */
+
+type P = ComponentInstance['props'];
+
+/** Forward Deployed Engineering: a statement panel and the six service steps, one highlighted. */
+function FdeServices({ p, ctx, inst }: { p: P; ctx: SiteCtx; inst: ComponentInstance }) {
+  const I = ICONS[s(p.icon)] ?? Cog;
+  const items = rows(p.items);
+  const hi = s(p.highlight) || '2';
+  return (
+    <section className={`ds-sec2 ${tone(p, 'paper')} ds-fde`}>
+      <div className="ds-fde-panel">
+        <div className="ds-fde-head">
+          <div className="ds-fde-title">
+            <span className="ds-iconchip" aria-hidden>
+              <I size={20} strokeWidth={1.75} />
+            </span>
+            <h2 className="ds-h2" data-reveal>
+              {s(p.title)}
+            </h2>
+          </div>
+          <div className="ds-fde-body" data-reveal style={st(1)}>
+            <p>{s(p.body)}</p>
+            {s(p.link) ? (
+              <L to={s(p.linkTo)} ctx={ctx} inst={inst} className="ds-textlink2">
+                {s(p.link)}
+              </L>
+            ) : null}
+          </div>
+        </div>
+        <ol className="ds-fde-steps" role="list">
+          {items.map(([title, sub, to], i) => (
+            <li key={title} className={String(i + 1) === hi ? 't-night' : ''} data-reveal style={st(i)}>
+              <L to={to} ctx={ctx} inst={inst} className="ds-fde-step">
+                <span className="n" aria-hidden>
+                  {pad(i + 1)}
+                </span>
+                <span className="t">{title}</span>
+                <span className="d">{sub}</span>
+              </L>
+            </li>
+          ))}
+        </ol>
+      </div>
+      {s(p.cta) ? (
+        <div className="ds-center-action" data-reveal>
+          <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 primary">
+            {s(p.cta)}
+          </L>
+        </div>
+      ) : null}
+    </section>
+  );
+}
+
+/** Strategic partners as cards: tier tag, wordmark, proof line. */
+function PartnerCards({ p, ctx, inst }: { p: P; ctx: SiteCtx; inst: ComponentInstance }) {
+  return (
+    <section className={`ds-sec2 ${tone(p, 'paper')} ds-split2`}>
+      <div className="ds-split2-head">
+        <div className="ds-split2-title">
+          <Label>{s(p.kicker) || 'Strategic partnerships'}</Label>
+          <h2 className="ds-h2" data-reveal>
+            {s(p.title)}
+          </h2>
+        </div>
+        {s(p.body) ? (
+          <p className="ds-split2-body" data-reveal style={st(1)}>
+            {s(p.body)}
+          </p>
+        ) : null}
+      </div>
+      <ul className="ds-partnercards" role="list">
+        {rows(p.items).map(([name, tier, proof, to], i) => (
+          <li key={name} data-reveal style={st(i)}>
+            <L to={to} ctx={ctx} inst={inst} className="ds-partnercard">
+              <span className="ds-wordmark">{name}</span>
+              <span className="ds-tag-red">{tier}</span>
+              <span className="ds-partnercard-proof">{proof}</span>
+            </L>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+/** What sets us apart: three columns mixing short reasons and photo cards with a figure. */
+function Apart({ p, thumbW }: { p: P; thumbW?: number }) {
+  return (
+    <section className={`ds-sec2 ${tone(p, 'mist')} ds-apart`}>
+      <div className="ds-head center">
+        <Label>{s(p.kicker) || 'Why choose Devoteam'}</Label>
+        <h2 className="ds-h2" data-reveal>
+          {s(p.title)}
+        </h2>
+      </div>
+      <ul className="ds-apart-grid" role="list">
+        {rows(p.items).map(([kind, a, b, c], i) =>
+          kind === 'stat' ? (
+            <li key={a + i} className="ds-apart-stat" data-reveal style={st(i)}>
+              <Photo id={c} width={thumbW ?? 900} />
+              <div className="ds-apart-glass">
+                <p className="v">
+                  <CountUp value={a} />
+                </p>
+                <p className="d">{b}</p>
+              </div>
+            </li>
+          ) : (
+            <li key={b + i} className="ds-apart-text" data-reveal style={st(i)}>
+              <span className="ds-iconchip" aria-hidden>
+                {(() => {
+                  const I = ICONS[a] ?? Sparkles;
+                  return <I size={20} strokeWidth={1.75} />;
+                })()}
+              </span>
+              <h3 className="ds-h3">{b}</h3>
+              <p>{c}</p>
+            </li>
+          ),
+        )}
+      </ul>
+    </section>
+  );
+}
+
+/** Success story library: search, category filters, cards, client names. Works on the page. */
+function StoryLibrary({ p, ctx, inst, thumbW }: { p: P; ctx: SiteCtx; inst: ComponentInstance; thumbW?: number }) {
+  const all = rows(p.items).map(([title, tag, cat, image, to]) => ({ title, tag, cat, image, to }));
+  const cats = list(p.filters);
+  const [q, setQ] = useState('');
+  const [cat, setCat] = useState('');
+  const id = useId();
+  const needle = q.trim().toLowerCase();
+  const shown = all.filter((x) => (!cat || x.cat === cat) && (!needle || `${x.title} ${x.tag} ${x.cat}`.toLowerCase().includes(needle)));
+  const interactive = ctx.mode !== 'thumb';
+  return (
+    <section className={`ds-sec2 ${tone(p, 'night')} ds-library`}>
+      <div className="ds-head center">
+        <Label>{s(p.kicker) || 'Success stories'}</Label>
+        <h2 className="ds-h2" data-reveal>
+          {s(p.title)}
+        </h2>
+      </div>
+      <form className="ds-library-tools" role="search" onSubmit={(e) => e.preventDefault()} data-reveal style={st(1)}>
+        <label htmlFor={`${id}-q`} className="sr-only">
+          Search success stories
+        </label>
+        <div className="ds-searchpill">
+          <input id={`${id}-q`} type="search" placeholder={s(p.placeholder) || 'I want to build...'} value={q} onChange={(e) => setQ(e.target.value)} tabIndex={interactive ? undefined : -1} />
+          <Search size={18} aria-hidden />
+        </div>
+        <div className="ds-filterchips" role="group" aria-label="Filter by topic">
+          {cats.map((c) => (
+            <button key={c} type="button" aria-pressed={cat === c} onClick={() => setCat(cat === c ? '' : c)} tabIndex={interactive ? undefined : -1}>
+              {c}
+            </button>
+          ))}
+        </div>
+      </form>
+      <p className="sr-only" aria-live="polite">
+        {shown.length} {shown.length === 1 ? 'story' : 'stories'} shown
+      </p>
+      {shown.length ? (
+        <ul className="ds-storycards" role="list">
+          {shown.map((x, i) => (
+            <li key={x.title} data-reveal style={st(i % 4)}>
+              <L to={x.to} ctx={ctx} inst={inst} className="ds-storycard">
+                <Photo id={x.image} width={thumbW ?? 700} className="zoom" />
+                <span className="ds-storycard-title">{x.title}</span>
+                <span className="ds-storycard-tag">{x.tag}</span>
+              </L>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <div className="ds-library-empty">
+          <p>No story matches these filters. Try another word or clear the filters.</p>
+          <button
+            type="button"
+            className="ds-btn2 outline"
+            onClick={() => {
+              setQ('');
+              setCat('');
+            }}
+          >
+            Clear filters
+          </button>
+        </div>
+      )}
+      {list(p.clients).length ? (
+        <div className="ds-clientnames">
+          <p className="sr-only">Clients include</p>
+          <ul role="list">
+            {list(p.clients).map((c) => (
+              <li key={c}>{c}</li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+    </section>
+  );
+}
+
+function initials(name: string) {
+  return name
+    .split(/\s+/)
+    .map((w) => w[0])
+    .slice(0, 2)
+    .join('')
+    .toUpperCase();
+}
+
+/** Change starts here: the closing call to action with client quotes beside it. */
+function ChangeStarts({ p, ctx, inst }: { p: P; ctx: SiteCtx; inst: ComponentInstance }) {
+  return (
+    <section className={`ds-sec2 ${tone(p, 'night')} ds-change`}>
+      <div className="ds-change-main">
+        <Label>{s(p.kicker) || 'Contact us'}</Label>
+        <h2 className="ds-h2" data-reveal>
+          {s(p.title)}
+        </h2>
+        {s(p.body) ? (
+          <p className="ds-lead2" data-reveal style={st(1)}>
+            {s(p.body)}
+          </p>
+        ) : null}
+        <div className="ds-actions" data-reveal style={st(2)}>
+          {s(p.cta) ? (
+            <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 primary">
+              {s(p.cta)}
+            </L>
+          ) : null}
+          {s(p.cta2) ? (
+            <L to={s(p.cta2To)} ctx={ctx} inst={inst} className="ds-btn2 outline">
+              {s(p.cta2)}
+            </L>
+          ) : null}
+        </div>
+      </div>
+      <ul className="ds-quotes" role="list">
+        {rows(p.quotes).map(([quote, name, role], i) => (
+          <li key={name} data-reveal style={st(i + 1)}>
+            <figure>
+              <blockquote>{quote}</blockquote>
+              <figcaption>
+                <span className="ds-avatar" aria-hidden>
+                  {initials(name)}
+                </span>
+                <span>
+                  <strong>{name}</strong>
+                  <span>{role}</span>
+                </span>
+              </figcaption>
+            </figure>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+/** Insights from the field: magazine topics, a featured article and a signature publication. */
+function Insights({ p, ctx, inst, thumbW }: { p: P; ctx: SiteCtx; inst: ComponentInstance; thumbW?: number }) {
+  const [author, role, title, excerpt, image, to] = rows(p.article)[0] ?? [];
+  const [pubTag, pubTitle, pubBody, pubCta, pubTo, pubImage] = rows(p.publication)[0] ?? [];
+  return (
+    <section className={`ds-sec2 ${tone(p, 'mist')} ds-insights`}>
+      <h2 className="ds-h2" data-reveal>
+        {s(p.title)}
+      </h2>
+      <div className="ds-insights-row">
+        <div className="ds-magazine t-night" data-reveal>
+          <h3 className="ds-h3">{s(p.magazine)}</h3>
+          {s(p.magazineLead) ? <p className="ds-soft">{s(p.magazineLead)}</p> : null}
+          <ul className="ds-topics" role="list">
+            {rows(p.topics).map(([label, icon, to2]) => {
+              const I = ICONS[icon] ?? Sparkles;
+              return (
+                <li key={label}>
+                  <L to={to2} ctx={ctx} inst={inst} className="ds-topic">
+                    <I size={18} strokeWidth={1.75} aria-hidden />
+                    {label}
+                  </L>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+        {title ? (
+          <article className="ds-feature-article" data-reveal style={st(1)}>
+            <Photo id={image} width={thumbW ?? 1400} />
+            <div className="ds-feature-glass">
+              <p className="ds-byline">
+                <span className="ds-avatar" aria-hidden>
+                  {initials(author)}
+                </span>
+                <span>
+                  <strong>{author}</strong>
+                  <span>{role}</span>
+                </span>
+              </p>
+              <h3 className="ds-h3">
+                <L to={to} ctx={ctx} inst={inst} className="ds-stretch">
+                  {title}
+                </L>
+              </h3>
+              <p className="ds-soft">{excerpt}</p>
+            </div>
+          </article>
+        ) : null}
+      </div>
+      {pubTitle ? (
+        <div className="ds-publication" data-reveal>
+          <div>
+            <span className="ds-tag-soft">{pubTag}</span>
+            <h3 className="ds-h3">{pubTitle}</h3>
+            <p className="ds-soft">{pubBody}</p>
+          </div>
+          {pubImage ? <Photo id={pubImage} width={thumbW ?? 600} className="ds-publication-img" /> : null}
+          <L to={pubTo} ctx={ctx} inst={inst} className="ds-btn2 light">
+            {pubCta}
+          </L>
+        </div>
+      ) : null}
+    </section>
+  );
+}
+
+/** FAQ: title on the left, questions as cards that open in place (native details). */
+function Faq({ p, ti }: { p: P; ti?: number }) {
+  const items = rows(p.items);
+  return (
+    <section className={`ds-sec2 ${tone(p, 'paper')} ds-faq2`}>
+      <div className="ds-faq2-head">
+        {s(p.kicker) ? <Label>{s(p.kicker)}</Label> : null}
+        <h2 className="ds-h2">{s(p.title) || 'FAQs'}</h2>
+      </div>
+      <div className="ds-faq2-list">
+        {items.map(([q, a], i) => (
+          <details key={q} open={i === 0} data-reveal style={st(i)}>
+            <summary tabIndex={ti}>
+              <span>{q}</span>
+              <ChevronDown size={18} aria-hidden />
+            </summary>
+            <p>{a}</p>
+          </details>
         ))}
       </div>
     </section>

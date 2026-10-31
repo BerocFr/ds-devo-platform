@@ -239,7 +239,7 @@ await step('site rebuild: home renders from patterns, in the live order', async 
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.waitForTimeout(300);
   const order = await page.locator('.site-block').evaluateAll((els) => els.map((e) => e.getAttribute('data-pattern')));
-  const expected = ['Site header', 'Hero with media', 'Impact intro', 'Intro statement', 'Featured stories', 'Expertise grid', 'Partner showcase', 'Story teaser', 'Story split', 'Partner band', 'Closing statement', 'Site footer'];
+  const expected = ['Site header', 'Hero with media', 'Impact intro', 'Intro statement', 'Service steps panel', 'Partner cards', 'Intro statement', 'Reasons and proof', 'Story library', 'Call to action with quotes', 'Insights hub', 'FAQ section', 'Site footer'];
   if (order.join('|') !== expected.join('|')) throw new Error(`order ${order.join(', ')}`);
   await page.waitForTimeout(1300);
   await shot('20-site-home');
@@ -280,6 +280,20 @@ await step('site rebuild: office search filters and announces the count', async 
   await box.fill('zzz');
   await page.getByText(/No office matches/).waitFor();
   await box.fill('');
+});
+
+await step('site rebuild: home story library search and filters narrow the cards', async () => {
+  await page.goto(BASE + '#/site');
+  const lib = page.locator('.ds-library');
+  await lib.scrollIntoViewIfNeeded();
+  const cards = lib.locator('.ds-storycard');
+  if ((await cards.count()) !== 8) throw new Error('expected 8 stories, got ' + (await cards.count()));
+  await lib.getByRole('button', { name: 'Data', exact: true }).click();
+  await page.waitForFunction(() => document.querySelectorAll('.ds-library .ds-storycard').length === 2);
+  await lib.getByRole('searchbox', { name: 'Search success stories' }).fill('zzz');
+  await lib.getByText(/No story matches/).waitFor();
+  await lib.getByRole('button', { name: 'Clear filters' }).click();
+  await page.waitForFunction(() => document.querySelectorAll('.ds-library .ds-storycard').length === 8);
 });
 
 await step('site rebuild: pattern overlay links each block to the library', async () => {
