@@ -258,6 +258,7 @@ const home: SitePage = {
       props: {
         kicker: 'Contact us',
         title: 'Change Starts Here',
+        image: 'pexels-29267512',
         body: 'Tell us the problem you want to solve. We\'ll show you how to get into production.',
         cta: 'Talk to an Expert',
         ctaTo: 'contact',
@@ -303,7 +304,7 @@ const home: SitePage = {
     'Strategic partnerships and the tech toolkit merged (owner, 2026-11-01): head and partner cards with logos beside a large photo, then the eight technology pills with logos and the two actions.',
     'What Sets Us Apart (owner reference, 2026-11-01): a horizontal rail where a portrait and a reason card alternate; each card has the statement, one or two counting figures and the reason title.',
     'Success stories (owner reference, 2026-11-01): dark section, one row per story (photo, icon, index, title, tag) separated by hairlines; rows stick and the next slides over the last as you scroll. The index list and the grid with search stay as variants.',
-    'Change Starts Here: the closing call to action with two client quotes; avatars show initials, not photos of the quoted people.',
+    'Change Starts Here (owner reference, 2026-11-01): full-bleed team photo under a dark veil, centred label, large title, one line, red and glass actions; the photo drifts slowly with a pause button. The quotes layout stays as the quotes variant.',
     'Insights from the field: magazine topics that lead to each topic page, the featured article and the TechRadar 2026 publication.',
     'FAQs: five questions that open in place. Answers two to five are written from facts on the home and need owner validation.',
     'Footer: rebuilt with grouped links (services, partners, company) and a legal line.',

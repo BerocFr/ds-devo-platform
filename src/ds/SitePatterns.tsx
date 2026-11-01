@@ -737,7 +737,8 @@ export function renderSitePattern(def: ComponentDef, inst: ComponentInstance, ct
       return <StoryStack p={p} ctx={ctx} inst={inst} thumbW={thumbW} />;
 
     case 'pChangeStarts':
-      return <ChangeStarts p={p} ctx={ctx} inst={inst} />;
+      if (inst.variantId === 'quotes') return <ChangeStarts p={p} ctx={ctx} inst={inst} />;
+      return <ChangeCinema p={p} ctx={ctx} inst={inst} thumbW={thumbW} />;
 
     case 'pInsights':
       return <Insights p={p} ctx={ctx} inst={inst} thumbW={thumbW} />;
@@ -2220,5 +2221,46 @@ function ClientLogos({ names }: { names: string[] }) {
         })}
       </ul>
     </div>
+  );
+}
+
+/** Change starts here as a full-bleed photo (owner reference, 2026-11-01): a team photo under a
+ *  dark veil, centred label, large title, one line and two actions. The photo drifts slowly; the
+ *  pause button stops it (WCAG 2.2.2), and reduced motion keeps it still. */
+function ChangeCinema({ p, ctx, inst, thumbW }: { p: P; ctx: SiteCtx; inst: ComponentInstance; thumbW?: number }) {
+  const [paused, setPaused] = useState(false);
+  const ti = ctx.mode === 'thumb' ? -1 : undefined;
+  return (
+    <section className={`ds-sec2 t-night ds-changecine ${paused ? 'is-paused' : ''}`}>
+      <div className="ds-changecine-bg" aria-hidden>
+        <Photo id={s(p.image) || 'pexels-29267512'} width={thumbW ?? 2000} />
+      </div>
+      <div className="ds-changecine-in">
+        <Label>{s(p.kicker) || 'Contact us'}</Label>
+        <h2 className="ds-changecine-title" data-reveal>
+          {s(p.title)}
+        </h2>
+        {s(p.body) ? (
+          <p className="ds-lead2" data-reveal style={st(1)}>
+            {s(p.body)}
+          </p>
+        ) : null}
+        <div className="ds-actions" data-reveal style={st(2)}>
+          {s(p.cta) ? (
+            <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 primary">
+              {s(p.cta)}
+            </L>
+          ) : null}
+          {s(p.cta2) ? (
+            <L to={s(p.cta2To)} ctx={ctx} inst={inst} className="ds-btn2 glass">
+              {s(p.cta2)}
+            </L>
+          ) : null}
+        </div>
+      </div>
+      <button type="button" className="ds-roundbtn ds-changecine-pause" onClick={() => setPaused(!paused)} aria-pressed={paused} aria-label={paused ? 'Play background motion' : 'Pause background motion'} tabIndex={ti}>
+        {paused ? <Play size={18} aria-hidden /> : <Pause size={18} aria-hidden />}
+      </button>
+    </section>
   );
 }

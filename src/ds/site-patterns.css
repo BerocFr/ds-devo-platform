@@ -4283,3 +4283,96 @@ button.ds-stepcard:hover .ds-stepcard-in {
   font-size: clamp(1.4rem, 1rem + 1.1cqi, 2.1rem);
   max-width: 24ch;
 }
+
+/* ---------- Change starts here: full-bleed photo (owner reference, 2026-11-01) ---------- */
+.ds-changecine {
+  min-height: clamp(560px, 72svh, 820px);
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  isolation: isolate;
+}
+.ds-changecine-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  background: var(--ds-color-surface-night);
+}
+.ds-changecine-bg .ds-photo {
+  position: absolute;
+  inset: -4%;
+  max-width: none;
+  border-radius: 0;
+  aspect-ratio: auto;
+  animation: ds-drift 26s ease-in-out infinite alternate;
+}
+.ds-changecine-bg .ds-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.ds-changecine-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(60% 55% at 50% 50%, color-mix(in srgb, var(--ds-color-surface-night) 72%, transparent) 0%, color-mix(in srgb, var(--ds-color-surface-night) 48%, transparent) 100%),
+    color-mix(in srgb, var(--ds-color-surface-night) 22%, transparent);
+}
+.ds-changecine.is-paused .ds-changecine-bg .ds-photo {
+  animation-play-state: paused;
+}
+@keyframes ds-drift {
+  from { transform: scale(1) translate(0, 0); }
+  to { transform: scale(1.08) translate(-1.5%, -1%); }
+}
+.ds-changecine-in {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+  max-width: 900px;
+}
+.ds-changecine-in .ds-plus {
+  color: var(--ds-color-text-on-night);
+}
+.ds-changecine-title {
+  margin: 0;
+  font-size: clamp(2.4rem, 1rem + 4.4cqi, 5rem);
+  font-weight: 700;
+  line-height: 1.04;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+  color: var(--ds-color-text-on-night);
+}
+.ds-changecine .ds-lead2 {
+  max-width: 52ch;
+  color: color-mix(in srgb, var(--ds-color-text-on-night) 88%, transparent);
+}
+.ds-changecine .ds-actions {
+  justify-content: center;
+}
+.ds-btn2.glass {
+  background: color-mix(in srgb, var(--ds-color-surface-default) 16%, transparent);
+  color: var(--ds-color-text-on-night);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ds-color-surface-default) 28%, transparent);
+}
+.ds-btn2.glass:hover {
+  background: color-mix(in srgb, var(--ds-color-surface-default) 26%, transparent);
+}
+.ds-changecine-pause {
+  position: absolute;
+  right: var(--ds-space-gutter);
+  bottom: clamp(16px, 1rem + 1cqi, 32px);
+  background: color-mix(in srgb, var(--ds-color-surface-default) 14%, transparent);
+}
+@media (prefers-reduced-motion: reduce) {
+  .ds-changecine-bg .ds-photo {
+    animation: none;
+  }
+  .ds-changecine-pause {
+    display: none;
+  }
+}
