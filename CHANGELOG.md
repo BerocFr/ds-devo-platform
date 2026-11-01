@@ -10,6 +10,7 @@ All notable changes to the Atelier platform (BerocFr/ds-devo-platform). The form
 
 ### Changed
 
+- Multi Partner beside a large photo, each card with the partner logo, proof and tier; technology pills carry their logo (CC0 Iconify sets; ServiceNow pending its official badge). (f590fdb)
 - Forward Deployed Engineering on a horizontal rail: large step cards with snap, previous and next buttons, announced step counter, progress line; each card on an abstract visual generated in the hero vein (`tools/make-step-visuals.py`). The 3D objects version stays as a variant. (50881e0)
 
 ## 2026-10-31
