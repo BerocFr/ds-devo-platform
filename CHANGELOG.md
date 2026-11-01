@@ -10,6 +10,7 @@ All notable changes to the Atelier platform (BerocFr/ds-devo-platform). The form
 
 ### Changed
 
+- One corner radius scale: xl = radius.card 16px (cards, photos, panels), md 10px (inside cards and lists), sm = radius.small 4px, pill, circle. (6d8ef96)
 - Home proportions after the owner reference at 1280: 40px gutters, about 113px section padding, 18px card radius, section titles near 4.3% of the width, hero about half the width tall, FAQ centred; unedited seed tokens update in saved workspaces (catalogVersion 5). (6e6ef53)
 - Client band shows real logos when a file exists (Spotify), names otherwise.
 - Success stories as stacked rows on a dark section: photo, icon, index, title, tag; rows stick and stack as you scroll (static under reduced motion). (8f36ff7)
