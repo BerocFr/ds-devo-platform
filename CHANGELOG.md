@@ -6,6 +6,12 @@ All notable changes to the Atelier platform (BerocFr/ds-devo-platform). The form
 
 - Owner validation pending: FAQ answers two to five (written from facts on the home), the LinkedIn link of the newsletter band, the header navigation of the new live site (Expertise, Insights, Events, About us, Careers, Get in touch) not yet mirrored.
 
+## 2026-11-01
+
+### Changed
+
+- Forward Deployed Engineering on a horizontal rail: large step cards with snap, previous and next buttons, announced step counter, progress line; each card on an abstract visual generated in the hero vein (`tools/make-step-visuals.py`). The 3D objects version stays as a variant. (50881e0)
+
 ## 2026-10-31
 
 ### Added
