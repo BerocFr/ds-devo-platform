@@ -111,8 +111,18 @@ export function setRepository(r: PlatformRepository) {
 }
 
 /**
+ * Seed token values changed by a catalog update, with the value they replaced. A saved workspace
+ * whose token still holds the old value (never edited) takes the new one; an edited token is kept.
+ */
+const TOKEN_UPDATES: Record<string, string> = {
+  'space.section': 'clamp(4rem, 2rem + 8cqi, 10rem)',
+  'space.gutter': 'clamp(1rem, 5cqi, 5rem)',
+};
+
+/**
  * A workspace saved before a catalog update keeps everything it has; library items, tokens,
- * use cases and insights that the seed added since are appended (never overwritten).
+ * use cases and insights that the seed added since are appended (never overwritten), and seed
+ * token values that changed are applied only where the saved value was still the old default.
  */
 export function mergeSeed(saved: PlatformData, seed: PlatformData = createSeed()): PlatformData {
   const target = seed.catalogVersion ?? 1;
@@ -123,7 +133,14 @@ export function mergeSeed(saved: PlatformData, seed: PlatformData = createSeed()
   };
   return {
     ...saved,
-    tokens: add(saved.tokens, seed.tokens, (x) => x.name),
+    tokens: add(
+      saved.tokens.map((t) => {
+        const next = seed.tokens.find((x) => x.name === t.name);
+        return next && TOKEN_UPDATES[t.name] === t.value ? { ...t, value: next.value, description: next.description } : t;
+      }),
+      seed.tokens,
+      (x) => x.name,
+    ),
     components: add(saved.components, seed.components, (x) => x.id),
     useCases: add(saved.useCases, seed.useCases, (x) => x.id),
     insights: add(saved.insights, seed.insights, (x) => x.id),

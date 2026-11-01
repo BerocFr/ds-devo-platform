@@ -95,8 +95,8 @@ export const seedTokens: DesignToken[] = [
   t('space.sm', 'dimension', 'primitive', 'Spacing', '0.75rem', 'brand'),
   t('space.md', 'dimension', 'primitive', 'Spacing', '1rem', 'brand'),
   t('space.lg', 'dimension', 'primitive', 'Spacing', '2rem', 'brand'),
-  t('space.section', 'dimension', 'primitive', 'Spacing', 'clamp(4rem, 2rem + 8cqi, 10rem)', 'derived', 'Vertical padding of a section (bench-04).'),
-  t('space.gutter', 'dimension', 'primitive', 'Spacing', 'clamp(1rem, 5cqi, 5rem)', 'derived', 'Side margin of a section (bench-04).'),
+  t('space.section', 'dimension', 'primitive', 'Spacing', 'clamp(4rem, 1.5rem + 7cqi, 8rem)', 'derived', 'Vertical padding of a section, about 113px at 1280 (owner reference ratio, 2026-11-01).'),
+  t('space.gutter', 'dimension', 'primitive', 'Spacing', 'clamp(1rem, 3.2cqi, 3.5rem)', 'derived', 'Side margin of a section, about 40px at 1280 (owner reference ratio, 2026-11-01).'),
   // Shape
   t('radius.small', 'radius', 'primitive', 'Shape', '4px', 'brand', 'Inputs and chips.'),
   t('radius.card', 'radius', 'primitive', 'Shape', '16px', 'brand', 'Dominant card radius.'),
@@ -488,7 +488,7 @@ export function createSeed(): PlatformData {
     useCases: [...seedUseCases, ...siteUseCases],
     insights: [...seedInsights, ...siteInsights],
     journeys: [seedJourney, recoverJourney],
-    catalogVersion: 4,
+    catalogVersion: 5,
     activity: [
       { id: 'a-1', at: '2026-10-29T08:40:00.000Z', text: 'Journey "Quick account creation" sent for review', target: { kind: 'journey', id: 'jr-signup' } },
       { id: 'a-2', at: '2026-10-28T16:20:00.000Z', text: 'Journey "Recover after expired code" created', target: { kind: 'journey', id: 'jr-recover' } },

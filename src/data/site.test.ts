@@ -81,6 +81,13 @@ describe('devoteam.com rebuild', () => {
 });
 
 describe('mergeSeed', () => {
+  it('updates a seed token value only when the saved workspace never edited it', () => {
+    const old = { ...seed, catalogVersion: 4, tokens: seed.tokens.map((t) => (t.name === 'space.gutter' ? { ...t, value: 'clamp(1rem, 5cqi, 5rem)' } : t.name === 'space.section' ? { ...t, value: '99px' } : t)) };
+    const merged = mergeSeed(old, seed);
+    expect(merged.tokens.find((t) => t.name === 'space.gutter')!.value).toBe(seed.tokens.find((t) => t.name === 'space.gutter')!.value);
+    expect(merged.tokens.find((t) => t.name === 'space.section')!.value).toBe('99px');
+  });
+
   it('adds catalog items a saved workspace does not have, once, without overwriting', () => {
     const old = { ...seed, catalogVersion: undefined, components: seed.components.filter((c) => !c.id.startsWith('pat-site')).map((c) => (c.id === 'cmp-button' ? { ...c, name: 'My button' } : c)) };
     const merged = mergeSeed(old, seed);

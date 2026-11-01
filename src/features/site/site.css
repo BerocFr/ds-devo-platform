@@ -266,5 +266,6 @@
 
 /* The home hero fills the first screen below the prototype notice. */
 .site-root .ds-cinema.home {
-  min-height: calc(100svh - 44px);
+  /* About half the width tall, like the reference, but never shorter than its content needs. */
+  min-height: max(600px, min(calc(100svh - 44px), 56vw));
 }

@@ -4192,3 +4192,84 @@ button.ds-stepcard:hover .ds-stepcard-in {
   filter: grayscale(1) brightness(0) invert(1);
   opacity: 0.72;
 }
+
+/* =====================================================================
+   Proportions after the owner reference (Rowalo at 1280): 40px gutters,
+   about 113px section padding, 18px card radius, section titles near 4.3% of
+   the width, quieter body text, FAQ centred in a narrow column.
+   ===================================================================== */
+.ds-screen,
+.ds-sec2 {
+  --r-xl: calc(var(--ds-radius-card) * 1.125);
+}
+.ds-h2,
+.ds-head .ds-dm {
+  font-size: clamp(2.1rem, 0.6rem + 3.6cqi, 4.25rem);
+  line-height: 1.06;
+}
+.ds-head {
+  gap: 18px;
+}
+.ds-sec2 {
+  gap: clamp(2rem, 1rem + 2.6cqi, 3.75rem);
+}
+.ds-lead2 {
+  font-size: clamp(1rem, 0.95rem + 0.2cqi, 1.125rem);
+  line-height: 1.6;
+}
+.ds-plus {
+  font-size: 0.78rem;
+}
+/* FAQ: centred title, questions in a column about two thirds of the width. */
+.ds-faq2 {
+  grid-template-columns: 1fr;
+  justify-items: center;
+  text-align: left;
+}
+.ds-faq2-head {
+  align-items: center;
+  text-align: center;
+}
+.ds-faq2-list {
+  width: min(100%, 880px);
+}
+.ds-faq2 details {
+  border-radius: 6px;
+  background: var(--ds-color-surface-subtle);
+  overflow: hidden;
+}
+.ds-faq2 summary {
+  border-radius: 0;
+  background: var(--ds-color-surface-default);
+  box-shadow: inset 0 0 0 1px var(--line);
+  font-size: clamp(1rem, 0.95rem + 0.25cqi, 1.15rem);
+  font-weight: 500;
+}
+.ds-faq2 details p {
+  padding-top: 18px;
+}
+/* Rail cards and story rows at the reference proportions. */
+.ds-railcard {
+  flex-basis: min(86%, 640px);
+}
+.ds-railcard-link {
+  height: clamp(380px, 280px + 14cqi, 480px);
+}
+.ds-railcard-body .t {
+  font-size: clamp(1.8rem, 1.3rem + 1.6cqi, 2.8rem);
+}
+@container screen (min-width: 900px) {
+  .ds-stack-row {
+    grid-template-columns: minmax(0, 0.62fr) minmax(0, 1fr);
+    min-height: 0;
+  }
+  .ds-stack-photo {
+    min-height: 0;
+    height: auto;
+    aspect-ratio: 2.1 / 1;
+  }
+}
+.ds-stack-title {
+  font-size: clamp(1.4rem, 1rem + 1.1cqi, 2.1rem);
+  max-width: 24ch;
+}
