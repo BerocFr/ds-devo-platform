@@ -7,3 +7,9 @@ Source: Iconify icon sets, both CC0-1.0 for the artwork packaging:
 The logos stay the trademarks of their owners. Devoteam uses them as a partner; for production,
 replace them with the official partner badges from each partner programme. ServiceNow is not in
 either set: the card shows its name as text until the official badge is supplied (todo-brand).
+
+Client logos (success stories band):
+- spotify from `@iconify-json/logos` (CC0 packaging).
+Collibra, BNP Paribas (the only file found was the Polish BGZ BNP Paribas mark, not used), Randstad, Veolia, Coca-Cola HBC and Bouygues are in none of these sets: they show as
+names until their official logo files are supplied. The Coca-Cola mark is not used for Coca-Cola
+HBC, which is a different company.

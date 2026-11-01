@@ -4175,3 +4175,20 @@ button.ds-stepcard:hover .ds-stepcard-in {
 .ds-stack-row:last-child {
   border-bottom: 1px solid var(--line);
 }
+
+/* Client logos in one tone (white on dark sections, ink on light ones). */
+.ds-clientnames ul {
+  align-items: center;
+}
+.ds-clientlogo {
+  display: block;
+  height: clamp(22px, 18px + 0.8cqi, 30px);
+  width: auto;
+  max-width: 160px;
+  filter: grayscale(1) brightness(0);
+  opacity: 0.6;
+}
+.t-night .ds-clientlogo {
+  filter: grayscale(1) brightness(0) invert(1);
+  opacity: 0.72;
+}

@@ -1690,16 +1690,7 @@ function StoryLibrary({ p, ctx, inst, thumbW }: { p: P; ctx: SiteCtx; inst: Comp
           </button>
         </div>
       )}
-      {list(p.clients).length ? (
-        <div className="ds-clientnames">
-          <p className="sr-only">Clients include</p>
-          <ul role="list">
-            {list(p.clients).map((c) => (
-              <li key={c}>{c}</li>
-            ))}
-          </ul>
-        </div>
-      ) : null}
+      <ClientLogos names={list(p.clients)} />
     </section>
   );
 }
@@ -2148,16 +2139,7 @@ function StoryScroll({ p, ctx, inst, thumbW }: { p: P; ctx: SiteCtx; inst: Compo
           })}
         </ol>
       </div>
-      {list(p.clients).length ? (
-        <div className="ds-clientnames">
-          <p className="sr-only">Clients include</p>
-          <ul role="list">
-            {list(p.clients).map((c) => (
-              <li key={c}>{c}</li>
-            ))}
-          </ul>
-        </div>
-      ) : null}
+      <ClientLogos names={list(p.clients)} />
     </section>
   );
 }
@@ -2219,16 +2201,24 @@ function StoryStack({ p, ctx, inst, thumbW }: { p: P; ctx: SiteCtx; inst: Compon
           );
         })}
       </ol>
-      {list(p.clients).length ? (
-        <div className="ds-clientnames">
-          <p className="sr-only">Clients include</p>
-          <ul role="list">
-            {list(p.clients).map((c) => (
-              <li key={c}>{c}</li>
-            ))}
-          </ul>
-        </div>
-      ) : null}
+      <ClientLogos names={list(p.clients)} />
     </section>
+  );
+}
+
+/** Client band: the real logo when the set has one (shown in one tone so the row stays calm),
+ *  otherwise the client name set in type. Each logo carries the client name as its alt text. */
+function ClientLogos({ names }: { names: string[] }) {
+  if (!names.length) return null;
+  return (
+    <div className="ds-clientnames">
+      <p className="sr-only">Clients include</p>
+      <ul role="list">
+        {names.map((c) => {
+          const logo = logoFor(c);
+          return <li key={c}>{logo ? <img className="ds-clientlogo" src={logo} alt={c} /> : c}</li>;
+        })}
+      </ul>
+    </div>
   );
 }

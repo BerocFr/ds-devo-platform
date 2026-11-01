@@ -11,6 +11,7 @@ import googleCloud from '../assets/logos/google-cloud.svg';
 import microsoft from '../assets/logos/microsoft.svg';
 import nvidia from '../assets/logos/nvidia.svg';
 import snowflake from '../assets/logos/snowflake.svg';
+import spotify from '../assets/logos/spotify.svg';
 
 const LOGOS: Record<string, string> = {
   anthropic,
@@ -24,6 +25,7 @@ const LOGOS: Record<string, string> = {
   microsoft,
   nvidia,
   snowflake,
+  spotify,
 };
 
 const slug = (name: string) => name.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
