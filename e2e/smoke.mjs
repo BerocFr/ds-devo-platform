@@ -282,6 +282,18 @@ await step('site rebuild: office search filters and announces the count', async 
   await box.fill('');
 });
 
+await step('site rebuild: home step rail moves with the next and previous buttons', async () => {
+  await page.goto(BASE + '#/site');
+  const rail = page.locator('.ds-rail');
+  await rail.scrollIntoViewIfNeeded();
+  const prev = rail.getByRole('button', { name: 'Previous step' });
+  if (!(await prev.isDisabled())) throw new Error('previous should start disabled');
+  await rail.getByRole('button', { name: 'Next step' }).click();
+  await page.waitForFunction(() => document.querySelector('.ds-rail-count strong')?.textContent === '02');
+  await prev.click();
+  await page.waitForFunction(() => document.querySelector('.ds-rail-count strong')?.textContent === '01');
+});
+
 await step('site rebuild: home story library search and filters narrow the cards', async () => {
   await page.goto(BASE + '#/site');
   const lib = page.locator('.ds-library');

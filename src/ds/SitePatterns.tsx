@@ -1,4 +1,6 @@
 import {
+  ArrowLeft,
+  ArrowRight,
   BadgeCheck,
   BarChart3,
   BrainCircuit,
@@ -44,6 +46,7 @@ import type { ComponentDef, ComponentInstance } from '../domain/types';
 import { getPhoto, photoUrl } from '../data/photos';
 import { heroVisual } from '../data/heroVisuals';
 import { object3d } from '../data/objects3d';
+import { stepVisual } from '../data/stepVisuals';
 import { SignalField } from './SignalField';
 import './site-patterns.css';
 
@@ -1422,7 +1425,8 @@ type P = ComponentInstance['props'];
 
 /** Forward Deployed Engineering: a statement panel and the six service steps, one highlighted. */
 function FdeServices({ p, ctx, inst }: { p: P; ctx: SiteCtx; inst: ComponentInstance }) {
-  if (inst.variantId !== 'panel') return <ProcessSteps p={p} ctx={ctx} inst={inst} />;
+  if (inst.variantId === 'objects') return <ProcessSteps p={p} ctx={ctx} inst={inst} />;
+  if (inst.variantId !== 'panel') return <StepRail p={p} ctx={ctx} inst={inst} thumb={ctx.mode === 'thumb'} />;
   const I = ICONS[s(p.icon)] ?? Cog;
   const items = rows(p.items);
   const hi = s(p.highlight) || '2';
@@ -1846,5 +1850,119 @@ function ProcessStep({ n, title, sub, to, obj, ctx, inst }: { n: number; title: 
         ) : null}
       </L>
     </li>
+  );
+}
+
+/** Service steps as a horizontal rail of large cards, each on its own generated visual.
+ *  Native horizontal scroll with snap (no scroll hijacking, bench-03), previous and next
+ *  buttons, a step counter and a progress line. Keyboard: the rail scrolls with the arrow
+ *  keys when focused, and each card is a link that scrolls into view when tabbed to. */
+function StepRail({ p, ctx, inst, thumb }: { p: P; ctx: SiteCtx; inst: ComponentInstance; thumb: boolean }) {
+  const items = rows(p.items);
+  const track = useRef<HTMLOListElement>(null);
+  const [pos, setPos] = useState({ i: 0, progress: 0, atStart: true, atEnd: false });
+  const id = useId();
+  useEffect(() => {
+    const el = track.current;
+    if (!el) return;
+    const update = () => {
+      const max = el.scrollWidth - el.clientWidth;
+      const progress = max > 0 ? el.scrollLeft / max : 0;
+      const cards = Array.from(el.children) as HTMLElement[];
+      const left = el.getBoundingClientRect().left;
+      let i = 0;
+      cards.forEach((c, k) => {
+        if (c.getBoundingClientRect().left - left < el.clientWidth * 0.5) i = k;
+      });
+      if (progress > 0.995) i = cards.length - 1;
+      setPos({ i, progress, atStart: el.scrollLeft < 4, atEnd: el.scrollLeft > max - 4 });
+    };
+    update();
+    el.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    return () => {
+      el.removeEventListener('scroll', update);
+      window.removeEventListener('resize', update);
+    };
+  }, [items.length]);
+  const go = (dir: number) => {
+    const el = track.current;
+    if (!el) return;
+    const card = el.children[Math.min(items.length - 1, Math.max(0, pos.i + dir))] as HTMLElement | undefined;
+    if (!card) return;
+    const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    const pad0 = parseFloat(getComputedStyle(el).paddingLeft || '0');
+    const left = el.scrollLeft + card.getBoundingClientRect().left - el.getBoundingClientRect().left - pad0;
+    el.scrollTo({ left, behavior: reduce ? 'auto' : 'smooth' });
+  };
+  const ti = thumb ? -1 : undefined;
+  return (
+    <section className={`ds-sec2 ${tone(p, 'paper')} ds-rail`} aria-labelledby={`${id}-t`}>
+      <div className="ds-rail-head">
+        <div className="ds-rail-title">
+          <Label>{s(p.kicker) || 'How we work'}</Label>
+          <h2 id={`${id}-t`} className="ds-h2" data-reveal>
+            {s(p.title)}
+          </h2>
+          {s(p.body) ? (
+            <p className="ds-lead2" data-reveal style={st(1)}>
+              {s(p.body)}{' '}
+              {s(p.link) ? (
+                <L to={s(p.linkTo)} ctx={ctx} inst={inst} className="ds-textlink2">
+                  {s(p.link)}
+                </L>
+              ) : null}
+            </p>
+          ) : null}
+        </div>
+        <div className="ds-rail-controls">
+          <p className="ds-rail-count" aria-live="polite">
+            <span className="sr-only">Step </span>
+            <strong>{pad(pos.i + 1)}</strong>
+            <span aria-hidden> / </span>
+            <span className="sr-only"> of </span>
+            {pad(items.length)}
+          </p>
+          <button type="button" className="ds-roundbtn" onClick={() => go(-1)} disabled={pos.atStart} aria-label="Previous step" tabIndex={ti}>
+            <ArrowLeft size={20} aria-hidden />
+          </button>
+          <button type="button" className="ds-roundbtn" onClick={() => go(1)} disabled={pos.atEnd} aria-label="Next step" tabIndex={ti}>
+            <ArrowRight size={20} aria-hidden />
+          </button>
+        </div>
+      </div>
+      <ol ref={track} className="ds-rail-track" role="list" tabIndex={thumb ? -1 : 0} aria-label={`${s(p.title)}: ${items.length} steps, scroll sideways`}>
+        {items.map(([title, sub, to, visual], i) => {
+          const v = stepVisual(visual);
+          return (
+            <li key={title} className="ds-railcard t-night">
+              <L to={to} ctx={ctx} inst={inst} className="ds-railcard-link">
+                {v ? (
+                  <img className="ds-railcard-visual" src={thumb ? v.small : v.full} srcSet={`${v.small} 800w, ${v.full} 1600w`} sizes="(max-width: 900px) 90vw, 760px" alt="" loading={i < 2 ? 'eager' : 'lazy'} decoding="async" />
+                ) : null}
+                <span className="ds-railcard-body">
+                  <span className="ds-plus">
+                    <span className="dot" aria-hidden />
+                    Step {pad(i + 1)}
+                  </span>
+                  <span className="t">{title}</span>
+                  <span className="d">{sub}</span>
+                </span>
+              </L>
+            </li>
+          );
+        })}
+      </ol>
+      <div className="ds-rail-progress" aria-hidden>
+        <span style={{ transform: `scaleX(${Math.max(1 / Math.max(items.length, 1), pos.progress)})` }} />
+      </div>
+      {s(p.cta) ? (
+        <div className="ds-center-action" data-reveal>
+          <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 primary">
+            {s(p.cta)}
+          </L>
+        </div>
+      ) : null}
+    </section>
   );
 }

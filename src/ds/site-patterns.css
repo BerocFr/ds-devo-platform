@@ -3526,3 +3526,153 @@ button.ds-stepcard:hover .ds-stepcard-in {
     transform: none;
   }
 }
+
+/* ---------- Service steps as a horizontal rail (owner, 2026-11-01) ---------- */
+.ds-rail-head {
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: end;
+  gap: 24px 48px;
+}
+.ds-rail-title {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.ds-rail-title .ds-lead2 {
+  max-width: 60ch;
+}
+.ds-rail-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.ds-rail-count {
+  margin: 0 12px 0 0;
+  font-variant-numeric: tabular-nums;
+  color: var(--soft);
+}
+.ds-rail-count strong {
+  color: var(--fg);
+  font-weight: 700;
+}
+.ds-roundbtn {
+  display: inline-grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--ds-color-surface-night);
+  color: var(--ds-color-text-on-night);
+  cursor: pointer;
+  transition: background 0.2s ease, opacity 0.2s ease;
+}
+.ds-roundbtn:hover:not(:disabled) {
+  background: var(--ds-color-action-primary);
+}
+.ds-roundbtn:disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+.ds-rail-track {
+  display: flex;
+  gap: 16px;
+  margin: 0 calc(-1 * var(--ds-space-gutter));
+  padding: 4px var(--ds-space-gutter) 8px;
+  list-style: none;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--ds-space-gutter);
+  scrollbar-width: none;
+}
+.ds-rail-track::-webkit-scrollbar {
+  display: none;
+}
+.ds-rail-track:focus-visible {
+  outline: 2px solid var(--ds-color-focus-ring, var(--ds-color-action-primary));
+  outline-offset: 4px;
+}
+.ds-railcard {
+  flex: 0 0 min(86%, 780px);
+  scroll-snap-align: start;
+  border-radius: calc(var(--r-xl) * 1.25);
+  background: var(--ds-color-surface-night);
+}
+.ds-railcard-link {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  height: clamp(420px, 300px + 18cqi, 600px);
+  border-radius: inherit;
+  overflow: hidden;
+  isolation: isolate;
+  color: var(--ds-color-text-on-night);
+  text-decoration: none;
+}
+.ds-railcard-visual {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.ds-railcard-link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(180deg, transparent 35%, color-mix(in srgb, var(--ds-color-surface-night) 82%, transparent) 100%);
+}
+.ds-railcard-link:hover .ds-railcard-visual,
+.ds-railcard-link:focus-visible .ds-railcard-visual {
+  transform: scale(1.04);
+}
+.ds-railcard-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: clamp(1.5rem, 1.2rem + 1.5cqi, 2.75rem);
+}
+.ds-railcard-body .ds-plus {
+  color: var(--ds-color-text-on-night);
+}
+.ds-railcard-body .t {
+  font-size: clamp(2rem, 1.5rem + 2cqi, 3.4rem);
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+}
+.ds-railcard-body .d {
+  font-size: clamp(1rem, 0.95rem + 0.3cqi, 1.2rem);
+  color: var(--ds-color-text-on-night-muted);
+}
+.ds-rail-progress {
+  height: 2px;
+  background: var(--line);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.ds-rail-progress span {
+  display: block;
+  height: 100%;
+  background: var(--ds-color-action-primary);
+  transform-origin: left;
+  transition: transform 0.2s linear;
+}
+@container screen (min-width: 900px) {
+  .ds-rail-head {
+    grid-template-columns: 1fr auto;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ds-railcard-visual,
+  .ds-rail-progress span,
+  .ds-roundbtn {
+    transition: none;
+  }
+}
