@@ -294,16 +294,12 @@ await step('site rebuild: home step rail moves with the next and previous button
   await page.waitForFunction(() => document.querySelector('.ds-rail-count strong')?.textContent === '01');
 });
 
-await step('site rebuild: home story index follows the scroll and jumps to a story', async () => {
+await step('site rebuild: home success stories stack, each row links to the stories page', async () => {
   await page.goto(BASE + '#/site');
-  const sec = page.locator('.ds-stories2');
+  const sec = page.locator('.ds-stack');
   await sec.scrollIntoViewIfNeeded();
-  if ((await sec.locator('.ds-stories2-row').count()) !== 8) throw new Error('expected 8 stories');
-  const index = sec.getByRole('navigation', { name: 'Stories in this section' });
-  if (await index.isVisible()) {
-    await index.getByRole('button', { name: /Approved Food/ }).click();
-    await page.waitForFunction(() => document.querySelector('.ds-stories2-index [aria-current]')?.textContent?.includes('Approved Food'), null, { timeout: 8000 });
-  }
+  if ((await sec.locator('.ds-stack-row').count()) !== 8) throw new Error('expected 8 stories');
+  await sec.getByRole('link', { name: /Approved Food/ }).waitFor();
 });
 
 await step('site rebuild: what sets us apart rail moves by reason', async () => {

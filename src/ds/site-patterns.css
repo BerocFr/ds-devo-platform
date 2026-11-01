@@ -4069,3 +4069,109 @@ button.ds-stepcard:hover .ds-stepcard-in {
 .ds-stories2 {
   overflow: clip;
 }
+
+/* ---------- Success stories as stacked rows (owner reference, 2026-11-01) ---------- */
+.ds-stack {
+  overflow: clip;
+}
+.ds-stack-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line);
+}
+.ds-stack-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  padding-block: clamp(1.5rem, 1rem + 2cqi, 3rem);
+  border-bottom: 1px solid var(--line);
+  background: var(--ds-color-surface-night);
+}
+.ds-stack-photo {
+  aspect-ratio: 16 / 10;
+  border-radius: var(--r-xl);
+}
+.ds-stack-body {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+.ds-stack-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  color: var(--fg);
+}
+.ds-stack-n {
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+}
+.ds-stack-title {
+  margin: 0;
+  font-size: clamp(1.5rem, 1.2rem + 1.4cqi, 2.6rem);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+  color: var(--fg);
+  max-width: 20ch;
+}
+.ds-stack-row .ds-stretch::after {
+  border-radius: var(--r-xl);
+}
+.ds-stack-row:hover .ds-stack-title {
+  color: color-mix(in srgb, var(--fg) 85%, var(--ds-color-action-primary));
+}
+.ds-stack-tag {
+  margin-top: auto;
+  color: var(--soft);
+}
+.ds-stack .ds-clientnames li {
+  color: var(--soft);
+}
+@container screen (min-width: 900px) {
+  .ds-stack-row {
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1fr);
+    gap: clamp(2rem, 1rem + 3cqi, 4.5rem);
+    min-height: clamp(360px, 300px + 8cqi, 460px);
+  }
+  .ds-stack-photo {
+    aspect-ratio: auto;
+    height: 100%;
+    min-height: 300px;
+  }
+  .ds-stack-body {
+    padding-block: 6px;
+  }
+  .ds-stack-top {
+    padding-right: 12%;
+  }
+  .ds-stack-tag {
+    align-self: flex-end;
+    margin-right: 12%;
+  }
+}
+/* Stacking: each row sticks a little lower than the one before and the next slides over it. */
+@media (prefers-reduced-motion: no-preference) {
+  @container screen (min-width: 900px) {
+    .ds-stack-row {
+      position: sticky;
+      top: calc(24px + var(--k, 0) * 14px);
+    }
+  }
+}
+/* Hairline on top of each row, so stacked rows show their edges like a pile of sheets. */
+.ds-stack-list {
+  border-top: 0;
+}
+.ds-stack-row {
+  border-bottom: 0;
+  border-top: 1px solid var(--line);
+}
+.ds-stack-row:last-child {
+  border-bottom: 1px solid var(--line);
+}

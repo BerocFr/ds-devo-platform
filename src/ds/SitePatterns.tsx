@@ -733,7 +733,8 @@ export function renderSitePattern(def: ComponentDef, inst: ComponentInstance, ct
 
     case 'pStoryLibrary':
       if (inst.variantId === 'grid') return <StoryLibrary p={p} ctx={ctx} inst={inst} thumbW={thumbW} />;
-      return <StoryScroll p={p} ctx={ctx} inst={inst} thumbW={thumbW} />;
+      if (inst.variantId === 'index') return <StoryScroll p={p} ctx={ctx} inst={inst} thumbW={thumbW} />;
+      return <StoryStack p={p} ctx={ctx} inst={inst} thumbW={thumbW} />;
 
     case 'pChangeStarts':
       return <ChangeStarts p={p} ctx={ctx} inst={inst} />;
@@ -2174,5 +2175,60 @@ function Sentences({ text }: { text: string }) {
         </Fragment>
       ))}
     </>
+  );
+}
+
+/** Success stories as stacked rows (owner reference, 2026-11-01): dark section, centred head,
+ *  one row per story (photo, icon, index, title, tag, link) separated by hairlines. Rows stick
+ *  as you scroll down and the next one slides over the last: plain vertical scroll, no
+ *  hijacking; static list under reduced motion. */
+function StoryStack({ p, ctx, inst, thumbW }: { p: P; ctx: SiteCtx; inst: ComponentInstance; thumbW?: number }) {
+  const items = rows(p.items).map(([title, tag, cat, image, to]) => ({ title, tag, cat, image, to }));
+  return (
+    <section className={`ds-sec2 ${tone(p, 'night')} ds-stack`}>
+      <div className="ds-head center">
+        <Label>{s(p.kicker) || 'Success stories'}</Label>
+        <h2 className="ds-h2" data-reveal>
+          {s(p.title)}
+        </h2>
+      </div>
+      <ol className="ds-stack-list" role="list">
+        {items.map((x, k) => {
+          const I = ICONS[CAT_ICON[x.cat] ?? 'sparkles'] ?? Sparkles;
+          return (
+            <li key={x.title} className="ds-stack-row" style={{ '--k': k } as CSSProperties}>
+              <Photo id={x.image} width={thumbW ?? 1200} className="ds-stack-photo" />
+              <div className="ds-stack-body">
+                <div className="ds-stack-top">
+                  <I size={32} strokeWidth={1.5} aria-hidden />
+                  <span className="ds-stack-n" aria-hidden>
+                    [{pad(k + 1)}]
+                  </span>
+                </div>
+                <h3 className="ds-stack-title">
+                  <L to={x.to} ctx={ctx} inst={inst} className="ds-stretch">
+                    {x.title}
+                  </L>
+                </h3>
+                <span className="ds-plus ds-stack-tag">
+                  <span className="dot" aria-hidden />
+                  {x.tag}
+                </span>
+              </div>
+            </li>
+          );
+        })}
+      </ol>
+      {list(p.clients).length ? (
+        <div className="ds-clientnames">
+          <p className="sr-only">Clients include</p>
+          <ul role="list">
+            {list(p.clients).map((c) => (
+              <li key={c}>{c}</li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+    </section>
   );
 }

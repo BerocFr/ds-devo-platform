@@ -302,7 +302,7 @@ const home: SitePage = {
     'What we do and Forward Deployed Engineering merged (owner, 2026-11-01): "We advise. We build. We deploy." heads the block, the FDE statement sits beside it, then the six service steps as large cards on a horizontal rail, each on an abstract visual generated in the hero vein; previous and next buttons, counter, progress line.',
     'Strategic partnerships and the tech toolkit merged (owner, 2026-11-01): head and partner cards with logos beside a large photo, then the eight technology pills with logos and the two actions.',
     'What Sets Us Apart (owner reference, 2026-11-01): a horizontal rail where a portrait and a reason card alternate; each card has the statement, one or two counting figures and the reason title.',
-    'Success stories (owner reference, 2026-11-01): a sticky index on the left marks the story in view, each story a photo and a card; client names below. The grid with search and filters stays as the grid variant.',
+    'Success stories (owner reference, 2026-11-01): dark section, one row per story (photo, icon, index, title, tag) separated by hairlines; rows stick and the next slides over the last as you scroll. The index list and the grid with search stay as variants.',
     'Change Starts Here: the closing call to action with two client quotes; avatars show initials, not photos of the quoted people.',
     'Insights from the field: magazine topics that lead to each topic page, the featured article and the TechRadar 2026 publication.',
     'FAQs: five questions that open in place. Answers two to five are written from facts on the home and need owner validation.',
