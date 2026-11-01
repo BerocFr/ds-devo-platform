@@ -3804,3 +3804,268 @@ button.ds-stepcard:hover .ds-stepcard-in {
     transition: none;
   }
 }
+
+/* ---------- Rail head side column (aside note + controls) ---------- */
+.ds-rail-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 24px;
+  min-width: 0;
+}
+.ds-rail-aside {
+  margin: 0;
+  max-width: 46ch;
+  font-size: 0.98rem;
+  line-height: 1.6;
+  color: var(--soft);
+}
+.ds-rail-aside strong {
+  color: var(--fg);
+  font-weight: 600;
+}
+@container screen (min-width: 900px) {
+  .ds-rail-head {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+  }
+  .ds-rail-side {
+    align-items: flex-end;
+  }
+  .ds-rail-side:has(.ds-rail-aside) {
+    align-items: flex-start;
+  }
+}
+
+/* ---------- Partner block: tech toolkit under the cards ---------- */
+.ds-toolkit {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  margin-top: clamp(1.5rem, 1rem + 2cqi, 3.5rem);
+  padding-top: clamp(2rem, 1.5rem + 2cqi, 3.5rem);
+  border-top: 1px solid var(--line);
+  text-align: center;
+}
+.ds-toolkit-title {
+  margin: 0;
+  font-size: clamp(1.7rem, 1.3rem + 1.5cqi, 2.6rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+  color: var(--fg);
+}
+.ds-toolkit > p {
+  margin: 0;
+  max-width: 56ch;
+  line-height: 1.6;
+}
+.ds-toolkit .ds-actions {
+  justify-content: center;
+  margin-top: 8px;
+}
+
+/* ---------- What sets us apart: alternating portrait and reason cards on a rail ---------- */
+.ds-apart2-track > li {
+  flex: 0 0 min(78%, 400px);
+  scroll-snap-align: start;
+  min-height: clamp(440px, 360px + 12cqi, 560px);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.ds-apart2-photo .ds-photo {
+  height: 100%;
+  aspect-ratio: auto;
+  border-radius: 0;
+}
+.ds-apart2-photo .ds-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.ds-apart2-card {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding: clamp(1.5rem, 1.2rem + 1cqi, 2.5rem);
+  background: var(--ds-color-surface-subtle);
+}
+.ds-apart2-statement {
+  order: 1;
+  margin: 0;
+  font-size: clamp(1.2rem, 1.1rem + 0.5cqi, 1.5rem);
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+  color: var(--fg);
+}
+.ds-apart2-figs {
+  order: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin: auto 0 0;
+}
+.ds-apart2-figs > div {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 4px;
+}
+.ds-apart2-figs dd {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--fg);
+}
+.ds-apart2-figs dt {
+  color: var(--soft);
+}
+.ds-apart2-name {
+  order: 3;
+  margin: 0;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+  font-size: clamp(1.2rem, 1.1rem + 0.4cqi, 1.5rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--fg);
+}
+@container screen (min-width: 1100px) {
+  .ds-apart2-track > li {
+    flex-basis: calc((100% - 3 * 16px) / 4);
+  }
+}
+
+/* ---------- Success stories: sticky index and story rows ---------- */
+.ds-stories2-body {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+.ds-stories2-index {
+  display: none;
+}
+.ds-stories2-index ol {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ds-stories2-index button {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  min-height: 64px;
+  padding: 12px 20px;
+  border: 0;
+  border-radius: 18px;
+  background: transparent;
+  color: var(--soft);
+  font: inherit;
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+.ds-stories2-index button[aria-current='true'] {
+  background: var(--ds-color-surface-default);
+  color: var(--fg);
+}
+.ds-dots {
+  display: inline-flex;
+  gap: 4px;
+  flex: none;
+}
+.ds-dots i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--fg) 18%, transparent);
+}
+.ds-dots i.on {
+  background: var(--fg);
+}
+.ds-stories2-index button[aria-current='true'] .ds-dots i.on {
+  background: var(--ds-color-action-primary);
+}
+.ds-stories2-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ds-stories2-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+.ds-stories2-photo {
+  aspect-ratio: 4 / 3;
+  border-radius: var(--r-xl);
+}
+.ds-stories2-card {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: clamp(1.5rem, 1.2rem + 1cqi, 2.25rem);
+  border-radius: var(--r-xl);
+  background: var(--ds-color-surface-default);
+}
+.ds-stories2-card .ds-h3 {
+  font-size: clamp(1.35rem, 1.2rem + 0.6cqi, 1.8rem);
+  letter-spacing: -0.03em;
+}
+.ds-stories2-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+}
+.ds-stories2 .ds-clientnames li {
+  color: var(--soft);
+}
+@container screen (min-width: 760px) {
+  .ds-stories2-row {
+    grid-template-columns: 1fr 1fr;
+  }
+  .ds-stories2-photo {
+    aspect-ratio: auto;
+    min-height: 380px;
+    height: 100%;
+  }
+}
+@container screen (min-width: 1100px) {
+  .ds-stories2-body {
+    grid-template-columns: minmax(0, 0.75fr) minmax(0, 2fr);
+    align-items: start;
+  }
+  .ds-stories2-index {
+    display: block;
+    position: sticky;
+    top: 96px;
+  }
+  .ds-stories2-photo {
+    min-height: 460px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ds-stories2-index button {
+    transition: none;
+  }
+}
+/* Sticky index: clip instead of hidden, so the section is not a scroll container. */
+.ds-stories2 {
+  overflow: clip;
+}

@@ -239,7 +239,7 @@ await step('site rebuild: home renders from patterns, in the live order', async 
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.waitForTimeout(300);
   const order = await page.locator('.site-block').evaluateAll((els) => els.map((e) => e.getAttribute('data-pattern')));
-  const expected = ['Site header', 'Hero with media', 'Impact intro', 'Intro statement', 'Service steps panel', 'Partner cards', 'Intro statement', 'Reasons and proof', 'Story library', 'Call to action with quotes', 'Insights hub', 'FAQ section', 'Site footer'];
+  const expected = ['Site header', 'Hero with media', 'Impact intro', 'Service steps panel', 'Partner cards', 'Reasons and proof', 'Story library', 'Call to action with quotes', 'Insights hub', 'FAQ section', 'Site footer'];
   if (order.join('|') !== expected.join('|')) throw new Error(`order ${order.join(', ')}`);
   await page.waitForTimeout(1300);
   await shot('20-site-home');
@@ -294,18 +294,23 @@ await step('site rebuild: home step rail moves with the next and previous button
   await page.waitForFunction(() => document.querySelector('.ds-rail-count strong')?.textContent === '01');
 });
 
-await step('site rebuild: home story library search and filters narrow the cards', async () => {
+await step('site rebuild: home story index follows the scroll and jumps to a story', async () => {
   await page.goto(BASE + '#/site');
-  const lib = page.locator('.ds-library');
-  await lib.scrollIntoViewIfNeeded();
-  const cards = lib.locator('.ds-storycard');
-  if ((await cards.count()) !== 8) throw new Error('expected 8 stories, got ' + (await cards.count()));
-  await lib.getByRole('button', { name: 'Data', exact: true }).click();
-  await page.waitForFunction(() => document.querySelectorAll('.ds-library .ds-storycard').length === 2);
-  await lib.getByRole('searchbox', { name: 'Search success stories' }).fill('zzz');
-  await lib.getByText(/No story matches/).waitFor();
-  await lib.getByRole('button', { name: 'Clear filters' }).click();
-  await page.waitForFunction(() => document.querySelectorAll('.ds-library .ds-storycard').length === 8);
+  const sec = page.locator('.ds-stories2');
+  await sec.scrollIntoViewIfNeeded();
+  if ((await sec.locator('.ds-stories2-row').count()) !== 8) throw new Error('expected 8 stories');
+  const index = sec.getByRole('navigation', { name: 'Stories in this section' });
+  if (await index.isVisible()) {
+    await index.getByRole('button', { name: /Approved Food/ }).click();
+    await page.waitForFunction(() => document.querySelector('.ds-stories2-index [aria-current]')?.textContent?.includes('Approved Food'), null, { timeout: 8000 });
+  }
+});
+
+await step('site rebuild: what sets us apart rail moves by reason', async () => {
+  const sec = page.locator('.ds-apart2');
+  await sec.scrollIntoViewIfNeeded();
+  await sec.getByRole('button', { name: 'Next reason' }).click();
+  await page.waitForFunction(() => document.querySelector('.ds-apart2 .ds-rail-count strong')?.textContent === '02');
 });
 
 await step('site rebuild: pattern overlay links each block to the library', async () => {

@@ -28,7 +28,7 @@ describe('devoteam.com rebuild', () => {
 
   it('keeps the home storytelling of the live site in order', () => {
     const order = findPage('home')!.sections.map((s) => s.componentId);
-    expect(order).toEqual(['pat-site-header', 'pat-hero-media', 'pat-impact', 'pat-intro', 'pat-fde', 'pat-partner-cards', 'pat-intro', 'pat-apart', 'pat-story-library', 'pat-change', 'pat-insights', 'pat-faq', 'pat-site-footer']);
+    expect(order).toEqual(['pat-site-header', 'pat-hero-media', 'pat-impact', 'pat-fde', 'pat-partner-cards', 'pat-apart', 'pat-story-library', 'pat-change', 'pat-insights', 'pat-faq', 'pat-site-footer']);
   });
 
   it('resolves every internal link key to a page', () => {

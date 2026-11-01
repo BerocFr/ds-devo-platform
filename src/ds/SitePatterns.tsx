@@ -729,10 +729,11 @@ export function renderSitePattern(def: ComponentDef, inst: ComponentInstance, ct
       return <PartnerCards p={p} ctx={ctx} inst={inst} />;
 
     case 'pApart':
-      return <Apart p={p} thumbW={thumbW} />;
+      return <Apart p={p} thumbW={thumbW} ctx={ctx} />;
 
     case 'pStoryLibrary':
-      return <StoryLibrary p={p} ctx={ctx} inst={inst} thumbW={thumbW} />;
+      if (inst.variantId === 'grid') return <StoryLibrary p={p} ctx={ctx} inst={inst} thumbW={thumbW} />;
+      return <StoryScroll p={p} ctx={ctx} inst={inst} thumbW={thumbW} />;
 
     case 'pChangeStarts':
       return <ChangeStarts p={p} ctx={ctx} inst={inst} />;
@@ -1528,46 +1529,98 @@ function PartnerCards({ p, ctx, inst }: { p: P; ctx: SiteCtx; inst: ComponentIns
           <Photo id={image} width={1400} />
         </div>
       ) : null}
+      {s(p.toolkitTitle) || list(p.chips).length ? (
+        <div className="ds-toolkit">
+          {s(p.toolkitTitle) ? (
+            <h3 className="ds-toolkit-title" data-reveal>
+              {s(p.toolkitTitle)}
+            </h3>
+          ) : null}
+          {s(p.toolkitBody) ? (
+            <p className="ds-soft" data-reveal style={st(1)}>
+              {s(p.toolkitBody)}
+            </p>
+          ) : null}
+          <ul className="ds-chips" role="list" data-reveal style={st(2)}>
+            {list(p.chips).map((c) => {
+              const logo = logoFor(c);
+              return (
+                <li key={c}>
+                  {c}
+                  {logo ? <img src={logo} alt="" width={20} height={20} /> : null}
+                </li>
+              );
+            })}
+          </ul>
+          {s(p.cta) || s(p.cta2) ? (
+            <div className="ds-actions" data-reveal style={st(3)}>
+              {s(p.cta) ? (
+                <L to={s(p.ctaTo)} ctx={ctx} inst={inst} className="ds-btn2 primary">
+                  {s(p.cta)}
+                </L>
+              ) : null}
+              {s(p.cta2) ? (
+                <L to={s(p.cta2To)} ctx={ctx} inst={inst} className="ds-btn2 outline">
+                  {s(p.cta2)}
+                </L>
+              ) : null}
+            </div>
+          ) : null}
+        </div>
+      ) : null}
     </section>
   );
 }
 
-/** What sets us apart: three columns mixing short reasons and photo cards with a figure. */
-function Apart({ p, thumbW }: { p: P; thumbW?: number }) {
+/** What sets us apart (owner reference, 2026-11-01): a horizontal rail where a portrait photo and
+ *  a reason card alternate. Each card: the reason as a large statement, one or two figures,
+ *  the reason title at the foot. Items: title|statement|figures (value:label, comma separated)|photo. */
+function Apart({ p, thumbW, ctx }: { p: P; thumbW?: number; ctx: SiteCtx }) {
+  const items = rows(p.items);
+  const cells = items.length * 2;
+  const { track, pos, go } = useRail(cells);
+  const id = useId();
+  const ti = ctx.mode === 'thumb' ? -1 : undefined;
   return (
-    <section className={`ds-sec2 ${tone(p, 'mist')} ds-apart`}>
-      <div className="ds-head center">
-        <Label>{s(p.kicker) || 'Why choose Devoteam'}</Label>
-        <h2 className="ds-h2" data-reveal>
-          {s(p.title)}
-        </h2>
+    <section className={`ds-sec2 ${tone(p, 'paper')} ds-apart2`} aria-labelledby={`${id}-t`}>
+      <div className="ds-rail-head">
+        <div className="ds-rail-title">
+          <Label>{s(p.kicker) || 'Why choose Devoteam'}</Label>
+          <h2 id={`${id}-t`} className="ds-h2" data-reveal>
+            {s(p.title)}
+          </h2>
+        </div>
+        <div className="ds-rail-side">
+          <RailControls pos={{ ...pos, i: Math.floor(pos.i / 2) }} go={(d) => go(d * 2)} total={items.length} ti={ti} label="reason" />
+        </div>
       </div>
-      <ul className="ds-apart-grid" role="list">
-        {rows(p.items).map(([kind, a, b, c], i) =>
-          kind === 'stat' ? (
-            <li key={a + i} className="ds-apart-stat" data-reveal style={st(i)}>
-              <Photo id={c} width={thumbW ?? 900} />
-              <div className="ds-apart-glass">
-                <p className="v">
-                  <CountUp value={a} />
-                </p>
-                <p className="d">{b}</p>
-              </div>
-            </li>
-          ) : (
-            <li key={b + i} className="ds-apart-text" data-reveal style={st(i)}>
-              <span className="ds-iconchip" aria-hidden>
-                {(() => {
-                  const I = ICONS[a] ?? Sparkles;
-                  return <I size={20} strokeWidth={1.75} />;
-                })()}
-              </span>
-              <h3 className="ds-h3">{b}</h3>
-              <p>{c}</p>
-            </li>
-          ),
-        )}
-      </ul>
+      <ol ref={track} className="ds-rail-track ds-apart2-track" role="list" tabIndex={ti ?? 0} aria-label={`${s(p.title)}: ${items.length} reasons, scroll sideways`}>
+        {items.flatMap(([title, statement, figures, photo], i) => [
+          <li key={`p${i}`} className="ds-apart2-photo" aria-hidden>
+            <Photo id={photo} width={thumbW ?? 900} />
+          </li>,
+          <li key={`t${i}`} className="ds-apart2-card">
+            <h3 className="ds-apart2-name">{title}</h3>
+            <p className="ds-apart2-statement">{statement}</p>
+            <dl className="ds-apart2-figs">
+              {s(figures)
+                .split(/,\s+/)
+                .filter(Boolean)
+                .map((f) => {
+                const [v, ...l] = f.split(':');
+                return (
+                  <div key={f}>
+                    <dt>{l.join(':').trim()}</dt>
+                    <dd>
+                      <CountUp value={v.trim()} />
+                    </dd>
+                  </div>
+                );
+              })}
+            </dl>
+          </li>,
+        ])}
+      </ol>
     </section>
   );
 }
@@ -1881,11 +1934,10 @@ function ProcessStep({ n, title, sub, to, obj, ctx, inst }: { n: number; title: 
  *  Native horizontal scroll with snap (no scroll hijacking, bench-03), previous and next
  *  buttons, a step counter and a progress line. Keyboard: the rail scrolls with the arrow
  *  keys when focused, and each card is a link that scrolls into view when tabbed to. */
-function StepRail({ p, ctx, inst, thumb }: { p: P; ctx: SiteCtx; inst: ComponentInstance; thumb: boolean }) {
-  const items = rows(p.items);
+/** Horizontal rail state: active index, progress, ends, and a go(dir) that scrolls by one item. */
+function useRail(count: number) {
   const track = useRef<HTMLOListElement>(null);
   const [pos, setPos] = useState({ i: 0, progress: 0, atStart: true, atEnd: false });
-  const id = useId();
   useEffect(() => {
     const el = track.current;
     if (!el) return;
@@ -1893,10 +1945,10 @@ function StepRail({ p, ctx, inst, thumb }: { p: P; ctx: SiteCtx; inst: Component
       const max = el.scrollWidth - el.clientWidth;
       const progress = max > 0 ? el.scrollLeft / max : 0;
       const cards = Array.from(el.children) as HTMLElement[];
-      const left = el.getBoundingClientRect().left;
+      const left = el.getBoundingClientRect().left + parseFloat(getComputedStyle(el).paddingLeft || '0');
       let i = 0;
       cards.forEach((c, k) => {
-        if (c.getBoundingClientRect().left - left < el.clientWidth * 0.5) i = k;
+        if (c.getBoundingClientRect().left - left < c.offsetWidth * 0.5) i = k;
       });
       if (progress > 0.995) i = cards.length - 1;
       setPos({ i, progress, atStart: el.scrollLeft < 4, atEnd: el.scrollLeft > max - 4 });
@@ -1908,17 +1960,44 @@ function StepRail({ p, ctx, inst, thumb }: { p: P; ctx: SiteCtx; inst: Component
       el.removeEventListener('scroll', update);
       window.removeEventListener('resize', update);
     };
-  }, [items.length]);
+  }, [count]);
   const go = (dir: number) => {
     const el = track.current;
     if (!el) return;
-    const card = el.children[Math.min(items.length - 1, Math.max(0, pos.i + dir))] as HTMLElement | undefined;
+    const card = el.children[Math.min(count - 1, Math.max(0, pos.i + dir))] as HTMLElement | undefined;
     if (!card) return;
     const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
     const pad0 = parseFloat(getComputedStyle(el).paddingLeft || '0');
     const left = el.scrollLeft + card.getBoundingClientRect().left - el.getBoundingClientRect().left - pad0;
     el.scrollTo({ left, behavior: reduce ? 'auto' : 'smooth' });
   };
+  return { track, pos, go };
+}
+
+function RailControls({ pos, go, total, ti, label = 'step' }: { pos: { i: number; atStart: boolean; atEnd: boolean }; go: (d: number) => void; total: number; ti?: number; label?: string }) {
+  return (
+    <div className="ds-rail-controls">
+      <p className="ds-rail-count" aria-live="polite">
+        <span className="sr-only">{label[0].toUpperCase() + label.slice(1)} </span>
+        <strong>{pad(pos.i + 1)}</strong>
+        <span aria-hidden> / </span>
+        <span className="sr-only"> of </span>
+        {pad(total)}
+      </p>
+      <button type="button" className="ds-roundbtn" onClick={() => go(-1)} disabled={pos.atStart} aria-label={`Previous ${label}`} tabIndex={ti}>
+        <ArrowLeft size={20} aria-hidden />
+      </button>
+      <button type="button" className="ds-roundbtn" onClick={() => go(1)} disabled={pos.atEnd} aria-label={`Next ${label}`} tabIndex={ti}>
+        <ArrowRight size={20} aria-hidden />
+      </button>
+    </div>
+  );
+}
+
+function StepRail({ p, ctx, inst, thumb }: { p: P; ctx: SiteCtx; inst: ComponentInstance; thumb: boolean }) {
+  const items = rows(p.items);
+  const { track, pos, go } = useRail(items.length);
+  const id = useId();
   const ti = thumb ? -1 : undefined;
   return (
     <section className={`ds-sec2 ${tone(p, 'paper')} ds-rail`} aria-labelledby={`${id}-t`}>
@@ -1926,12 +2005,12 @@ function StepRail({ p, ctx, inst, thumb }: { p: P; ctx: SiteCtx; inst: Component
         <div className="ds-rail-title">
           <Label>{s(p.kicker) || 'How we work'}</Label>
           <h2 id={`${id}-t`} className="ds-h2" data-reveal>
-            {s(p.title)}
+            <Sentences text={s(p.title)} />
           </h2>
           {s(p.body) ? (
             <p className="ds-lead2" data-reveal style={st(1)}>
               {s(p.body)}{' '}
-              {s(p.link) ? (
+              {s(p.link) && !s(p.asideBody) ? (
                 <L to={s(p.linkTo)} ctx={ctx} inst={inst} className="ds-textlink2">
                   {s(p.link)}
                 </L>
@@ -1939,20 +2018,19 @@ function StepRail({ p, ctx, inst, thumb }: { p: P; ctx: SiteCtx; inst: Component
             </p>
           ) : null}
         </div>
-        <div className="ds-rail-controls">
-          <p className="ds-rail-count" aria-live="polite">
-            <span className="sr-only">Step </span>
-            <strong>{pad(pos.i + 1)}</strong>
-            <span aria-hidden> / </span>
-            <span className="sr-only"> of </span>
-            {pad(items.length)}
-          </p>
-          <button type="button" className="ds-roundbtn" onClick={() => go(-1)} disabled={pos.atStart} aria-label="Previous step" tabIndex={ti}>
-            <ArrowLeft size={20} aria-hidden />
-          </button>
-          <button type="button" className="ds-roundbtn" onClick={() => go(1)} disabled={pos.atEnd} aria-label="Next step" tabIndex={ti}>
-            <ArrowRight size={20} aria-hidden />
-          </button>
+        <div className="ds-rail-side">
+          {s(p.asideTitle) || s(p.asideBody) ? (
+            <p className="ds-rail-aside" data-reveal style={st(2)}>
+              {s(p.asideTitle) ? <strong>{s(p.asideTitle)}. </strong> : null}
+              {s(p.asideBody)}{' '}
+              {s(p.link) && s(p.asideBody) ? (
+                <L to={s(p.linkTo)} ctx={ctx} inst={inst} className="ds-textlink2">
+                  {s(p.link)}
+                </L>
+              ) : null}
+            </p>
+          ) : null}
+          <RailControls pos={pos} go={go} total={items.length} ti={ti} />
         </div>
       </div>
       <ol ref={track} className="ds-rail-track" role="list" tabIndex={thumb ? -1 : 0} aria-label={`${s(p.title)}: ${items.length} steps, scroll sideways`}>
@@ -1988,5 +2066,113 @@ function StepRail({ p, ctx, inst, thumb }: { p: P; ctx: SiteCtx; inst: Component
         </div>
       ) : null}
     </section>
+  );
+}
+
+const CAT_ICON: Record<string, string> = { AI: 'sparkles', Data: 'database', Cybersecurity: 'shield', 'Managed Services': 'server' };
+
+/** Success stories as a scrolling list (owner reference, 2026-11-01): a sticky index on the left
+ *  marks the story in view (dots show how far along you are); each story is a photo and a card.
+ *  Plain vertical scroll, no hijacking; the index buttons jump to their story. */
+function StoryScroll({ p, ctx, inst, thumbW }: { p: P; ctx: SiteCtx; inst: ComponentInstance; thumbW?: number }) {
+  const items = rows(p.items).map(([title, tag, cat, image, to]) => ({ title, tag, cat, image, to }));
+  const [active, setActive] = useState(0);
+  const refs = useRef<(HTMLLIElement | null)[]>([]);
+  useEffect(() => {
+    if (typeof IntersectionObserver === 'undefined') return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) if (e.isIntersecting) setActive(Number((e.target as HTMLElement).dataset.k));
+      },
+      { rootMargin: '-45% 0px -45% 0px' },
+    );
+    refs.current.forEach((r) => r && io.observe(r));
+    return () => io.disconnect();
+  }, [items.length]);
+  const jump = (k: number) => {
+    const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    refs.current[k]?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
+  };
+  const ti = ctx.mode === 'thumb' ? -1 : undefined;
+  return (
+    <section className={`ds-sec2 ${tone(p, 'mist')} ds-stories2`}>
+      <div className="ds-head center">
+        <Label>{s(p.kicker) || 'Success stories'}</Label>
+        <h2 className="ds-h2" data-reveal>
+          {s(p.title)}
+        </h2>
+      </div>
+      <div className="ds-stories2-body">
+        <nav className="ds-stories2-index" aria-label="Stories in this section">
+          <ol role="list">
+            {items.map((x, k) => (
+              <li key={x.title}>
+                <button type="button" aria-current={k === active ? 'true' : undefined} onClick={() => jump(k)} tabIndex={ti}>
+                  <span className="ds-dots" aria-hidden>
+                    {items.map((_, d) => (
+                      <i key={d} className={d <= k ? 'on' : ''} />
+                    ))}
+                  </span>
+                  <span className="t">{x.title.split(':')[0]}</span>
+                </button>
+              </li>
+            ))}
+          </ol>
+        </nav>
+        <ol className="ds-stories2-list" role="list">
+          {items.map((x, k) => {
+            const I = ICONS[CAT_ICON[x.cat] ?? 'sparkles'] ?? Sparkles;
+            return (
+              <li
+                key={x.title}
+                ref={(el) => {
+                  refs.current[k] = el;
+                }}
+                data-k={k}
+                className="ds-stories2-row"
+              >
+                <Photo id={x.image} width={thumbW ?? 1000} className="ds-stories2-photo" />
+                <div className="ds-stories2-card">
+                  <I size={30} strokeWidth={1.5} aria-hidden />
+                  <h3 className="ds-h3">{x.title}</h3>
+                  <div className="ds-stories2-foot">
+                    <span className="ds-tag-soft">{x.tag}</span>
+                    <L to={x.to} ctx={ctx} inst={inst} className="ds-textlink2">
+                      Read the story<span className="sr-only">: {x.title}</span>
+                    </L>
+                  </div>
+                </div>
+              </li>
+            );
+          })}
+        </ol>
+      </div>
+      {list(p.clients).length ? (
+        <div className="ds-clientnames">
+          <p className="sr-only">Clients include</p>
+          <ul role="list">
+            {list(p.clients).map((c) => (
+              <li key={c}>{c}</li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+    </section>
+  );
+}
+
+/** Keeps each sentence of a short headline on one line, so lines break between sentences. */
+function Sentences({ text }: { text: string }) {
+  const parts = text.split(/(?<=[.!?])\s+/);
+  if (parts.length < 2) return <>{text}</>;
+  return (
+    <>
+      {parts.map((part, i) => (
+        <Fragment key={i}>
+          <span className="ds-nobreak">{part}</span>
+          {i < parts.length - 1 ? ' ' : null}
+        </Fragment>
+      ))}
+    </>
   );
 }
