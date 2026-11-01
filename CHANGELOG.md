@@ -10,6 +10,8 @@ All notable changes to the Atelier platform (BerocFr/ds-devo-platform). The form
 
 ### Changed
 
+- Home proportions after the owner reference at 1280: 40px gutters, about 113px section padding, 18px card radius, section titles near 4.3% of the width, hero about half the width tall, FAQ centred; unedited seed tokens update in saved workspaces (catalogVersion 5). (6e6ef53)
+- Client band shows real logos when a file exists (Spotify), names otherwise.
 - Success stories as stacked rows on a dark section: photo, icon, index, title, tag; rows stick and stack as you scroll (static under reduced motion). (8f36ff7)
 - What we do merged with the step rail; strategic partnerships merged with the tech toolkit; What Sets Us Apart as an alternating portrait and reason rail; success stories as a scrolling list with a sticky index (grid kept as a variant). (c0d16db)
 - Multi Partner beside a large photo, each card with the partner logo, proof and tier; technology pills carry their logo (CC0 Iconify sets; ServiceNow pending its official badge). (f590fdb)
