@@ -218,6 +218,7 @@ const home: SitePage = {
         title: 'Multi Partner',
         body: 'We want to make technology work for you. So we pick a few partners and go all in, until we\'re the best at their technology. The result? They\'ve all named us a leader, and you benefit from the highest level of expertise and innovation.',
         items: PARTNER_CARDS,
+        image: 'pexels-38453564',
       },
     },
     {
@@ -317,7 +318,8 @@ const home: SitePage = {
     'Impact intro (owner content): "We are Agents of Change" as the label, the positioning paragraph as a large statement, and the four key figures in a two by two grid with hairlines.',
     'What we do (owner capture of the live home, 2026-10-31): centred bold headline, paragraph and a red action.',
     'Forward Deployed Engineering (owner, 2026-11-01): the six service steps as large cards on a horizontal rail, each on an abstract visual generated in the hero vein and tied to its step; previous and next buttons, step counter, progress line; each card links to its service.',
-    'Multi Partner: title and paragraph side by side, then one card per partner with its tier, name and proof.',
+    'Multi Partner (owner reference, 2026-11-01): head and partner cards on the left, a large photo on the right; each card shows the partner logo, its proof and tier. ServiceNow shows its name until the official badge is supplied.',
+    'Complete Tech Toolkit for AI: each technology pill carries its logo.',
     'Complete Tech Toolkit for AI: the eight technology partners as names in pills, with two actions.',
     'What Sets Us Apart: three short reasons and three photo cards with a counting figure.',
     'Success stories: the eight stories with a search field and topic filters that work, an empty state, and client names.',

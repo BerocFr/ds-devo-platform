@@ -47,6 +47,7 @@ import { getPhoto, photoUrl } from '../data/photos';
 import { heroVisual } from '../data/heroVisuals';
 import { object3d } from '../data/objects3d';
 import { stepVisual } from '../data/stepVisuals';
+import { logoFor } from '../data/logos';
 import { SignalField } from './SignalField';
 import './site-patterns.css';
 
@@ -771,9 +772,15 @@ export function renderSitePattern(def: ComponentDef, inst: ComponentInstance, ct
             ) : null}
             {list(p.chips).length ? (
               <ul className="ds-chips" role="list" data-reveal style={st(2)}>
-                {list(p.chips).map((c) => (
-                  <li key={c}>{c}</li>
-                ))}
+                {list(p.chips).map((c) => {
+                  const logo = logoFor(c);
+                  return (
+                    <li key={c}>
+                      {c}
+                      {logo ? <img src={logo} alt="" width={20} height={20} /> : null}
+                    </li>
+                  );
+                })}
               </ul>
             ) : null}
             {s(p.cta) || s(p.cta2) ? (
@@ -1476,34 +1483,51 @@ function FdeServices({ p, ctx, inst }: { p: P; ctx: SiteCtx; inst: ComponentInst
   );
 }
 
-/** Strategic partners as cards: tier tag, wordmark, proof line. */
+/** Strategic partners (owner reference, 2026-11-01): head and partner cards on the left, a large
+ *  photo on the right. Each card: the partner logo on a grey card, then a white panel with the
+ *  proof and the partner tier. Without a logo in the set, the name is set as text. */
 function PartnerCards({ p, ctx, inst }: { p: P; ctx: SiteCtx; inst: ComponentInstance }) {
+  const image = s(p.image);
   return (
-    <section className={`ds-sec2 ${tone(p, 'paper')} ds-split2`}>
-      <div className="ds-split2-head">
-        <div className="ds-split2-title">
+    <section className={`ds-sec2 ${tone(p, 'paper')} ds-partners2 ${image ? 'with-photo' : ''}`}>
+      <div className="ds-partners2-main">
+        <div className="ds-partners2-head">
           <Label>{s(p.kicker) || 'Strategic partnerships'}</Label>
           <h2 className="ds-h2" data-reveal>
             {s(p.title)}
           </h2>
+          {s(p.body) ? (
+            <p className="ds-soft" data-reveal style={st(1)}>
+              {s(p.body)}
+            </p>
+          ) : null}
         </div>
-        {s(p.body) ? (
-          <p className="ds-split2-body" data-reveal style={st(1)}>
-            {s(p.body)}
-          </p>
-        ) : null}
+        <ul className="ds-partnercards2" role="list">
+          {rows(p.items).map(([name, tier, proof, to], i) => {
+            const logo = logoFor(name);
+            return (
+              <li key={name} data-reveal style={st(i)}>
+                <L to={to} ctx={ctx} inst={inst} className="ds-partnercard2">
+                  <span className="ds-partnercard2-logo">
+                    {logo ? <img src={logo} alt="" /> : <span className="ds-wordmark2">{name}</span>}
+                  </span>
+                  <span className="ds-partnercard2-panel">
+                    <strong>{proof}</strong>
+                    <span>
+                      {name} {tier}
+                    </span>
+                  </span>
+                </L>
+              </li>
+            );
+          })}
+        </ul>
       </div>
-      <ul className="ds-partnercards" role="list">
-        {rows(p.items).map(([name, tier, proof, to], i) => (
-          <li key={name} data-reveal style={st(i)}>
-            <L to={to} ctx={ctx} inst={inst} className="ds-partnercard">
-              <span className="ds-wordmark">{name}</span>
-              <span className="ds-tag-red">{tier}</span>
-              <span className="ds-partnercard-proof">{proof}</span>
-            </L>
-          </li>
-        ))}
-      </ul>
+      {image ? (
+        <div className="ds-partners2-photo" data-reveal="clip">
+          <Photo id={image} width={1400} />
+        </div>
+      ) : null}
     </section>
   );
 }
