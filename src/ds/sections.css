@@ -132,7 +132,7 @@
 .ds-art {
   aspect-ratio: 16 / 10;
   max-width: 100%;
-  border-radius: calc(var(--ds-radius-card) - 4px);
+  border-radius: calc(var(--ds-radius-card) * 0.625);
   background-color: var(--ds-color-surface-accent);
   background-image:
     radial-gradient(circle at 78% 30%, var(--ds-color-action-accent) 0 17%, transparent 17.5%),
@@ -187,7 +187,7 @@
 }
 .ds-tile .ds-art {
   aspect-ratio: 1;
-  border-radius: 12px;
+  border-radius: calc(var(--ds-radius-card) * 0.625);
 }
 .ds-tile-t {
   font-weight: var(--ds-font-weight-bold);
@@ -257,7 +257,7 @@
 .ds-logos li,
 .ds-logoband li {
   border: 1px solid var(--ds-color-border-default);
-  border-radius: 10px;
+  border-radius: calc(var(--ds-radius-card) * 0.625);
   height: 56px;
   display: grid;
   place-items: center;
@@ -459,7 +459,7 @@
   background: var(--ds-color-surface-subtle);
 }
 .ds-datebox {
-  border-radius: 14px;
+  border-radius: calc(var(--ds-radius-card) * 0.625);
   background: var(--ds-color-action-primary);
   color: var(--ds-color-surface-default);
   height: 64px;
@@ -622,7 +622,7 @@
   list-style: none;
   margin: 6px 0 0;
   padding: 6px;
-  border-radius: 12px;
+  border-radius: calc(var(--ds-radius-card) * 0.625);
   background: var(--ds-color-surface-default);
   box-shadow: var(--ds-shadow-overlay);
   font-size: var(--ds-font-size-small);

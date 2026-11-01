@@ -19,7 +19,9 @@
   --line: var(--ds-color-border-default);
   --raised: var(--ds-color-surface-subtle);
   --card: var(--ds-color-surface-default);
-  --r-xl: calc(var(--ds-radius-card) * 1.5);
+  --r-xl: var(--ds-radius-card);
+  --r-md: calc(var(--ds-radius-card) * 0.625);
+  --r-sm: var(--ds-radius-small);
   color: var(--fg);
 }
 .t-paper {
@@ -219,7 +221,7 @@
   align-items: center;
   min-height: 38px;
   padding: 0 16px;
-  border-radius: 10px;
+  border-radius: var(--r-md);
   background: var(--raised);
   color: var(--fg);
   font-size: 0.92rem;
@@ -244,7 +246,7 @@
   gap: 6px;
   min-height: 34px;
   padding: 0 12px;
-  border-radius: 10px;
+  border-radius: var(--r-md);
   border: 0;
   background: color-mix(in srgb, var(--ds-color-surface-default) 18%, transparent);
   color: var(--fg);
@@ -262,7 +264,7 @@
 .ds-photo {
   position: relative;
   overflow: hidden;
-  border-radius: var(--r-xl, 24px);
+  border-radius: var(--r-xl);
   aspect-ratio: 4 / 3;
   background-color: var(--raised);
   max-width: 100%;
@@ -417,7 +419,7 @@ a:focus-visible .ds-photo.zoom img,
 }
 .ds-heroCard .ds-photo {
   aspect-ratio: 4 / 3;
-  border-radius: calc(var(--r-xl) - 8px);
+  border-radius: var(--r-md);
 }
 .ds-heroCard-label {
   display: flex;
@@ -607,7 +609,7 @@ a:focus-visible .ds-photo.zoom img,
   display: grid;
   gap: 2px;
   grid-template-columns: 1fr;
-  border-radius: var(--ds-radius-card);
+  border-radius: var(--r-xl);
   background: var(--ds-color-surface-default);
   color: var(--ds-color-text-default);
   --soft: var(--ds-color-text-muted);
@@ -621,7 +623,7 @@ a:focus-visible .ds-photo.zoom img,
   gap: 12px;
   min-height: 48px;
   padding: 6px 12px;
-  border-radius: 12px;
+  border-radius: var(--r-md);
   color: var(--ds-color-text-default);
   text-decoration: none;
   font-weight: 500;
@@ -633,7 +635,7 @@ a:focus-visible .ds-photo.zoom img,
 .ds-subnav2-link .ic {
   width: 36px;
   height: 36px;
-  border-radius: 10px;
+  border-radius: var(--r-sm);
   display: grid;
   place-items: center;
   background: var(--ds-color-surface-subtle);
@@ -960,7 +962,7 @@ button.ds-stepcard:hover .ds-stepcard-in {
   justify-content: center;
   gap: 6px;
   min-height: 150px;
-  border-radius: calc(var(--r-xl) - 4px);
+  border-radius: var(--r-md);
   background: var(--ds-color-surface-default);
   color: var(--ds-color-text-muted);
 }
@@ -1355,10 +1357,10 @@ button.ds-stepcard:hover .ds-stepcard-in {
 .ds-sec .ds-select,
 .ds-sec .ds-textarea {
   min-height: 52px;
-  border-radius: 14px;
+  border-radius: var(--r-md);
 }
 .ds-sec .ds-formcard {
-  border-radius: calc(var(--ds-radius-card) * 1.5);
+  border-radius: var(--r-xl);
 }
 
 /* ---------- Wider screens ---------- */
@@ -1742,7 +1744,7 @@ button.ds-stepcard:hover .ds-stepcard-in {
   gap: 14px;
   min-height: 52px;
   padding: 6px 14px;
-  border-radius: 14px;
+  border-radius: var(--r-md);
   color: var(--ds-color-text-on-night);
   text-decoration: none;
   font-size: 1.15rem;
@@ -1753,7 +1755,7 @@ button.ds-stepcard:hover .ds-stepcard-in {
   height: 40px;
   display: grid;
   place-items: center;
-  border-radius: 12px;
+  border-radius: var(--r-sm);
   background: color-mix(in srgb, var(--ds-color-text-on-night) 10%, transparent);
   color: var(--ds-color-signal);
 }
@@ -2028,7 +2030,7 @@ button.ds-stepcard:hover .ds-stepcard-in {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 2px;
-  border-radius: calc(var(--ds-radius-card) + 4px);
+  border-radius: var(--r-xl);
   background: var(--ds-color-surface-default);
   color: var(--ds-color-text-default);
   box-shadow: var(--ds-shadow-overlay);
@@ -2060,7 +2062,7 @@ button.ds-stepcard:hover .ds-stepcard-in {
   gap: 12px;
   min-height: 46px;
   padding: 6px 10px;
-  border-radius: 12px;
+  border-radius: var(--r-md);
   color: var(--ds-color-text-default);
   text-decoration: none;
   font-size: 0.92rem;
@@ -2071,7 +2073,7 @@ button.ds-stepcard:hover .ds-stepcard-in {
   height: 34px;
   display: grid;
   place-items: center;
-  border-radius: 10px;
+  border-radius: var(--r-sm);
   background: var(--ds-color-surface-subtle);
   color: var(--ds-color-action-primary);
 }
@@ -2172,7 +2174,7 @@ button.ds-stepcard:hover .ds-stepcard-in {
 .ds-impact.overlap {
   margin-top: -64px;
   z-index: 2;
-  border-radius: calc(var(--ds-radius-card) * 2) calc(var(--ds-radius-card) * 2) 0 0;
+  border-radius: var(--r-xl) var(--r-xl) 0 0;
 }
 .ds-impact-card {
   display: grid;
@@ -2180,7 +2182,7 @@ button.ds-stepcard:hover .ds-stepcard-in {
   gap: 0;
   margin: 0;
   padding: 8px clamp(1.25rem, 1rem + 1.5cqi, 2.5rem);
-  border-radius: calc(var(--ds-radius-card) * 1.5);
+  border-radius: var(--r-xl);
   background: var(--ds-color-surface-default);
   box-shadow:
     0 1px 0 color-mix(in srgb, var(--ds-color-surface-default) 80%, transparent) inset,
@@ -2408,7 +2410,7 @@ button.ds-stepcard:hover .ds-stepcard-in {
 }
 .ds-kpicard-tag {
   padding: 7px 14px;
-  border-radius: 999px;
+  border-radius: var(--ds-radius-pill);
   border: 1px solid var(--ds-color-border-default);
   background: var(--ds-color-surface-subtle);
   font-size: 0.78rem;
@@ -2534,7 +2536,7 @@ button.ds-stepcard:hover .ds-stepcard-in {
   place-items: center;
   width: 44px;
   height: 44px;
-  border-radius: 14px;
+  border-radius: var(--r-md);
   background: color-mix(in srgb, var(--ds-color-action-primary) 9%, var(--ds-color-surface-default));
   color: var(--ds-color-action-primary);
   flex: none;
@@ -2549,7 +2551,7 @@ button.ds-stepcard:hover .ds-stepcard-in {
   align-items: center;
   align-self: flex-start;
   padding: 6px 14px;
-  border-radius: 999px;
+  border-radius: var(--ds-radius-pill);
   font-size: 0.8rem;
   font-weight: 500;
   white-space: nowrap;
@@ -2597,7 +2599,7 @@ button.ds-stepcard:hover .ds-stepcard-in {
 }
 .ds-chips li {
   padding: 10px 18px;
-  border-radius: 999px;
+  border-radius: var(--ds-radius-pill);
   background: var(--ds-color-surface-default);
   box-shadow: inset 0 0 0 1px var(--line);
   font-size: 0.95rem;
@@ -2615,7 +2617,7 @@ button.ds-stepcard:hover .ds-stepcard-in {
   flex-direction: column;
   gap: 16px;
   padding: clamp(16px, 0.6rem + 1.2cqi, 28px);
-  border-radius: calc(var(--r-xl) * 1.25);
+  border-radius: var(--r-xl);
   background: var(--ds-color-surface-subtle);
 }
 .ds-fde-head {
@@ -2808,7 +2810,7 @@ button.ds-stepcard:hover .ds-stepcard-in {
 .ds-apart-stat {
   position: relative;
   min-height: clamp(320px, 260px + 8cqi, 420px);
-  border-radius: calc(var(--r-xl) * 1.25);
+  border-radius: var(--r-xl);
   overflow: hidden;
   isolation: isolate;
 }
@@ -2878,7 +2880,7 @@ button.ds-stepcard:hover .ds-stepcard-in {
   min-height: 52px;
   padding: 0 52px 0 22px;
   border: 0;
-  border-radius: 999px;
+  border-radius: var(--ds-radius-pill);
   background: color-mix(in srgb, var(--ds-color-surface-default) 9%, transparent);
   box-shadow: inset 0 0 0 1px var(--line);
   color: var(--fg);
@@ -2909,7 +2911,7 @@ button.ds-stepcard:hover .ds-stepcard-in {
   min-height: 40px;
   padding: 0 16px;
   border: 0;
-  border-radius: 999px;
+  border-radius: var(--ds-radius-pill);
   background: transparent;
   box-shadow: inset 0 0 0 1px var(--line);
   color: var(--fg);
@@ -2969,7 +2971,7 @@ button.ds-stepcard:hover .ds-stepcard-in {
 .ds-storycard-tag {
   align-self: flex-start;
   padding: 5px 12px;
-  border-radius: 999px;
+  border-radius: var(--ds-radius-pill);
   background: color-mix(in srgb, var(--ds-color-surface-night) 70%, transparent);
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ds-color-surface-default) 30%, transparent);
   font-size: 0.8rem;
@@ -3085,7 +3087,7 @@ button.ds-stepcard:hover .ds-stepcard-in {
   flex-direction: column;
   gap: 12px;
   padding: clamp(1.5rem, 1.2rem + 1cqi, 2.25rem);
-  border-radius: calc(var(--r-xl) * 1.25);
+  border-radius: var(--r-xl);
   background: var(--ds-color-surface-night);
 }
 .ds-magazine .ds-h3 {
@@ -3108,7 +3110,7 @@ button.ds-stepcard:hover .ds-stepcard-in {
   gap: 10px;
   min-height: 48px;
   padding: 0 16px;
-  border-radius: 14px;
+  border-radius: var(--r-md);
   background: color-mix(in srgb, var(--ds-color-surface-default) 8%, transparent);
   box-shadow: inset 0 0 0 1px var(--line);
   color: var(--fg);
@@ -3127,7 +3129,7 @@ button.ds-stepcard:hover .ds-stepcard-in {
 .ds-feature-article {
   position: relative;
   min-height: 380px;
-  border-radius: calc(var(--r-xl) * 1.25);
+  border-radius: var(--r-xl);
   overflow: hidden;
   isolation: isolate;
 }
@@ -3181,7 +3183,7 @@ button.ds-stepcard:hover .ds-stepcard-in {
   align-items: center;
   gap: 20px;
   padding: clamp(1.5rem, 1.2rem + 1cqi, 2.25rem);
-  border-radius: calc(var(--r-xl) * 1.25);
+  border-radius: var(--r-xl);
   background: var(--ds-color-surface-default);
 }
 .ds-publication > div {
@@ -3199,7 +3201,7 @@ button.ds-stepcard:hover .ds-stepcard-in {
   width: 100%;
   max-width: 260px;
   aspect-ratio: 4 / 3;
-  border-radius: 16px;
+  border-radius: var(--r-md);
   overflow: hidden;
 }
 .ds-publication-img img {
@@ -3238,7 +3240,7 @@ button.ds-stepcard:hover .ds-stepcard-in {
   gap: 12px;
 }
 .ds-faq2 details {
-  border-radius: 20px;
+  border-radius: var(--r-md);
   background: var(--ds-color-surface-subtle);
 }
 .ds-faq2.t-mist details {
@@ -3254,7 +3256,7 @@ button.ds-stepcard:hover .ds-stepcard-in {
   font-weight: 600;
   cursor: pointer;
   list-style: none;
-  border-radius: 20px;
+  border-radius: var(--r-md);
 }
 .ds-faq2 summary::-webkit-details-marker {
   display: none;
@@ -3361,7 +3363,7 @@ button.ds-stepcard:hover .ds-stepcard-in {
   background: var(--ds-color-action-primary);
 }
 .ds-sec .ds-btn {
-  border-radius: 999px;
+  border-radius: var(--ds-radius-pill);
 }
 
 /* Closing statement: one dark card, no decorative tiles. */
@@ -3375,7 +3377,7 @@ button.ds-stepcard:hover .ds-stepcard-in {
   width: 100%;
   max-width: none;
   min-height: clamp(360px, 300px + 8cqi, 480px);
-  border-radius: calc(var(--r-xl) * 1.25);
+  border-radius: var(--r-xl);
 }
 .ds-ctacard .ds-dm {
   max-width: 18ch;
@@ -3436,7 +3438,7 @@ button.ds-stepcard:hover .ds-stepcard-in {
   list-style: none;
 }
 .ds-process-steps > li {
-  border-radius: calc(var(--r-xl) * 1.25);
+  border-radius: var(--r-xl);
 }
 .ds-process-card {
   display: flex;
@@ -3446,7 +3448,7 @@ button.ds-stepcard:hover .ds-stepcard-in {
   height: 100%;
   min-height: clamp(340px, 300px + 6cqi, 440px);
   padding: clamp(1.75rem, 1.4rem + 1cqi, 2.5rem) 24px 0;
-  border-radius: calc(var(--r-xl) * 1.25);
+  border-radius: var(--r-xl);
   background: var(--ds-color-surface-default);
   color: var(--ds-color-text-default);
   text-align: center;
@@ -3597,7 +3599,7 @@ button.ds-stepcard:hover .ds-stepcard-in {
 .ds-railcard {
   flex: 0 0 min(86%, 780px);
   scroll-snap-align: start;
-  border-radius: calc(var(--r-xl) * 1.25);
+  border-radius: var(--r-xl);
   background: var(--ds-color-surface-night);
 }
 .ds-railcard-link {
@@ -3714,7 +3716,7 @@ button.ds-stepcard:hover .ds-stepcard-in {
   flex-direction: column;
   height: 100%;
   padding: 10px;
-  border-radius: 20px;
+  border-radius: var(--r-xl);
   background: var(--ds-color-surface-subtle);
   color: var(--ds-color-text-default);
   text-decoration: none;
@@ -3750,7 +3752,7 @@ button.ds-stepcard:hover .ds-stepcard-in {
   gap: 4px;
   margin-top: auto;
   padding: 14px 16px;
-  border-radius: 12px;
+  border-radius: var(--r-md);
   background: var(--ds-color-surface-default);
 }
 .ds-partnercard2-panel strong {
@@ -3774,7 +3776,7 @@ button.ds-stepcard:hover .ds-stepcard-in {
 .ds-partners2-photo .ds-photo {
   height: 100%;
   aspect-ratio: auto;
-  border-radius: calc(var(--r-xl) * 1.25);
+  border-radius: var(--r-xl);
 }
 .ds-partners2-photo .ds-photo img {
   width: 100%;
@@ -3871,7 +3873,7 @@ button.ds-stepcard:hover .ds-stepcard-in {
   flex: 0 0 min(78%, 400px);
   scroll-snap-align: start;
   min-height: clamp(440px, 360px + 12cqi, 560px);
-  border-radius: 6px;
+  border-radius: var(--r-xl);
   overflow: hidden;
 }
 .ds-apart2-photo .ds-photo {
@@ -3964,7 +3966,7 @@ button.ds-stepcard:hover .ds-stepcard-in {
   min-height: 64px;
   padding: 12px 20px;
   border: 0;
-  border-radius: 18px;
+  border-radius: var(--r-md);
   background: transparent;
   color: var(--soft);
   font: inherit;
@@ -4198,9 +4200,17 @@ button.ds-stepcard:hover .ds-stepcard-in {
    about 113px section padding, 18px card radius, section titles near 4.3% of
    the width, quieter body text, FAQ centred in a narrow column.
    ===================================================================== */
+/* Corner radius scale (owner, 2026-11-01): one value per level, nothing in between.
+   xl (radius.card, 16px, brand): cards, photos, panels, sections drawn as cards.
+   md (derived, 10px): elements inside a card or a list (FAQ items, menu and topic links, inputs, icon tiles).
+   sm (radius.small, 4px, brand): small marks nested in an md element.
+   pill: buttons, tags, chips, search fields. Circle (50%): avatars, round buttons, dots. */
 .ds-screen,
-.ds-sec2 {
-  --r-xl: calc(var(--ds-radius-card) * 1.125);
+.ds-sec2,
+.ds-menu {
+  --r-xl: var(--ds-radius-card);
+  --r-md: calc(var(--ds-radius-card) * 0.625);
+  --r-sm: var(--ds-radius-small);
 }
 .ds-h2,
 .ds-head .ds-dm {
@@ -4234,7 +4244,7 @@ button.ds-stepcard:hover .ds-stepcard-in {
   width: min(100%, 880px);
 }
 .ds-faq2 details {
-  border-radius: 6px;
+  border-radius: var(--r-md);
   background: var(--ds-color-surface-subtle);
   overflow: hidden;
 }
